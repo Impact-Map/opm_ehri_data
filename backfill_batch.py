@@ -1,15 +1,20 @@
 """
-Batch backfill: download files from OPM, convert to parquet, upload to HF.
-Processes up to BATCH_SIZE files per run to stay under HF's rate limit (128 commits/hour).
-Designed to run repeatedly (via GitHub Actions every 2 hours) until all files are uploaded.
+Batch backfill: find gaps between OPM and HuggingFace, fill newest-first.
+
+Scrapes OPM for all available files, checks what's already on HF,
+and uploads missing files starting from the most recent.
+Processes up to BATCH_SIZE files per run to stay under HF's rate limit.
+Designed to run repeatedly (via GitHub Actions) until everything is uploaded.
 """
 
 from __future__ import annotations
 
 import asyncio
 import os
+import re
 import sys
 import time
+from datetime import datetime
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -24,19 +29,14 @@ BATCH_SIZE = 100  # Stay under 128 commits/hour limit
 DOWNLOAD_DIR = Path("data/downloads")
 PARQUET_DIR = Path("data/parquet")
 
-# Only backfill data older than this. Recent months go through run_daily.py
-# which creates diff reports and GitHub Issues.
-BACKFILL_END_DATE = "2025-06-30"
-BACKFILL_START_DATE = "2015-01-01"
-
-# Import after dotenv so config picks up the token
+from huggingface_hub import HfApi, CommitOperationAdd
 from opm_pipeline.scraper import setup_page, set_filters, get_card_filename, download_file_from_card
 from opm_pipeline.converter import convert_to_parquet
-from opm_pipeline.uploader import upload_to_huggingface
+from opm_pipeline.config import card_name_to_hf_path
 
 
 def get_existing_files() -> set[str]:
-    """Get set of parquet filenames already in HF repo."""
+    """Get set of parquet paths already in HF repo."""
     try:
         create_repo(HF_REPO, repo_type="dataset", token=HF_TOKEN, exist_ok=True)
         files = list_repo_files(HF_REPO, repo_type="dataset", token=HF_TOKEN)
@@ -45,12 +45,18 @@ def get_existing_files() -> set[str]:
         return set()
 
 
-def card_name_to_parquet(card_name: str) -> str:
-    """Convert card display name to expected parquet filename.
+MONTH_RE = re.compile(r'from (\w+) (\d{4})')
 
-    'Accessions data from November 2025' -> 'Accessions data from November 2025.parquet'
-    """
-    return card_name.replace('.csv', '').replace('.txt', '') + ".parquet"
+def _sort_key_newest_first(card_name: str) -> tuple:
+    """Parse 'Month Year' from card name for sorting newest-first."""
+    m = MONTH_RE.search(card_name)
+    if not m:
+        return (0, 0)
+    try:
+        dt = datetime.strptime(f"{m.group(1)} {m.group(2)}", "%B %Y")
+        return (-dt.year, -dt.month)
+    except ValueError:
+        return (0, 0)
 
 
 async def backfill_batch():
@@ -65,25 +71,21 @@ async def backfill_batch():
     existing = get_existing_files()
     print(f"Already on HF: {len(existing)} parquet files")
 
-    uploaded = 0
-    failed = 0
-
     async with async_playwright() as playwright:
         browser, context, page = await setup_page(playwright)
 
         try:
-            for data_type in ["Accessions", "Separations", "Employment"]:
-                if uploaded >= BATCH_SIZE:
-                    break
+            # Step 1: Scan OPM for all available files
+            all_cards = []  # list of (card_name, data_type, page_num, card_index)
 
-                total = await set_filters(page, data_type, BACKFILL_START_DATE, BACKFILL_END_DATE)
+            for data_type in ["Accessions", "Separations", "Employment"]:
+                total = await set_filters(page, data_type, "2015-01-01", "2030-12-31")
                 if total == 0:
                     print(f"{data_type}: no files found")
                     continue
 
-                print(f"\n{data_type}: {total} files on OPM")
+                print(f"{data_type}: {total} files on OPM")
 
-                # Set to 100 items per page
                 try:
                     rows_dropdown = page.get_by_label("rows per page")
                     await rows_dropdown.select_option('100')
@@ -91,71 +93,126 @@ async def backfill_batch():
                 except Exception:
                     pass
 
-                page_num = 1
-                while uploaded < BATCH_SIZE:
+                while True:
                     buttons = page.locator('button[aria-label^="Download options for"]')
                     count = await buttons.count()
 
                     for i in range(count):
-                        if uploaded >= BATCH_SIZE:
-                            break
-
                         card_name = await get_card_filename(page, i)
                         if not card_name:
                             continue
+                        parquet_name = card_name_to_hf_path(card_name)
+                        if parquet_name not in existing:
+                            all_cards.append((card_name, data_type))
 
-                        parquet_name = card_name_to_parquet(card_name)
-                        if parquet_name in existing:
-                            continue
-
-                        try:
-                            # Download
-                            csv_path = await download_file_from_card(page, i, DOWNLOAD_DIR)
-                            csv_size = csv_path.stat().st_size / (1024 * 1024)
-
-                            # Convert
-                            parquet_path = convert_to_parquet(csv_path, PARQUET_DIR)
-                            parquet_size = parquet_path.stat().st_size / (1024 * 1024)
-
-                            # Upload
-                            upload_to_huggingface(parquet_path, parquet_name, HF_TOKEN)
-                            existing.add(parquet_name)
-                            uploaded += 1
-
-                            print(f"  [{uploaded}/{BATCH_SIZE}] {parquet_name} ({csv_size:.0f}MB -> {parquet_size:.1f}MB)")
-
-                            # Cleanup
-                            csv_path.unlink()
-                            parquet_path.unlink()
-
-                            # Rate limit buffer
-                            time.sleep(2)
-
-                        except Exception as e:
-                            error = str(e)[:100]
-                            print(f"  FAILED: {parquet_name}: {error}")
-                            failed += 1
-                            try:
-                                await page.keyboard.press('Escape')
-                            except Exception:
-                                pass
-                            time.sleep(5)
-                            continue
-
-                    # Next page
                     next_button = page.locator('button[aria-label="Go to next page"]')
                     if await next_button.is_disabled():
                         break
                     await next_button.click()
                     await asyncio.sleep(2)
-                    page_num += 1
+
+            # Step 2: Sort missing files newest-first
+            all_cards.sort(key=lambda x: _sort_key_newest_first(x[0]))
+
+            print(f"\nMissing from HF: {len(all_cards)} files")
+            if not all_cards:
+                print("Nothing to backfill!")
+                await browser.close()
+                return
+
+            for name, dtype in all_cards[:10]:
+                print(f"  {card_name_to_hf_path(name)}")
+            if len(all_cards) > 10:
+                print(f"  ... and {len(all_cards) - 10} more")
+
+            # Step 3: Download all files in batch, then commit once
+            downloaded = []  # list of (parquet_path, hf_path)
+            failed = 0
+
+            for card_name, data_type in all_cards:
+                if len(downloaded) >= BATCH_SIZE:
+                    break
+
+                hf_path = card_name_to_hf_path(card_name)
+
+                try:
+                    total = await set_filters(page, data_type, "2015-01-01", "2030-12-31")
+                    if total == 0:
+                        failed += 1
+                        continue
+
+                    try:
+                        rows_dropdown = page.get_by_label("rows per page")
+                        await rows_dropdown.select_option('100')
+                        await asyncio.sleep(2)
+                    except Exception:
+                        pass
+
+                    found = False
+                    while True:
+                        buttons = page.locator('button[aria-label^="Download options for"]')
+                        count = await buttons.count()
+
+                        for i in range(count):
+                            current_name = await get_card_filename(page, i)
+                            if current_name != card_name:
+                                continue
+
+                            csv_path = await download_file_from_card(page, i, DOWNLOAD_DIR)
+                            csv_size = csv_path.stat().st_size / (1024 * 1024)
+                            parquet_path = convert_to_parquet(csv_path, PARQUET_DIR)
+                            parquet_size = parquet_path.stat().st_size / (1024 * 1024)
+                            csv_path.unlink()
+
+                            downloaded.append((parquet_path, hf_path))
+                            print(f"  [{len(downloaded)}/{BATCH_SIZE}] {hf_path} ({csv_size:.0f}MB -> {parquet_size:.1f}MB)")
+                            found = True
+                            break
+
+                        if found:
+                            break
+
+                        next_button = page.locator('button[aria-label="Go to next page"]')
+                        if await next_button.is_disabled():
+                            break
+                        await next_button.click()
+                        await asyncio.sleep(2)
+
+                    if not found:
+                        print(f"  SKIPPED: {hf_path} (card not found)")
+                        failed += 1
+
+                except Exception as e:
+                    print(f"  FAILED: {hf_path}: {str(e)[:100]}")
+                    failed += 1
+                    try:
+                        await page.keyboard.press('Escape')
+                    except Exception:
+                        pass
+                    time.sleep(5)
 
         finally:
             await browser.close()
 
-    print(f"\nDone: {uploaded} uploaded, {failed} failed, {len(existing)} total on HF")
+    # Step 4: Single commit for all downloaded files
+    if downloaded:
+        print(f"\nUploading {len(downloaded)} files in one commit...")
+        api = HfApi()
+        ops = [CommitOperationAdd(path_in_repo=hf_path, path_or_fileobj=str(parquet_path))
+               for parquet_path, hf_path in downloaded]
+        api.create_commit(
+            repo_id=HF_REPO, repo_type="dataset", token=HF_TOKEN,
+            operations=ops,
+            commit_message=f"Backfill: add {len(downloaded)} files",
+        )
+        for parquet_path, _ in downloaded:
+            parquet_path.unlink(missing_ok=True)
+        print(f"Committed {len(downloaded)} files.")
 
-    if uploaded == 0 and failed == 0:
+    total_on_hf = len(existing) + len(downloaded)
+    print(f"\nDone: {len(downloaded)} uploaded, {failed} failed, {total_on_hf} total on HF")
+
+    if len(downloaded) == 0 and failed == 0:
         print("Nothing left to upload — backfill complete!")
 
 

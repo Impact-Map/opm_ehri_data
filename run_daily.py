@@ -16,7 +16,7 @@ from datetime import date
 
 from opm_pipeline.config import (
     HF_TOKEN, HF_REPO, DATA_TYPES, START_DATE, END_DATE,
-    DOWNLOAD_DIR, PARQUET_DIR,
+    DOWNLOAD_DIR, PARQUET_DIR, card_name_to_hf_path,
 )
 from opm_pipeline.reporter import create_github_issue
 
@@ -86,18 +86,36 @@ def preflight_checks(token: str):
     print("All preflight checks passed.")
 
 
-def _find_prior_file(data_type: str) -> str | None:
-    """Find the most recent file of the same data type on HF.
+def _find_prior_file(data_type: str, current_hf_path: str) -> str | None:
+    """Find the most recent file of the same data type on HF, older than current file.
 
-    Returns the parquet filename (e.g. 'accessions_202512.parquet') or None.
+    Looks in the data_type subdirectory (e.g. 'accessions/') for files like
+    'accessions/accessions_202511.parquet' and returns the one with the highest
+    YYYYMM that's still older than current_hf_path.
     """
     from huggingface_hub import list_repo_files
-    from opm_pipeline.config import HF_REPO
+    from opm_pipeline.config import HF_REPO, hf_path_to_date
 
+    current_date = hf_path_to_date(current_hf_path)
+    if not current_date:
+        return None
+
+    prefix = f"{data_type.lower()}/"
     try:
         files = list_repo_files(HF_REPO, repo_type="dataset")
-        matches = sorted([f for f in files if f.startswith(data_type) and f.endswith('.parquet')])
-        return matches[-1] if matches else None
+        candidates = []
+        for f in files:
+            if not f.startswith(prefix) or not f.endswith('.parquet'):
+                continue
+            if f == current_hf_path:
+                continue
+            fdate = hf_path_to_date(f)
+            if fdate and fdate < current_date:
+                candidates.append((fdate, f))
+        if not candidates:
+            return None
+        candidates.sort(key=lambda x: (x[0], x[1]), reverse=True)
+        return candidates[0][1]
     except Exception:
         return None
 
@@ -166,9 +184,9 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
                 site_entry = site_manifest[key]
                 data_type = site_entry["data_type"].capitalize()
                 card_filename = site_entry["filename"]
-                parquet_name = card_filename.replace('.csv', '') + ".parquet"
+                hf_path = card_name_to_hf_path(card_filename)
 
-                print(f"\nProcessing: {parquet_name}")
+                print(f"\nProcessing: {hf_path}")
 
                 try:
                     # Navigate to the right data type page
@@ -200,10 +218,10 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
                             old_parquet_path = None
                             compare_label = None
                             if key in changes["updated"]:
-                                old_parquet_path = download_existing_parquet(parquet_name, token)
-                                compare_label = f"previous version of {parquet_name}"
+                                old_parquet_path = download_existing_parquet(hf_path, token)
+                                compare_label = f"previous version of {hf_path}"
                             elif key in changes["new"]:
-                                prior_file = _find_prior_file(site_entry["data_type"])
+                                prior_file = _find_prior_file(site_entry["data_type"], hf_path)
                                 if prior_file:
                                     old_parquet_path = download_existing_parquet(prior_file, token)
                                     compare_label = prior_file
@@ -227,10 +245,10 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
 
                             # Upload to HuggingFace
                             if dry_run:
-                                print(f"  [DRY RUN] Would upload {parquet_name} to {HF_REPO}")
+                                print(f"  [DRY RUN] Would upload {hf_path} to {HF_REPO}")
                             else:
-                                upload_to_huggingface(parquet_path, parquet_name, token)
-                                print(f"  Uploaded {parquet_name} to {HF_REPO}")
+                                upload_to_huggingface(parquet_path, hf_path, token)
+                                print(f"  Uploaded {hf_path} to {HF_REPO}")
 
                             # Update manifest
                             update_manifest_entry(stored_manifest, key, site_entry, metadata)

@@ -63,12 +63,17 @@ def update_manifest_entry(manifest: dict, repo_name: str, site_entry: dict, meta
 
 
 def build_manifest_from_hf(token: str) -> dict:
-    """Bootstrap manifest by querying existing files in the single HF repo."""
+    """Bootstrap manifest by querying existing files in the single HF repo.
+
+    Only considers subdirectory-format filenames like 'accessions/accessions_202511.parquet'.
+    """
     from huggingface_hub import hf_hub_download, repo_exists, list_repo_files
     import pandas as pd
     import re
 
     from .config import HF_REPO
+
+    HF_PATH_RE = re.compile(r'^(accessions|separations|employment)/\1_\d{6}\.parquet$')
 
     manifest = {}
 
@@ -76,22 +81,11 @@ def build_manifest_from_hf(token: str) -> dict:
         return manifest
 
     files = list_repo_files(HF_REPO, repo_type="dataset", token=token)
-    parquet_files = [f for f in files if f.endswith('.parquet')]
+    parquet_files = [f for f in files if HF_PATH_RE.match(f)]
 
     for filename in parquet_files:
-        # Parse data type and version from filename like accessions_202511_1_2026-01-09.parquet
-        stem = filename.replace('.parquet', '')
-        parts = stem.split('_')
-        data_type = parts[0] if parts else ""
-        version = 0
-        opm_date = ""
-        if len(parts) >= 3:
-            try:
-                version = int(parts[2])
-            except ValueError:
-                pass
-        if len(parts) >= 4:
-            opm_date = parts[3]
+        stem = filename.replace('.parquet', '')   # e.g. accessions/accessions_202511
+        data_type = filename.split('/')[0]         # e.g. accessions
 
         try:
             path = hf_hub_download(repo_id=HF_REPO, filename=filename, repo_type="dataset", token=token)
@@ -104,8 +98,8 @@ def build_manifest_from_hf(token: str) -> dict:
 
         manifest[stem] = {
             "filename": stem,
-            "version": version,
-            "opm_date": opm_date,
+            "version": 0,
+            "opm_date": "",
             "data_type": data_type,
             "columns": columns,
             "row_count": row_count,

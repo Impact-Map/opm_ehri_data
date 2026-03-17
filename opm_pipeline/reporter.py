@@ -172,14 +172,14 @@ def create_github_issue(title: str, body: str) -> str | None:
     """Create a GitHub issue using `gh` CLI. Returns issue URL or None on failure."""
     try:
         result = subprocess.run(
-            ["gh", "issue", "create", "--title", title, "--body", body],
-            capture_output=True, text=True, check=True,
+            ["gh", "issue", "create", "--title", title, "--body-file", "-"],
+            input=body, capture_output=True, text=True, check=True,
         )
         url = result.stdout.strip()
         print(f"Created issue: {url}")
         return url
-    except FileNotFoundError:
-        print("Warning: `gh` CLI not found. Skipping issue creation.")
+    except (FileNotFoundError, OSError) as e:
+        print(f"Warning: `gh` CLI not available: {e}. Skipping issue creation.")
         return None
     except subprocess.CalledProcessError as e:
         print(f"Warning: Failed to create issue: {e.stderr}")
