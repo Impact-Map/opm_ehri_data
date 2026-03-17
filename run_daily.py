@@ -277,7 +277,7 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
         report += "The following files failed to process:\n\n"
         report += "| File | Error |\n|------|-------|\n"
         for key, err in failed_files:
-            report += f"| `{key}` | {err[:100]} |\n"
+            report += f"| `{key}` | {_sanitize(err[:100])} |\n"
 
     print("\n" + report)
 
@@ -298,6 +298,20 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
         sys.exit(1)
 
 
+def _sanitize(text: str) -> str:
+    """Remove any tokens or secrets from text before putting it in a GitHub Issue."""
+    import re
+    # Redact HuggingFace tokens (hf_...)
+    text = re.sub(r'hf_[A-Za-z0-9]{20,}', '[REDACTED]', text)
+    # Redact anything that looks like a bearer token
+    text = re.sub(r'Bearer\s+\S+', 'Bearer [REDACTED]', text)
+    # Redact the HF_TOKEN env var value if it somehow appears
+    token = os.environ.get("HF_TOKEN", "")
+    if token and len(token) > 5:
+        text = text.replace(token, '[REDACTED]')
+    return text
+
+
 def report_failure(error: Exception):
     """Create a GitHub Issue explaining the failure with diagnosis and fix steps."""
     today = date.today()
@@ -307,11 +321,11 @@ def report_failure(error: Exception):
 
 ### What happened
 
-{error}
+{_sanitize(str(error))}
 
 ### Diagnosis
 
-{error.diagnosis}
+{_sanitize(error.diagnosis)}
 
 ### How to fix
 
@@ -325,7 +339,7 @@ def report_failure(error: Exception):
 An unexpected error occurred:
 
 ```
-{traceback.format_exc()}
+{_sanitize(traceback.format_exc())}
 ```
 
 ### Diagnosis
