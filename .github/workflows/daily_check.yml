@@ -50,7 +50,11 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add metadata/
-          git diff --staged --quiet || git commit -m "Update file manifest [automated]" && git push
+          if ! git diff --staged --quiet; then
+            git commit -m "Update file manifest [automated]"
+            git pull --rebase origin main
+            git push
+          fi
 
       - name: Create failure issue with full output
         if: failure()
