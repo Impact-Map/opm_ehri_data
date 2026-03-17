@@ -25,7 +25,8 @@ load_dotenv()
 
 HF_TOKEN = os.environ.get("HF_TOKEN")
 HF_REPO = "abigailhaddad/opm-federal-workforce"
-BATCH_SIZE = 15  # Keep well within 45-min timeout; runs every 2h to catch up
+BATCH_SIZE = 60          # Max files per run (accessions/separations are small ~6MB CSV)
+MAX_EMPLOYMENT = 5       # Employment files are ~780MB CSV each — cap separately
 DOWNLOAD_DIR = Path("data/downloads")
 PARQUET_DIR = Path("data/parquet")
 
@@ -127,11 +128,14 @@ async def backfill_batch():
 
             # Step 3: Download all files in batch, then commit once
             downloaded = []  # list of (parquet_path, hf_path)
+            employment_count = 0
             failed = 0
 
             for card_name, data_type in all_cards:
                 if len(downloaded) >= BATCH_SIZE:
                     break
+                if data_type == "Employment" and employment_count >= MAX_EMPLOYMENT:
+                    continue
 
                 hf_path = card_name_to_hf_path(card_name)
 
@@ -165,6 +169,8 @@ async def backfill_batch():
                             csv_path.unlink()
 
                             downloaded.append((parquet_path, hf_path))
+                            if data_type == "Employment":
+                                employment_count += 1
                             print(f"  [{len(downloaded)}/{BATCH_SIZE}] {hf_path} ({csv_size:.0f}MB -> {parquet_size:.1f}MB)")
                             found = True
                             break
