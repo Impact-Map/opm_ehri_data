@@ -25,7 +25,7 @@ load_dotenv()
 
 HF_TOKEN = os.environ.get("HF_TOKEN")
 HF_REPO = "abigailhaddad/opm-federal-workforce"
-BATCH_SIZE = 100  # Stay under 128 commits/hour limit
+BATCH_SIZE = 15  # Keep well within 45-min timeout; runs every 2h to catch up
 DOWNLOAD_DIR = Path("data/downloads")
 PARQUET_DIR = Path("data/parquet")
 
