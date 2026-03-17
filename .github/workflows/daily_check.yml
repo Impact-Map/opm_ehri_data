@@ -32,6 +32,9 @@ jobs:
           pip install -r requirements.txt
           playwright install chromium
 
+      - name: Smoke test - verify OPM download and data quality
+        run: python smoke_test.py
+
       - name: Run daily pipeline
         id: pipeline
         env:
