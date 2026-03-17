@@ -15,7 +15,7 @@ from tqdm import tqdm
 
 load_dotenv()
 
-HF_USERNAME = "abigailhaddad"
+HF_REPO = "abigailhaddad/opm-federal-workforce"
 OUTPUT_DIR = Path("data/analysis")
 SERIES_CODE = "2210"  # IT Specialist
 
@@ -27,8 +27,8 @@ CHANGE_MONTHS = ["202502", "202503", "202504", "202505", "202506",
 
 def download_dataset(data_type: str, month: str) -> pd.DataFrame:
     """Download a single month's dataset."""
-    repo_id = f"{HF_USERNAME}/opm-federal-{data_type}-{month}"
-    path = hf_hub_download(repo_id=repo_id, filename="data.parquet", repo_type="dataset")
+    filename = f"{data_type}_{month}.parquet"
+    path = hf_hub_download(repo_id=HF_REPO, filename=filename, repo_type="dataset")
     return pd.read_parquet(path)
 
 

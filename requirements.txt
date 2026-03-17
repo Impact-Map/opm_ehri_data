@@ -1,7 +1,7 @@
-pandas
-playwright
-huggingface_hub
-tqdm
-pyarrow
-python-dotenv
-duckdb
+pandas>=2.0,<3
+playwright>=1.40,<2
+huggingface_hub>=0.20,<2
+tqdm>=4.60,<5
+pyarrow>=14,<22
+python-dotenv>=1.0,<2
+duckdb>=0.9,<2

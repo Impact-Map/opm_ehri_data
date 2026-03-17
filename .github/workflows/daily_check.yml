@@ -1,0 +1,84 @@
+name: Daily OPM Data Check
+
+on:
+  schedule:
+    - cron: '0 14 * * *'  # 10 AM ET
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: opm-daily
+  cancel-in-progress: true
+
+jobs:
+  check-and-update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          playwright install chromium
+
+      - name: Run daily pipeline
+        id: pipeline
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python run_daily.py 2>&1 | tee pipeline_output.txt
+          echo "exit_code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+
+      - name: Commit manifest changes
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add metadata/
+          git diff --staged --quiet || git commit -m "Update file manifest [automated]" && git push
+
+      - name: Create failure issue with full output
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PIPELINE_OUTPUT: pipeline_output.txt
+        run: |
+          BODY=$(cat <<'ISSUE_EOF'
+          ## Pipeline Failed
+
+          The daily OPM data check failed. Full output is below — no need to dig into the Actions log.
+
+          ### Full Pipeline Output
+
+          ```
+          ISSUE_EOF
+          )
+
+          if [ -f pipeline_output.txt ]; then
+            # Truncate to 60000 chars to stay under GitHub issue body limit
+            OUTPUT=$(head -c 60000 pipeline_output.txt)
+            BODY="${BODY}
+          ${OUTPUT}
+          \`\`\`"
+          else
+            BODY="${BODY}
+          (no output captured — the pipeline may have failed before producing any output)
+          \`\`\`
+
+          Check the [Actions run](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}) for details."
+          fi
+
+          TITLE="Pipeline FAILED - $(date -u +%Y-%m-%d)"
+          echo "$BODY" | gh issue create --title "$TITLE" --body-file -

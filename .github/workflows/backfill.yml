@@ -1,0 +1,37 @@
+name: Backfill OPM Data
+
+on:
+  schedule:
+    - cron: '30 */2 * * *'  # Every 2 hours at :30
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hf-backfill
+  cancel-in-progress: false
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          playwright install chromium
+
+      - name: Run backfill batch
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python backfill_batch.py

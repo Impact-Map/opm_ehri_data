@@ -9,16 +9,15 @@ from __future__ import annotations
 import re
 import sys
 from pathlib import Path
-from huggingface_hub import list_datasets, hf_hub_download
+from huggingface_hub import list_repo_files, hf_hub_download
 import pandas as pd
 from dotenv import load_dotenv
 from tqdm import tqdm
 
 load_dotenv()
 
-HF_USERNAME = "abigailhaddad"
+HF_REPO = "abigailhaddad/opm-federal-workforce"
 OUTPUT_DIR = Path("data/agency_subsets")
-LOCAL_CACHE_DIR = Path("data/parquet")  # Check here first before downloading
 
 # Expected date range (inclusive)
 START_YEAR_MONTH = (2015, 1)
@@ -45,25 +44,25 @@ def get_expected_months() -> set[str]:
     return expected
 
 
-def get_available_datasets(data_type: str) -> list[str]:
-    """Get all available dataset repo IDs for a data type."""
-    datasets = list_datasets(author=HF_USERNAME, search=f"opm-federal-{data_type.lower()}")
-    return [d.id for d in datasets]
+def get_available_files(data_type: str) -> list[str]:
+    """Get all parquet filenames in the repo for a data type."""
+    all_files = list_repo_files(HF_REPO, repo_type="dataset")
+    return sorted([f for f in all_files if f.startswith(data_type) and f.endswith('.parquet')])
 
 
-def extract_year_month(repo_id: str) -> str | None:
-    """Extract YYYYMM from repo ID like 'user/opm-federal-accessions-202511'."""
-    match = re.search(r'-(\d{6})$', repo_id)
+def extract_year_month(filename: str) -> str | None:
+    """Extract YYYYMM from filename like 'accessions_202511.parquet'."""
+    match = re.search(r'_(\d{6})', filename)
     return match.group(1) if match else None
 
 
-def validate_months(repos: list[str], data_type: str) -> bool:
+def validate_months(filenames: list[str], data_type: str) -> bool:
     """Check that all expected months are present. Returns True if valid."""
     expected = get_expected_months()
     found = set()
 
-    for repo_id in repos:
-        ym = extract_year_month(repo_id)
+    for f in filenames:
+        ym = extract_year_month(f)
         if ym:
             found.add(ym)
 
@@ -79,7 +78,7 @@ def validate_months(repos: list[str], data_type: str) -> bool:
     return True
 
 
-def download_and_filter(repo_id: str, agency_codes: list[str], data_type: str,
+def download_and_filter(filename: str, agency_codes: list[str], data_type: str,
                         dropped_tracker: dict) -> pd.DataFrame:
     """Download a dataset and filter for specific agencies.
 
@@ -90,7 +89,7 @@ def download_and_filter(repo_id: str, agency_codes: list[str], data_type: str,
 
     Tracks dropped records in dropped_tracker dict for summary at end.
     """
-    path = hf_hub_download(repo_id=repo_id, filename="data.parquet", repo_type="dataset")
+    path = hf_hub_download(repo_id=HF_REPO, filename=filename, repo_type="dataset")
     df = pd.read_parquet(path)
 
     # Filter by agency FIRST
@@ -139,13 +138,13 @@ def main():
     print("VALIDATING DATA AVAILABILITY")
     print(f"{'='*60}")
 
-    all_repos = {}
+    all_files = {}
     for data_type in ["accessions", "separations"]:
-        repos = get_available_datasets(data_type)
-        all_repos[data_type] = repos
-        print(f"\n  {data_type}: found {len(repos)} datasets")
+        files = get_available_files(data_type)
+        all_files[data_type] = files
+        print(f"\n  {data_type}: found {len(files)} files")
 
-        if not validate_months(repos, data_type):
+        if not validate_months(files, data_type):
             print(f"\n  ABORTING: Missing months detected. Please run the download script first.")
             sys.exit(1)
 
@@ -160,17 +159,17 @@ def main():
         print(f"Processing {data_type.upper()}")
         print(f"{'='*60}")
 
-        repos = all_repos[data_type]
+        files = all_files[data_type]
 
-        for repo_id in tqdm(repos, desc=f"Downloading {data_type}"):
+        for filename in tqdm(files, desc=f"Downloading {data_type}"):
             try:
-                df = download_and_filter(repo_id, agency_codes, data_type, dropped_tracker)
+                df = download_and_filter(filename, agency_codes, data_type, dropped_tracker)
                 for code in agency_codes:
                     agency_df = df[df["agency_code"] == code]
                     if len(agency_df) > 0:
                         agency_dfs[code].append(agency_df)
             except Exception as e:
-                print(f"  Error with {repo_id}: {e}")
+                print(f"  Error with {filename}: {e}")
                 continue
 
     # Print dropped data summary
