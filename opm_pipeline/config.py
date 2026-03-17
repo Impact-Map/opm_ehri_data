@@ -63,3 +63,21 @@ def hf_path_to_date(hf_path: str):
     if not m:
         return None
     return date(int(m.group(1)), int(m.group(2)), 1)
+
+
+_NUM_MONTH = {v: k for k, v in _MONTH_NUM.items()}
+
+
+def hf_path_to_card_stem(hf_path: str):
+    """Reverse of card_name_to_hf_path.
+
+    'accessions/accessions_202511.parquet' -> 'Accessions data from November 2025'
+    """
+    import re
+    m = re.match(r'^(accessions|separations|employment)/\1_(\d{4})(\d{2})\.parquet$', hf_path)
+    if not m:
+        return None
+    data_type = m.group(1).capitalize()
+    year = m.group(2)
+    month_name = _NUM_MONTH[m.group(3)]
+    return f"{data_type} data from {month_name} {year}"

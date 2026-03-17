@@ -71,7 +71,7 @@ def build_manifest_from_hf(token: str) -> dict:
     import pandas as pd
     import re
 
-    from .config import HF_REPO
+    from .config import HF_REPO, hf_path_to_card_stem
 
     HF_PATH_RE = re.compile(r'^(accessions|separations|employment)/\1_\d{6}\.parquet$')
 
@@ -84,8 +84,10 @@ def build_manifest_from_hf(token: str) -> dict:
     parquet_files = [f for f in files if HF_PATH_RE.match(f)]
 
     for filename in parquet_files:
-        stem = filename.replace('.parquet', '')   # e.g. accessions/accessions_202511
-        data_type = filename.split('/')[0]         # e.g. accessions
+        card_stem = hf_path_to_card_stem(filename)  # e.g. "Accessions data from November 2025"
+        if not card_stem:
+            continue
+        data_type = filename.split('/')[0]           # e.g. accessions
 
         try:
             path = hf_hub_download(repo_id=HF_REPO, filename=filename, repo_type="dataset", token=token)
@@ -96,8 +98,8 @@ def build_manifest_from_hf(token: str) -> dict:
             columns = []
             row_count = 0
 
-        manifest[stem] = {
-            "filename": stem,
+        manifest[card_stem] = {
+            "filename": card_stem,
             "version": 0,
             "opm_date": "",
             "data_type": data_type,
