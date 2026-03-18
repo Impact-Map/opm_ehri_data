@@ -3,7 +3,13 @@ name: Daily OPM Data Check
 on:
   schedule:
     - cron: '0 14 * * *'  # 10 AM ET
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      test_mode:
+        description: 'Run in test mode (January 2026 only, full report/email)'
+        required: false
+        default: 'false'
+        type: boolean
 
 permissions:
   contents: write
@@ -42,7 +48,11 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -o pipefail
-          python run_daily.py 2>&1 | tee pipeline_output.txt
+          TEST_FLAG=""
+          if [ "${{ github.event.inputs.test_mode }}" = "true" ]; then
+            TEST_FLAG="--test"
+          fi
+          python run_daily.py $TEST_FLAG 2>&1 | tee pipeline_output.txt
 
       - name: Commit manifest changes
         if: success()

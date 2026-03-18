@@ -137,7 +137,7 @@ def _find_prior_file(data_type: str, current_hf_path: str) -> str | None:
 
 
 async def run_daily(token: str, data_types: list[str], start_date: str, end_date: str,
-                    rebuild_manifest: bool = False, dry_run: bool = False):
+                    rebuild_manifest: bool = False, dry_run: bool = False, test: bool = False):
     """Main daily pipeline orchestration."""
     from playwright.async_api import async_playwright
     from opm_pipeline.scraper import setup_page, get_site_manifest, download_file_from_card, set_filters, get_card_filename
@@ -158,6 +158,12 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
     else:
         stored_manifest = load_manifest()
         print(f"Loaded manifest with {len(stored_manifest)} entries")
+
+    if test:
+        print("TEST MODE: narrowing to January 2026, treating all found files as new")
+        start_date = "2026-01-01"
+        end_date = "2026-01-31"
+        stored_manifest = {}  # pretend manifest is empty so all files appear new
 
     # Step 2: Scrape OPM site for current file listing
     print("Scanning OPM site...")
@@ -432,11 +438,13 @@ async def main():
                         help="Rebuild manifest from existing HuggingFace repos")
     parser.add_argument("--dry-run", action="store_true",
                         help="Download and process files but skip uploading to HuggingFace")
+    parser.add_argument("--test", action="store_true",
+                        help="Test mode: January 2026 only, treat all files as new, triggers full report/email")
     args = parser.parse_args()
 
     try:
         preflight_checks(args.token)
-        await run_daily(args.token, args.types, args.start, args.end, args.rebuild_manifest, args.dry_run)
+        await run_daily(args.token, args.types, args.start, args.end, args.rebuild_manifest, args.dry_run, args.test)
     except PipelineError as e:
         print(f"\nPIPELINE ERROR: {e}")
         print(f"DIAGNOSIS: {e.diagnosis}")
