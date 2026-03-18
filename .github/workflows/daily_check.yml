@@ -71,7 +71,6 @@ jobs:
         env:
           BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
           EMAIL_SUBJECT: ${{ steps.pipeline.outputs.email_subject }}
-          EMAIL_BODY: "New EHRI federal workforce data is available on HuggingFace (https://huggingface.co/datasets/abigailhaddad/opm-federal-workforce). See the GitHub issue in the repository for a full diff report."
         run: python3 send_email.py
 
       - name: Create failure issue with full output
