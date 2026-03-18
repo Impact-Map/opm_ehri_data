@@ -345,11 +345,14 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
     today = date.today()
     n_success = len(changed_keys) - len(failed_files)
     from opm_pipeline.reporter import _is_version_update
+    from opm_pipeline.config import hf_path_to_date
     new_months = [k for k in changes["new"] if not _is_version_update(k)]
     new_versions = [k for k in changes["new"] if _is_version_update(k)]
+    # Count distinct calendar months, not files
+    distinct_new_months = len({hf_path_to_date(k) for k in new_months if hf_path_to_date(k)})
     title_parts = []
     if new_months:
-        title_parts.append(f"{len(new_months)} new month{'s' if len(new_months) > 1 else ''}")
+        title_parts.append(f"{distinct_new_months} new month{'s' if distinct_new_months > 1 else ''}")
     if new_versions:
         title_parts.append(f"{len(new_versions)} updated version{'s' if len(new_versions) > 1 else ''}")
     if changes["updated"]:
