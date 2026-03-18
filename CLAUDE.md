@@ -9,7 +9,7 @@ Downloads three types of data from https://data.opm.gov/explore-data/data/data-d
 - **Separations**: Federal employee departures (~6 MB/month CSV, ~0.2 MB parquet)
 - **Employment**: Full federal workforce snapshot (~780 MB/month CSV, ~30 MB parquet)
 
-All files go into one HF repo, named by their OPM source (e.g. `accessions_202511.parquet`).
+All files go into one HF repo, named by their OPM source and version (e.g. `accessions/accessions_202511_v3.parquet`).
 
 ## Key Files
 
@@ -17,8 +17,11 @@ All files go into one HF repo, named by their OPM source (e.g. `accessions_20251
 - `opm_pipeline/` — Core package: config, scraper, converter, uploader, manifest, differ, reporter
 - `metadata/file_manifest.json` — Tracks what's on OPM site (version, row counts, columns)
 - `.github/workflows/daily_check.yml` — Daily cron at 10 AM ET
-- `analysis/` — Notebooks, bulk download script, web viewer (not part of the pipeline)
-- `send_jan_dec_email.py` — One-off script for manually sending a diff email via Buttondown
+- `.github/workflows/backfill.yml` — Runs every 2 hours to upload historical files until complete
+- `backfill_batch.py` — Backfill script: finds gaps between OPM and HF, uploads newest-first in batches
+- `send_email.py` — Sends Buttondown email; reads `email_body.txt` written by the pipeline
+- `demo.ipynb` — Public demo notebook (Colab-compatible) for exploring the data
+- `analysis/` — Notebooks and scripts (not part of the pipeline)
 
 ## Technical Details
 
@@ -32,10 +35,11 @@ All files go into one HF repo, named by their OPM source (e.g. `accessions_20251
 
 On successful runs with new or updated files, the pipeline sends an email to Buttondown subscribers. Requires a `BUTTONDOWN_API_KEY` secret in GitHub repo settings.
 
-- Subject: `New EHRI data available on OPM: X new files, Y updated files`
-- Body: short plain-text summary linking to HuggingFace
-- "New files" = new month of data; "updated files" = revised version of a previously posted file
+- Subject: `New EHRI data available on OPM: X new months, Y updated files` (truncated to 150 chars)
+- Body: HTML email with per-file diff summary (row counts, top proportional changes by agency/pay_plan), link to GitHub issue
+- "New months" = new calendar month of data (v1 files); "updated" = revised version (v2+) of existing month
 - Failures do NOT trigger emails (only GitHub issues)
+- Email body written to `email_body.txt` by pipeline, read by `send_email.py`
 
 ### Handoff checklist for new owner
 1. Create a Buttondown account at buttondown.email
@@ -50,4 +54,6 @@ On successful runs with new or updated files, the pipeline sends an email to But
 export HF_TOKEN=your_token_here
 python run_daily.py                    # Daily check
 python run_daily.py --rebuild-manifest # Seed manifest from HF
+python run_daily.py --test             # Test mode: January 2026 only, full report/email, no manifest save
+python backfill_batch.py               # One batch of historical backfill
 ```
