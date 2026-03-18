@@ -72,27 +72,7 @@ jobs:
           BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
           EMAIL_SUBJECT: ${{ steps.pipeline.outputs.email_subject }}
           EMAIL_BODY: "New EHRI federal workforce data is available on HuggingFace (https://huggingface.co/datasets/abigailhaddad/opm-federal-workforce). See the GitHub issue in the repository for a full diff report."
-        run: |
-          python3 -c "
-import os, urllib.request, json
-payload = json.dumps({
-    'subject': os.environ['EMAIL_SUBJECT'],
-    'body': os.environ['EMAIL_BODY'],
-    'status': 'about_to_send',
-}).encode()
-req = urllib.request.Request(
-    'https://api.buttondown.email/v1/emails',
-    data=payload,
-    headers={
-        'Authorization': 'Token ' + os.environ['BUTTONDOWN_API_KEY'],
-        'Content-Type': 'application/json',
-        'X-Buttondown-Live-Dangerously': 'true',
-    },
-    method='POST',
-)
-with urllib.request.urlopen(req) as r:
-    print(r.status, r.read().decode())
-"
+        run: python3 send_email.py
 
       - name: Create failure issue with full output
         if: failure()
