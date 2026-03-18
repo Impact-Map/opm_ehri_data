@@ -242,8 +242,9 @@ def generate_email_html(changes: dict, diffs: dict, new_summaries: dict, run_dat
             compared_to = diff.get("compared_to")
             if compared_to:
                 from .config import hf_path_to_card_stem
-                label = hf_path_to_card_stem(compared_to) or compared_to
-                parts.append(f"<p><em>Compared to: {label}</em></p>")
+                human = hf_path_to_card_stem(compared_to) or compared_to
+                filename = compared_to.split("/")[-1]
+                parts.append(f"<p><em>Compared to: {human} ({filename})</em></p>")
             rc = diff.get("row_counts", {})
             if rc:
                 pct = rc['pct_change']
