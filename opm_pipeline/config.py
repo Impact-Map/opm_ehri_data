@@ -35,11 +35,10 @@ _MONTH_NUM = {
 }
 
 
-def card_name_to_hf_path(card_name: str) -> str:
+def card_name_to_hf_path(card_name: str, version: int = 1) -> str:
     """Convert OPM card name to HF repo path.
 
-    'Accessions data from November 2025' -> 'accessions/accessions_202511.parquet'
-    'Accessions data from November 2025.csv' -> 'accessions/accessions_202511.parquet'
+    'Accessions data from November 2025', version=3 -> 'accessions/accessions_202511_v3.parquet'
     """
     import re
     stem = card_name.replace('.csv', '').replace('.txt', '').replace('.parquet', '')
@@ -49,17 +48,17 @@ def card_name_to_hf_path(card_name: str) -> str:
     data_type = m.group(1).lower()
     month_num = _MONTH_NUM[m.group(2)]
     year = m.group(3)
-    return f"{data_type}/{data_type}_{year}{month_num}.parquet"
+    return f"{data_type}/{data_type}_{year}{month_num}_v{version}.parquet"
 
 
 def hf_path_to_date(hf_path: str):
-    """Parse YYYYMM from an HF path like 'accessions/accessions_202511.parquet'.
+    """Parse YYYYMM from an HF path like 'accessions/accessions_202511_v3.parquet'.
 
     Returns a date object (first of that month) or None.
     """
     import re
     from datetime import date
-    m = re.search(r'_(\d{4})(\d{2})\.parquet$', hf_path)
+    m = re.search(r'_(\d{4})(\d{2})(?:_v\d+)?\.parquet$', hf_path)
     if not m:
         return None
     return date(int(m.group(1)), int(m.group(2)), 1)
@@ -69,12 +68,12 @@ _NUM_MONTH = {v: k for k, v in _MONTH_NUM.items()}
 
 
 def hf_path_to_card_stem(hf_path: str):
-    """Reverse of card_name_to_hf_path.
+    """Reverse of card_name_to_hf_path (ignores version).
 
-    'accessions/accessions_202511.parquet' -> 'Accessions data from November 2025'
+    'accessions/accessions_202511_v3.parquet' -> 'Accessions data from November 2025'
     """
     import re
-    m = re.match(r'^(accessions|separations|employment)/\1_(\d{4})(\d{2})\.parquet$', hf_path)
+    m = re.match(r'^(accessions|separations|employment)/\1_(\d{4})(\d{2})(?:_v\d+)?\.parquet$', hf_path)
     if not m:
         return None
     data_type = m.group(1).capitalize()

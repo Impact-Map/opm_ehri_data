@@ -58,6 +58,28 @@ async def get_card_filename(page, card_index: int) -> str:
     return ""
 
 
+async def get_card_version(page, card_index: int) -> int:
+    """Read 'Version: X' from the card's visible text by walking up the DOM."""
+    buttons = page.locator('button[aria-label^="Download options for"]')
+    button = buttons.nth(card_index)
+    try:
+        version_text = await button.evaluate("""el => {
+            let node = el;
+            for (let i = 0; i < 10; i++) {
+                node = node.parentElement;
+                if (!node) break;
+                const match = node.innerText.match(/Version:\\s*(\\d+)/);
+                if (match) return match[1];
+            }
+            return null;
+        }""")
+        if version_text:
+            return int(version_text)
+    except Exception:
+        pass
+    return 1
+
+
 async def download_file_from_card(page, card_index: int, download_dir: Path) -> Path:
     """Download a single file by clicking its download button."""
     buttons = page.locator('button[aria-label^="Download options for"]')
@@ -111,8 +133,10 @@ def parse_opm_date_from_filename(filename: str) -> str:
 async def get_site_manifest(page, data_types: list[str], start_date: str, end_date: str) -> dict:
     """Scan all cards on OPM site without downloading. Returns manifest of what's available.
 
-    Returns dict keyed by filename stem with metadata about each file.
+    Returns dict keyed by versioned HF path (e.g. 'accessions/accessions_202511_v3.parquet').
     """
+    from .config import card_name_to_hf_path
+
     site_manifest = {}
 
     for data_type in data_types:
@@ -137,15 +161,12 @@ async def get_site_manifest(page, data_types: list[str], start_date: str, end_da
                 if not card_filename:
                     continue
 
-                # Key by filename stem (without extension)
-                stem = card_filename.replace('.csv', '').replace('.parquet', '')
-                version = parse_version_from_filename(card_filename)
-                opm_date = parse_opm_date_from_filename(card_filename)
+                version = await get_card_version(page, i)
+                hf_path = card_name_to_hf_path(card_filename, version)
 
-                site_manifest[stem] = {
+                site_manifest[hf_path] = {
                     "filename": card_filename,
                     "version": version,
-                    "opm_date": opm_date,
                     "data_type": data_type.lower(),
                 }
 

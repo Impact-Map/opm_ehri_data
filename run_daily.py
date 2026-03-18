@@ -200,7 +200,7 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
                 site_entry = site_manifest[key]
                 data_type = site_entry["data_type"].capitalize()
                 card_filename = site_entry["filename"]
-                hf_path = card_name_to_hf_path(card_filename)
+                hf_path = key  # key is the versioned HF path (e.g. accessions/accessions_202511_v3.parquet)
 
                 print(f"\nProcessing: {hf_path}")
 

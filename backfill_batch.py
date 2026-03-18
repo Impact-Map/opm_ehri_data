@@ -31,7 +31,7 @@ DOWNLOAD_DIR = Path("data/downloads")
 PARQUET_DIR = Path("data/parquet")
 
 from huggingface_hub import HfApi, CommitOperationAdd
-from opm_pipeline.scraper import setup_page, set_filters, get_card_filename, download_file_from_card
+from opm_pipeline.scraper import setup_page, set_filters, get_card_filename, get_card_version, download_file_from_card
 from opm_pipeline.converter import convert_to_parquet
 from opm_pipeline.config import card_name_to_hf_path
 
@@ -111,9 +111,10 @@ async def backfill_batch():
                         card_name = await get_card_filename(page, i)
                         if not card_name:
                             continue
-                        parquet_name = card_name_to_hf_path(card_name)
+                        version = await get_card_version(page, i)
+                        parquet_name = card_name_to_hf_path(card_name, version)
                         if parquet_name not in existing:
-                            all_cards.append((card_name, data_type))
+                            all_cards.append((card_name, data_type, version))
 
                     next_button = page.locator('button[aria-label="Go to next page"]')
                     if await next_button.is_disabled():
@@ -130,8 +131,8 @@ async def backfill_batch():
                 await browser.close()
                 return
 
-            for name, dtype in all_cards[:10]:
-                print(f"  {card_name_to_hf_path(name)}")
+            for name, dtype, ver in all_cards[:10]:
+                print(f"  {card_name_to_hf_path(name, ver)}")
             if len(all_cards) > 10:
                 print(f"  ... and {len(all_cards) - 10} more")
 
@@ -140,13 +141,13 @@ async def backfill_batch():
             employment_count = 0
             failed = 0
 
-            for card_name, data_type in all_cards:
+            for card_name, data_type, version in all_cards:
                 if len(downloaded) >= BATCH_SIZE:
                     break
                 if data_type == "Employment" and employment_count >= MAX_EMPLOYMENT:
                     continue
 
-                hf_path = card_name_to_hf_path(card_name)
+                hf_path = card_name_to_hf_path(card_name, version)
 
                 print(f"{ts()} [{len(downloaded)+1}/{BATCH_SIZE}] Starting: {hf_path}")
                 try:
