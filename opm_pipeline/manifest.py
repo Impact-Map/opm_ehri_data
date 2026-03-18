@@ -65,15 +65,15 @@ def update_manifest_entry(manifest: dict, repo_name: str, site_entry: dict, meta
 def build_manifest_from_hf(token: str) -> dict:
     """Bootstrap manifest by querying existing files in the single HF repo.
 
-    Only considers subdirectory-format filenames like 'accessions/accessions_202511.parquet'.
+    Reads only the file listing — no downloads needed. The manifest key is
+    the HF path (e.g. 'accessions/accessions_202511_v3.parquet').
     """
-    from huggingface_hub import hf_hub_download, repo_exists, list_repo_files
-    import pandas as pd
+    from huggingface_hub import repo_exists, list_repo_files
     import re
 
-    from .config import HF_REPO, hf_path_to_card_stem
+    from .config import HF_REPO
 
-    HF_PATH_RE = re.compile(r'^(accessions|separations|employment)/\1_\d{6}\.parquet$')
+    HF_PATH_RE = re.compile(r'^(accessions|separations|employment)/\1_(\d{6})(?:_v(\d+))?\.parquet$')
 
     manifest = {}
 
@@ -81,31 +81,18 @@ def build_manifest_from_hf(token: str) -> dict:
         return manifest
 
     files = list_repo_files(HF_REPO, repo_type="dataset", token=token)
-    parquet_files = [f for f in files if HF_PATH_RE.match(f)]
 
-    for filename in parquet_files:
-        card_stem = hf_path_to_card_stem(filename)  # e.g. "Accessions data from November 2025"
-        if not card_stem:
+    for filename in files:
+        m = HF_PATH_RE.match(filename)
+        if not m:
             continue
-        data_type = filename.split('/')[0]           # e.g. accessions
+        data_type = m.group(1)
+        version = int(m.group(3)) if m.group(3) else 0
 
-        try:
-            path = hf_hub_download(repo_id=HF_REPO, filename=filename, repo_type="dataset", token=token)
-            df = pd.read_parquet(path)
-            columns = list(df.columns)
-            row_count = len(df)
-        except Exception:
-            columns = []
-            row_count = 0
-
-        manifest[card_stem] = {
-            "filename": card_stem,
-            "version": 0,
-            "opm_date": "",
+        manifest[filename] = {
+            "filename": filename,
+            "version": version,
             "data_type": data_type,
-            "columns": columns,
-            "row_count": row_count,
-            "file_hash": "",
             "last_updated": datetime.now(timezone.utc).isoformat(),
         }
 

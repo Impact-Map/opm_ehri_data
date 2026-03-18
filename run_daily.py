@@ -87,12 +87,12 @@ def preflight_checks(token: str):
 
 
 def _find_prior_file(data_type: str, current_hf_path: str) -> str | None:
-    """Find the most recent file of the same data type on HF, older than current file.
+    """Find the best comparison file for a new upload.
 
-    Looks in the data_type subdirectory (e.g. 'accessions/') for files like
-    'accessions/accessions_202511.parquet' and returns the one with the highest
-    YYYYMM that's still older than current_hf_path.
+    Prefers a prior version of the same month (e.g. v1 when uploading v2).
+    Falls back to the most recent file from an older month.
     """
+    import re
     from huggingface_hub import list_repo_files
     from opm_pipeline.config import HF_REPO, hf_path_to_date
 
@@ -100,22 +100,38 @@ def _find_prior_file(data_type: str, current_hf_path: str) -> str | None:
     if not current_date:
         return None
 
+    # Parse version from current path
+    ver_match = re.search(r'_v(\d+)\.parquet$', current_hf_path)
+    current_version = int(ver_match.group(1)) if ver_match else 0
+
     prefix = f"{data_type.lower()}/"
     try:
         files = list_repo_files(HF_REPO, repo_type="dataset")
-        candidates = []
+        same_month = []
+        older_month = []
         for f in files:
             if not f.startswith(prefix) or not f.endswith('.parquet'):
                 continue
             if f == current_hf_path:
                 continue
             fdate = hf_path_to_date(f)
-            if fdate and fdate < current_date:
-                candidates.append((fdate, f))
-        if not candidates:
+            if not fdate:
+                continue
+            fver_match = re.search(r'_v(\d+)\.parquet$', f)
+            fver = int(fver_match.group(1)) if fver_match else 0
+            if fdate == current_date and fver < current_version:
+                same_month.append((fver, f))
+            elif fdate < current_date:
+                older_month.append((fdate, fver, f))
+
+        # Prefer highest prior version of same month
+        if same_month:
+            return max(same_month, key=lambda x: x[0])[1]
+        if not older_month:
             return None
-        candidates.sort(key=lambda x: (x[0], x[1]), reverse=True)
-        return candidates[0][1]
+        # Most recent older month, highest version of that month
+        older_month.sort(key=lambda x: (x[0], x[1]), reverse=True)
+        return older_month[0][2]
     except Exception:
         return None
 
