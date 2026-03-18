@@ -220,6 +220,15 @@ async def backfill_batch():
 
     # Step 4: Single commit for all downloaded files
     if downloaded:
+        # Collect column info before cleanup
+        import pyarrow.parquet as pq
+        columns_by_hf_path = {}
+        for parquet_path, hf_path in downloaded:
+            try:
+                columns_by_hf_path[hf_path] = pq.read_schema(str(parquet_path)).names
+            except Exception:
+                columns_by_hf_path[hf_path] = []
+
         print(f"\n{ts()} Committing {len(downloaded)} files to HF...")
         t_commit = time.time()
         api = HfApi()
@@ -248,6 +257,7 @@ async def backfill_batch():
                 "filename": hf_path,
                 "version": version,
                 "data_type": data_type,
+                "columns": columns_by_hf_path.get(hf_path, []),
                 "last_updated": datetime.now(timezone.utc).isoformat(),
             }
         save_manifest(manifest)

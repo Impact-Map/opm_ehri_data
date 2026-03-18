@@ -15,7 +15,7 @@ All files go into one HF repo, named by their OPM source and version (e.g. `acce
 
 - `run_daily.py` — Daily pipeline entry point (what the GitHub Action runs)
 - `opm_pipeline/` — Core package: config, scraper, converter, uploader, manifest, differ, reporter
-- `metadata/file_manifest.json` — Tracks what's on OPM site (version, row counts, columns)
+- `metadata/file_manifest.json` — Tracks what's on OPM site (version, row counts, columns); used for globally-new column detection
 - `.github/workflows/daily_check.yml` — Daily cron at 10 AM ET
 - `.github/workflows/backfill.yml` — Runs every 2 hours to upload historical files until complete
 - `backfill_batch.py` — Backfill script: finds gaps between OPM and HF, uploads newest-first in batches
@@ -38,6 +38,7 @@ On successful runs with new or updated files, the pipeline sends an email to But
 - Subject: `New EHRI data available on OPM: X new months, Y updated files` (truncated to 150 chars)
 - Body: HTML email with per-file diff summary (row counts, top proportional changes by agency/pay_plan), link to GitHub issue
 - "New months" = new calendar month of data (v1 files); "updated" = revised version (v2+) of existing month
+- New/removed columns are reported per file; if OPM retroactively adds a column to prior months, it's flagged as "retroactively added to prior months: Month YYYY–Month YYYY (N months)"
 - Failures do NOT trigger emails (only GitHub issues)
 - Email body written to `email_body.txt` by pipeline, read by `send_email.py`
 
@@ -53,7 +54,7 @@ On successful runs with new or updated files, the pipeline sends an email to But
 ```bash
 export HF_TOKEN=your_token_here
 python run_daily.py                    # Daily check
-python run_daily.py --rebuild-manifest # Seed manifest from HF
+python run_daily.py --rebuild-manifest # Seed manifest from HF (reads parquet schemas via footer, no full download)
 python run_daily.py --test             # Test mode: January 2026 only, full report/email, no manifest save
 python backfill_batch.py               # One batch of historical backfill
 ```
