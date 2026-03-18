@@ -127,8 +127,20 @@ def generate_diff_summary(old_path: Path, new_path: Path) -> dict:
     old_df = pd.read_parquet(old_path)
     new_df = pd.read_parquet(new_path)
 
+    schema = diff_schemas(list(old_df.columns), list(new_df.columns))
+
+    # Top values for newly added columns
+    new_col_summaries = {}
+    for col in schema["added"]:
+        if col not in new_df.columns or new_df[col].dtype != 'object':
+            continue
+        vc = new_df[col].value_counts()
+        if len(vc) <= 200:
+            new_col_summaries[col] = [(str(k), int(v)) for k, v in vc.head(10).items()]
+
     return {
-        "schema": diff_schemas(list(old_df.columns), list(new_df.columns)),
+        "schema": schema,
+        "new_col_summaries": new_col_summaries,
         "row_counts": diff_row_counts(len(old_df), len(new_df)),
         "value_counts": diff_value_counts(old_df, new_df),
     }

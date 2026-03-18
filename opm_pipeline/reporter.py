@@ -26,62 +26,59 @@ def _render_diff(key: str, diff: dict, lines: list):
     # Row count
     rc = diff.get("row_counts", {})
     if rc:
-        lines.append(f"**Rows:** {_fmt(rc['old'])} -> {_fmt(rc['new'])} ({_sign(rc['diff'])}, {_sign(rc['pct_change'])}%)")
+        lines.append(f"**Rows:** {_fmt(rc['old'])} → {_fmt(rc['new'])} ({_sign(rc['diff'])}, {_sign(rc['pct_change'])}%)")
         lines.append("")
 
     # Schema changes
     schema = diff.get("schema", {})
-    if schema.get("added") or schema.get("removed"):
-        lines.append("**Schema changes:**")
-        if schema.get("added"):
-            lines.append(f"- Columns added: {', '.join(f'`{c}`' for c in schema['added'])}")
-        if schema.get("removed"):
-            lines.append(f"- Columns removed: {', '.join(f'`{c}`' for c in schema['removed'])}")
+    new_col_summaries = diff.get("new_col_summaries", {})
+    if schema.get("added"):
+        lines.append(f"**New columns:** {', '.join(f'`{c}`' for c in schema['added'])}")
+        for col in schema["added"]:
+            if col in new_col_summaries:
+                top = ", ".join(f"`{v}` ({_fmt(n)})" for v, n in new_col_summaries[col][:5])
+                lines.append(f"  - `{col}` top values: {top}")
+        lines.append("")
+    if schema.get("removed"):
+        lines.append(f"**Removed columns:** {', '.join(f'`{c}`' for c in schema['removed'])}")
         lines.append("")
 
-    # Value count changes
+    # Top 5 columns by change magnitude — gains and losses
     vc = diff.get("value_counts", {})
     if vc:
-        # Overview table
-        lines.append("| Column | Values Changed | New Values | Removed Values | Largest Shift |")
-        lines.append("|--------|---------------|------------|----------------|---------------|")
-        for col, info in vc.items():
-            n_changed = info["total_values_changed"]
+        top_cols = list(vc.items())[:5]
+        for col, info in top_cols:
+            changes = info["value_changes"]
+            gains = [e for e in changes if e["diff"] > 0][:5]
+            losses = [e for e in changes if e["diff"] < 0][:5]
             n_new = len(info["new_values"])
             n_removed = len(info["removed_values"])
-            biggest = info["value_changes"][0] if info["value_changes"] else None
-            biggest_str = f"`{biggest['value']}` ({_sign(biggest['diff'])})" if biggest else "-"
-            lines.append(f"| `{col}` | {n_changed} | {n_new} | {n_removed} | {biggest_str} |")
-        lines.append("")
 
-        # Expandable detail per column
-        for col, info in vc.items():
-            changes_list = info["value_changes"]
-            lines.append(f"<details><summary><code>{col}</code> - {info['total_values_changed']} values changed</summary>")
+            summary_parts = [f"{info['total_values_changed']} values changed"]
+            if n_new:
+                summary_parts.append(f"{n_new} new")
+            if n_removed:
+                summary_parts.append(f"{n_removed} removed")
+
+            lines.append(f"<details><summary><code>{col}</code> — {', '.join(summary_parts)}</summary>")
             lines.append("")
-
-            if info["new_values"]:
-                lines.append(f"**New values:** {', '.join(f'`{v}`' for v in info['new_values'][:20])}")
-                lines.append("")
-
-            if info["removed_values"]:
-                lines.append(f"**Removed values:** {', '.join(f'`{v}`' for v in info['removed_values'][:20])}")
-                lines.append("")
-
-            lines.append("| Value | Old Count | New Count | Change |")
-            lines.append("|-------|-----------|-----------|--------|")
-            for entry in changes_list:
-                lines.append(
-                    f"| `{entry['value']}` "
-                    f"| {_fmt(entry['old_count'])} "
-                    f"| {_fmt(entry['new_count'])} "
-                    f"| {_sign(entry['diff'])} |"
-                )
+            lines.append("| Biggest gains | | Biggest losses | |")
+            lines.append("|---|---|---|---|")
+            for i in range(max(len(gains), len(losses))):
+                g = gains[i] if i < len(gains) else None
+                l = losses[i] if i < len(losses) else None
+                g_str = f"`{g['value']}` | {_sign(g['diff'])}" if g else " | "
+                l_str = f"`{l['value']}` | {_sign(l['diff'])}" if l else " | "
+                lines.append(f"| {g_str} | {l_str} |")
             lines.append("")
             lines.append("</details>")
             lines.append("")
 
-    if not vc and not (schema.get("added") or schema.get("removed")) and not rc:
+        if len(vc) > 5:
+            lines.append(f"*{len(vc) - 5} more columns with changes not shown.*")
+            lines.append("")
+
+    if not vc and not schema.get("added") and not schema.get("removed") and not rc:
         lines.append("No significant changes detected.")
         lines.append("")
 
@@ -168,19 +165,27 @@ def generate_report(changes: dict, diffs: dict, new_summaries: dict, run_date: d
     lines.append("---")
     lines.append("")
 
-    # --- Each file ---
+    # --- Each file — cap per-file budget so large batches still fit in 65k ---
     all_keys = changes["new"] + changes["updated"]
+    char_budget = 60000 // max(len(all_keys), 1)
+
     for key in all_keys:
         lines.append(f"### `{key}`")
         lines.append("")
 
+        file_lines: list[str] = []
         if key in diffs:
-            _render_diff(key, diffs[key], lines)
+            _render_diff(key, diffs[key], file_lines)
         elif key in new_summaries:
-            _render_new_summary(key, new_summaries[key], lines)
+            _render_new_summary(key, new_summaries[key], file_lines)
         else:
-            lines.append("No data available.")
-            lines.append("")
+            file_lines.append("No data available.")
+            file_lines.append("")
+
+        section = "\n".join(file_lines)
+        if len(section) > char_budget:
+            section = section[:char_budget] + f"\n\n*(section truncated)*"
+        lines.append(section)
 
     return "\n".join(lines)
 

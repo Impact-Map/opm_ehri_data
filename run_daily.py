@@ -333,7 +333,17 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
 
     today = date.today()
     n_success = len(changed_keys) - len(failed_files)
-    title = f"EHRI Data Update - {today.isoformat()} ({len(changes['new'])} new, {len(changes['updated'])} updated"
+    from opm_pipeline.reporter import _is_version_update
+    new_months = [k for k in changes["new"] if not _is_version_update(k)]
+    new_versions = [k for k in changes["new"] if _is_version_update(k)]
+    title_parts = []
+    if new_months:
+        title_parts.append(f"{len(new_months)} new month{'s' if len(new_months) > 1 else ''}")
+    if new_versions:
+        title_parts.append(f"{len(new_versions)} updated version{'s' if len(new_versions) > 1 else ''}")
+    if changes["updated"]:
+        title_parts.append(f"{len(changes['updated'])} updated")
+    title = f"EHRI Data Update - {today.isoformat()} ({', '.join(title_parts)}"
     if failed_files:
         title += f", {len(failed_files)} failed"
     title += ")"
