@@ -89,7 +89,7 @@ async def backfill_batch():
 
             for data_type in ["Accessions", "Separations", "Employment"]:
                 print(f"{ts()} Scanning OPM for {data_type}...")
-                total = await set_filters(page, data_type, "2015-01-01", "2030-12-31")
+                total = await set_filters(page, data_type, "2000-01-01", "2030-12-31")
                 if total == 0:
                     print(f"{ts()} {data_type}: no files found")
                     continue
@@ -152,7 +152,7 @@ async def backfill_batch():
                 print(f"{ts()} [{len(downloaded)+1}/{BATCH_SIZE}] Starting: {hf_path}")
                 try:
                     print(f"{ts()}   Setting filters for {data_type}...")
-                    total = await set_filters(page, data_type, "2015-01-01", "2030-12-31")
+                    total = await set_filters(page, data_type, "2000-01-01", "2030-12-31")
                     if total == 0:
                         print(f"{ts()}   SKIPPED: no files after filter")
                         failed += 1

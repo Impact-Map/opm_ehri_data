@@ -14,7 +14,7 @@ OPM_URL = "https://data.opm.gov/explore-data/data/data-downloads"
 
 DATA_TYPES = ["Accessions", "Separations", "Employment"]
 
-START_DATE = "2015-01-01"
+START_DATE = "2000-01-01"
 END_DATE = "2026-12-31"
 
 DOWNLOAD_DIR = Path("data/downloads")
