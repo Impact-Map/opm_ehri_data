@@ -65,10 +65,11 @@ def update_manifest_entry(manifest: dict, repo_name: str, site_entry: dict, meta
 def build_manifest_from_hf(token: str) -> dict:
     """Bootstrap manifest by querying existing files in the single HF repo.
 
-    Reads only the file listing — no downloads needed. The manifest key is
-    the HF path (e.g. 'accessions/accessions_202511_v3.parquet').
+    Reads parquet schema (footer only, ~KB per file) to populate column info.
+    The manifest key is the HF path (e.g. 'accessions/accessions_202511_v3.parquet').
     """
-    from huggingface_hub import repo_exists, list_repo_files
+    from huggingface_hub import repo_exists, list_repo_files, HfFileSystem
+    import pyarrow.parquet as pq
     import re
 
     from .config import HF_REPO
@@ -80,7 +81,8 @@ def build_manifest_from_hf(token: str) -> dict:
     if not repo_exists(HF_REPO, repo_type="dataset", token=token):
         return manifest
 
-    files = list_repo_files(HF_REPO, repo_type="dataset", token=token)
+    files = list(list_repo_files(HF_REPO, repo_type="dataset", token=token))
+    fs = HfFileSystem(token=token)
 
     for filename in files:
         m = HF_PATH_RE.match(filename)
@@ -89,10 +91,18 @@ def build_manifest_from_hf(token: str) -> dict:
         data_type = m.group(1)
         version = int(m.group(3)) if m.group(3) else 0
 
+        columns = []
+        try:
+            schema = pq.read_schema(f"datasets/{HF_REPO}/{filename}", filesystem=fs)
+            columns = schema.names
+        except Exception as e:
+            print(f"  Warning: could not read schema for {filename}: {e}")
+
         manifest[filename] = {
             "filename": filename,
             "version": version,
             "data_type": data_type,
+            "columns": columns,
             "last_updated": datetime.now(timezone.utc).isoformat(),
         }
 

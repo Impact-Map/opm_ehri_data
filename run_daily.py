@@ -29,7 +29,7 @@ class PipelineError(Exception):
         self.fix = fix
 
 
-def preflight_checks(token: str):
+def preflight_checks(token: str, need_playwright: bool = True):
     """Validate environment before doing any real work. Fails fast with clear messages."""
 
     # 1. HF token
@@ -57,15 +57,16 @@ def preflight_checks(token: str):
             "write access, and update the HF_TOKEN secret in GitHub repo settings."
         )
 
-    # 3. Playwright is installed
-    try:
-        from playwright.async_api import async_playwright  # noqa: F401
-    except ImportError:
-        raise PipelineError(
-            "Playwright is not installed",
-            "The playwright Python package is missing.",
-            "Run: pip install playwright && playwright install chromium"
-        )
+    # 3. Playwright is installed (not needed for --rebuild-manifest)
+    if need_playwright:
+        try:
+            from playwright.async_api import async_playwright  # noqa: F401
+        except ImportError:
+            raise PipelineError(
+                "Playwright is not installed",
+                "The playwright Python package is missing.",
+                "Run: pip install playwright && playwright install chromium"
+            )
 
     # 4. Manifest file is valid JSON (if it exists)
     from opm_pipeline.config import MANIFEST_PATH
@@ -164,10 +165,6 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
         start_date = "2026-01-01"
         end_date = "2026-01-31"
         stored_manifest = {}  # pretend manifest is empty so all files appear new
-        # Don't save manifest in test mode — override save_manifest to a no-op
-        from opm_pipeline import manifest as _manifest_mod
-        _real_save = _manifest_mod.save_manifest
-        _manifest_mod.save_manifest = lambda *a, **kw: print("TEST MODE: skipping manifest save")
 
     # Step 2: Scrape OPM site for current file listing
     print("Scanning OPM site...")
@@ -286,16 +283,22 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
                                 # stored manifest for the comparison file. Catches the case
                                 # where OPM adds a column to ALL files at once so both old
                                 # and new parquets have it and schema diff shows nothing.
-                                prior_key = compare_label if compare_label in stored_manifest else None
+                                # For updated files, the manifest key IS the current key.
+                                # For new files, compare_label is the actual prior HF path.
+                                if key in changes["updated"]:
+                                    prior_key = key if key in stored_manifest else None
+                                else:
+                                    prior_key = compare_label if compare_label in stored_manifest else None
                                 if prior_key:
                                     stored_cols = set(stored_manifest[prior_key].get("columns", []))
-                                    import pandas as _pd
-                                    new_cols = set(_pd.read_parquet(parquet_path).columns)
-                                    already_flagged = set(diff["schema"].get("added", []))
-                                    globally_new = sorted(new_cols - stored_cols - already_flagged)
-                                    if globally_new:
-                                        diff["globally_new_columns"] = globally_new
-                                        print(f"  Globally new columns detected: {globally_new}")
+                                    if stored_cols:  # Skip if no column data (e.g. manifest rebuilt without downloading)
+                                        import pandas as _pd
+                                        new_cols = set(_pd.read_parquet(parquet_path).columns)
+                                        already_flagged = set(diff["schema"].get("added", []))
+                                        globally_new = sorted(new_cols - stored_cols - already_flagged)
+                                        if globally_new:
+                                            diff["globally_new_columns"] = globally_new
+                                            print(f"  Globally new columns detected: {globally_new}")
 
                                 diffs[key] = diff
                             else:
@@ -343,8 +346,11 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
             await browser.close()
 
     # Step 5: Save manifest (even if some files failed — save what we got)
-    save_manifest(stored_manifest)
-    print(f"\nManifest saved with {len(stored_manifest)} entries")
+    if test:
+        print("\nTEST MODE: skipping manifest save")
+    else:
+        save_manifest(stored_manifest)
+        print(f"\nManifest saved with {len(stored_manifest)} entries")
 
     # Step 6: Generate report and create issue
     report = generate_report(changes, diffs, new_summaries)
@@ -474,7 +480,7 @@ async def main():
     args = parser.parse_args()
 
     try:
-        preflight_checks(args.token)
+        preflight_checks(args.token, need_playwright=not args.rebuild_manifest)
         await run_daily(args.token, args.types, args.start, args.end, args.rebuild_manifest, args.dry_run, args.test)
     except PipelineError as e:
         print(f"\nPIPELINE ERROR: {e}")
