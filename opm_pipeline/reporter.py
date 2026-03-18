@@ -190,6 +190,67 @@ def generate_report(changes: dict, diffs: dict, new_summaries: dict, run_date: d
     return "\n".join(lines)
 
 
+def _top_proportional_changes(vc: dict, n: int = 4, min_old: int = 100) -> list:
+    """Return top N value changes by proportional shift, deduplicating code/label column pairs."""
+    label_cols = {c for c in vc if not c.endswith("_code")}
+    skip = {c for c in vc if c.endswith("_code") and c[:-5] in label_cols}
+    date_keywords = ("date", "yyyymm", "yyyyq", "year", "month")
+
+    candidates = []
+    for col, info in vc.items():
+        if col in skip:
+            continue
+        if any(kw in col.lower() for kw in date_keywords):
+            continue
+        for v in info["value_changes"]:
+            if v["old_count"] < min_old:
+                continue
+            prop = v["diff"] / v["old_count"] * 100
+            candidates.append((abs(prop), prop, col, v))
+
+    candidates.sort(reverse=True)
+    return candidates[:n]
+
+
+def generate_email_html(changes: dict, diffs: dict, new_summaries: dict, run_date: date = None) -> str:
+    """Generate HTML email body matching the send_jan_dec_email.py format."""
+    if run_date is None:
+        run_date = date.today()
+
+    month_year = run_date.strftime("%B %Y")
+    parts = [f"<h2>EHRI Data Update: {month_year}</h2>"]
+
+    for key in changes["new"] + changes["updated"]:
+        dtype = key.split("/")[0].capitalize()
+        parts.append(f"<h3>{dtype}</h3>")
+
+        if key in diffs:
+            diff = diffs[key]
+            rc = diff.get("row_counts", {})
+            if rc:
+                pct = rc['pct_change']
+                pct_str = f"+{pct:.2f}%" if pct >= 0 else f"{pct:.2f}%"
+                parts.append(
+                    f"<p><strong>Total records:</strong> {_fmt(rc['old'])} → {_fmt(rc['new'])} "
+                    f"({_sign(rc['diff'])}, {pct_str})</p>"
+                )
+            top = _top_proportional_changes(diff.get("value_counts", {}))
+            if top:
+                parts.append("<ul>")
+                for _, prop, col, v in top:
+                    prop_str = f"+{prop:.0f}%" if prop >= 0 else f"{prop:.0f}%"
+                    parts.append(
+                        f"<li><strong>{col} — {v['value']}</strong>: "
+                        f"{prop_str} ({_fmt(v['old_count'])} → {_fmt(v['new_count'])})</li>"
+                    )
+                parts.append("</ul>")
+        elif key in new_summaries:
+            s = new_summaries[key]
+            parts.append(f"<p>New file — {_fmt(s.get('row_count', 0))} rows.</p>")
+
+    return "\n".join(parts)
+
+
 def create_github_issue(title: str, body: str) -> str | None:
     """Create a GitHub issue using `gh` CLI. Returns issue URL or None on failure."""
     # GitHub issue body limit is 65536 chars

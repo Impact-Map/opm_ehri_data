@@ -145,7 +145,7 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
     from opm_pipeline.uploader import upload_to_huggingface, download_existing_parquet
     from opm_pipeline.manifest import load_manifest, save_manifest, compare_manifests, update_manifest_entry
     from opm_pipeline.differ import generate_diff_summary, summarize_new_file
-    from opm_pipeline.reporter import generate_report
+    from opm_pipeline.reporter import generate_report, generate_email_html
 
     # Step 1: Load or rebuild manifest
     if rebuild_manifest:
@@ -361,6 +361,13 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
     issue_url = create_github_issue(title, report)
     if issue_url:
         print(f"\nGitHub Issue: {issue_url}")
+
+    # Write HTML email body
+    email_html = generate_email_html(changes, diffs, new_summaries, today)
+    if issue_url:
+        email_html += f"\n<p><a href='{issue_url}'>Full diff report</a></p>"
+    with open("email_body.txt", "w") as f:
+        f.write(email_html)
 
     # Fail the run if any files failed, so the Action shows red
     if failed_files:
