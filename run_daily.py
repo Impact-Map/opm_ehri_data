@@ -203,6 +203,7 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
                 if changes["updated"]:
                     parts.append(f"{len(changes['updated'])} updated files")
                 email_subject = f"New EHRI data available on OPM: {', '.join(parts)}"
+                email_subject = email_subject[:150]  # Buttondown subject line limit
                 with open(github_output, "a") as _gho:
                     _gho.write(f"new_count={len(changes['new'])}\n")
                     _gho.write(f"updated_count={len(changes['updated'])}\n")
