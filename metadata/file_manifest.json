@@ -73,7 +73,7 @@
     ],
     "row_count": 16838,
     "file_hash": "56ea5589c805a08b",
-    "last_updated": "2026-03-18T12:03:03.482790+00:00"
+    "last_updated": "2026-03-18T12:11:02.663266+00:00"
   },
   "separations/separations_202601_v1.parquet": {
     "filename": "Separations data from January 2026",
@@ -150,7 +150,7 @@
     ],
     "row_count": 39630,
     "file_hash": "7a75fed1129d8388",
-    "last_updated": "2026-03-18T12:03:14.009270+00:00"
+    "last_updated": "2026-03-18T12:11:13.170944+00:00"
   },
   "employment/employment_202601_v1.parquet": {
     "filename": "Employment data from January 2026",
@@ -223,6 +223,6 @@
     ],
     "row_count": 2035344,
     "file_hash": "49b2fa20a81b8ad4",
-    "last_updated": "2026-03-18T12:04:42.696438+00:00"
+    "last_updated": "2026-03-18T12:12:43.160411+00:00"
   }
 }
