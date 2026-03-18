@@ -253,6 +253,13 @@ def generate_email_html(changes: dict, diffs: dict, new_summaries: dict, run_dat
                     f"<p><strong>Total records:</strong> {_fmt(rc['old'])} → {_fmt(rc['new'])} "
                     f"({_sign(rc['diff'])}, {pct_str})</p>"
                 )
+            schema = diff.get("schema", {})
+            if schema.get("added"):
+                cols = ", ".join(f"<code>{c}</code>" for c in schema["added"])
+                parts.append(f"<p><strong>New columns:</strong> {cols}</p>")
+            if schema.get("removed"):
+                cols = ", ".join(f"<code>{c}</code>" for c in schema["removed"])
+                parts.append(f"<p><strong>Removed columns:</strong> {cols}</p>")
             top = _top_proportional_changes(diff.get("value_counts", {}))
             if top:
                 parts.append("<ul>")
