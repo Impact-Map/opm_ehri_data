@@ -130,7 +130,7 @@ def generate_report(changes: dict, diffs: dict, new_summaries: dict, run_date: d
     lines = []
 
     # --- Summary ---
-    lines.append(f"## OPM Data Pipeline Report - {run_date.isoformat()}")
+    lines.append(f"## EHRI Data Pipeline Report - {run_date.isoformat()}")
     lines.append("")
 
     if changes["new"] and changes["updated"]:

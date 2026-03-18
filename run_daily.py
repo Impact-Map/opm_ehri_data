@@ -167,6 +167,22 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
             changes = compare_manifests(stored_manifest, site_manifest)
             print(f"New: {len(changes['new'])}, Updated: {len(changes['updated'])}, Unchanged: {len(changes['unchanged'])}")
 
+            # Emit step outputs for downstream workflow steps (e.g. email notification)
+            github_output = os.environ.get("GITHUB_OUTPUT")
+            if github_output:
+                has_changes = "true" if (changes["new"] or changes["updated"]) else "false"
+                parts = []
+                if changes["new"]:
+                    parts.append(f"{len(changes['new'])} new files")
+                if changes["updated"]:
+                    parts.append(f"{len(changes['updated'])} updated files")
+                email_subject = f"New EHRI data available on OPM: {', '.join(parts)}"
+                with open(github_output, "a") as _gho:
+                    _gho.write(f"new_count={len(changes['new'])}\n")
+                    _gho.write(f"updated_count={len(changes['updated'])}\n")
+                    _gho.write(f"has_changes={has_changes}\n")
+                    _gho.write(f"email_subject={email_subject}\n")
+
             if not changes["new"] and not changes["updated"]:
                 print("No changes detected. Exiting.")
                 return
@@ -301,7 +317,7 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
 
     today = date.today()
     n_success = len(changed_keys) - len(failed_files)
-    title = f"OPM Data Update - {today.isoformat()} ({len(changes['new'])} new, {len(changes['updated'])} updated"
+    title = f"EHRI Data Update - {today.isoformat()} ({len(changes['new'])} new, {len(changes['updated'])} updated"
     if failed_files:
         title += f", {len(failed_files)} failed"
     title += ")"
