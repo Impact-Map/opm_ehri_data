@@ -127,3 +127,4 @@ with urllib.request.urlopen(req) as r:
 
           TITLE="Pipeline FAILED - $(date -u +%Y-%m-%d)"
           echo "$BODY" | gh issue create --title "$TITLE" --body-file -
+
