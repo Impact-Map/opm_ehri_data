@@ -281,6 +281,22 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
                             if old_parquet_path:
                                 diff = generate_diff_summary(old_parquet_path, parquet_path)
                                 diff["compared_to"] = compare_label
+
+                                # Detect globally-new columns: in new file but not in
+                                # stored manifest for the comparison file. Catches the case
+                                # where OPM adds a column to ALL files at once so both old
+                                # and new parquets have it and schema diff shows nothing.
+                                prior_key = compare_label if compare_label in stored_manifest else None
+                                if prior_key:
+                                    stored_cols = set(stored_manifest[prior_key].get("columns", []))
+                                    import pandas as _pd
+                                    new_cols = set(_pd.read_parquet(parquet_path).columns)
+                                    already_flagged = set(diff["schema"].get("added", []))
+                                    globally_new = sorted(new_cols - stored_cols - already_flagged)
+                                    if globally_new:
+                                        diff["globally_new_columns"] = globally_new
+                                        print(f"  Globally new columns detected: {globally_new}")
+
                                 diffs[key] = diff
                             else:
                                 # No prior file at all — first ever upload of this type

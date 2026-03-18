@@ -32,6 +32,10 @@ def _render_diff(key: str, diff: dict, lines: list):
     # Schema changes
     schema = diff.get("schema", {})
     new_col_summaries = diff.get("new_col_summaries", {})
+    globally_new = diff.get("globally_new_columns", [])
+    if globally_new:
+        lines.append(f"**New columns (added to all files simultaneously):** {', '.join(f'`{c}`' for c in globally_new)}")
+        lines.append("")
     if schema.get("added"):
         lines.append(f"**New columns:** {', '.join(f'`{c}`' for c in schema['added'])}")
         for col in schema["added"]:
@@ -260,6 +264,9 @@ def generate_email_html(changes: dict, diffs: dict, new_summaries: dict, run_dat
             if schema.get("removed"):
                 cols = ", ".join(f"<code>{c}</code>" for c in schema["removed"])
                 parts.append(f"<p><strong>Removed columns:</strong> {cols}</p>")
+            if diff.get("globally_new_columns"):
+                cols = ", ".join(f"<code>{c}</code>" for c in diff["globally_new_columns"])
+                parts.append(f"<p><strong>New columns (added to all files):</strong> {cols}</p>")
             top = _top_proportional_changes(diff.get("value_counts", {}))
             if top:
                 parts.append("<ul>")
