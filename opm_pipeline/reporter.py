@@ -239,6 +239,11 @@ def generate_email_html(changes: dict, diffs: dict, new_summaries: dict, run_dat
 
         if key in diffs:
             diff = diffs[key]
+            compared_to = diff.get("compared_to")
+            if compared_to:
+                from .config import hf_path_to_card_stem
+                label = hf_path_to_card_stem(compared_to) or compared_to
+                parts.append(f"<p><em>Compared to: {label}</em></p>")
             rc = diff.get("row_counts", {})
             if rc:
                 pct = rc['pct_change']
