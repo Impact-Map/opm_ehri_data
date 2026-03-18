@@ -217,8 +217,14 @@ def generate_email_html(changes: dict, diffs: dict, new_summaries: dict, run_dat
     if run_date is None:
         run_date = date.today()
 
-    month_year = run_date.strftime("%B %Y")
-    parts = [f"<h2>EHRI Data Update: {month_year}</h2>"]
+    from .config import hf_path_to_date
+    all_keys = changes["new"] + changes["updated"]
+    data_dates = [hf_path_to_date(k) for k in all_keys if hf_path_to_date(k)]
+    if data_dates:
+        data_month = max(data_dates).strftime("%B %Y")
+    else:
+        data_month = run_date.strftime("%B %Y")
+    parts = [f"<h2>EHRI Data Update: {data_month}</h2>"]
 
     for key in changes["new"] + changes["updated"]:
         dtype = key.split("/")[0].capitalize()
