@@ -4,7 +4,7 @@ import json
 import urllib.request
 import sys
 
-api_key = os.environ.get("BUTTONDOWN_API_KEY", "")
+api_key = os.environ.get("BUTTONDOWN_API_KEY", "").strip()
 subject = os.environ.get("EMAIL_SUBJECT", "")
 body = os.environ.get("EMAIL_BODY", "")
 
