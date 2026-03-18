@@ -298,7 +298,21 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
                                         globally_new = sorted(new_cols - stored_cols - already_flagged)
                                         if globally_new:
                                             diff["globally_new_columns"] = globally_new
-                                            print(f"  Globally new columns detected: {globally_new}")
+                                            # Find which prior months of this data type also lack these columns
+                                            from opm_pipeline.config import hf_path_to_date as _hfdate
+                                            dtype = site_entry["data_type"]
+                                            affected_dates = {
+                                                _hfdate(mk)
+                                                for mk, mv in stored_manifest.items()
+                                                if mv.get("data_type") == dtype
+                                                and mk != key
+                                                and mv.get("columns")
+                                                and any(c not in mv["columns"] for c in globally_new)
+                                                and _hfdate(mk)
+                                            }
+                                            affected = [d.strftime("%B %Y") for d in sorted(affected_dates)]
+                                            diff["globally_new_affected_months"] = affected
+                                            print(f"  Globally new columns detected: {globally_new} (affects {len(affected)} prior months)")
 
                                 diffs[key] = diff
                             else:

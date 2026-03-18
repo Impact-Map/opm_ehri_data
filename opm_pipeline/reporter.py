@@ -16,6 +16,17 @@ def _sign(n: int | float) -> str:
     return f"+{n:,}" if n >= 0 else f"{n:,}"
 
 
+def _fmt_month_range(months: list[str]) -> str:
+    """Format a list of 'Month YYYY' strings as a compact range or enumeration."""
+    if not months:
+        return ""
+    if len(months) == 1:
+        return months[0]
+    if len(months) <= 4:
+        return ", ".join(months)
+    return f"{months[0]}–{months[-1]} ({len(months)} months)"
+
+
 def _render_diff(key: str, diff: dict, lines: list):
     """Render a diff section for one file."""
     compared_to = diff.get("compared_to")
@@ -34,7 +45,12 @@ def _render_diff(key: str, diff: dict, lines: list):
     new_col_summaries = diff.get("new_col_summaries", {})
     globally_new = diff.get("globally_new_columns", [])
     if globally_new:
-        lines.append(f"**New columns (added to all files simultaneously):** {', '.join(f'`{c}`' for c in globally_new)}")
+        affected = diff.get("globally_new_affected_months", [])
+        if affected:
+            month_str = _fmt_month_range(affected)
+            lines.append(f"**New columns (retroactively added to prior months: {month_str}):** {', '.join(f'`{c}`' for c in globally_new)}")
+        else:
+            lines.append(f"**New columns (retroactively added to prior months):** {', '.join(f'`{c}`' for c in globally_new)}")
         lines.append("")
     if schema.get("added"):
         lines.append(f"**New columns:** {', '.join(f'`{c}`' for c in schema['added'])}")
@@ -266,7 +282,12 @@ def generate_email_html(changes: dict, diffs: dict, new_summaries: dict, run_dat
                 parts.append(f"<p><strong>Removed columns:</strong> {cols}</p>")
             if diff.get("globally_new_columns"):
                 cols = ", ".join(f"<code>{c}</code>" for c in diff["globally_new_columns"])
-                parts.append(f"<p><strong>New columns (added to all files):</strong> {cols}</p>")
+                affected = diff.get("globally_new_affected_months", [])
+                if affected:
+                    month_str = _fmt_month_range(affected)
+                    parts.append(f"<p><strong>New columns (retroactively added to prior months: {month_str}):</strong> {cols}</p>")
+                else:
+                    parts.append(f"<p><strong>New columns (retroactively added to prior months):</strong> {cols}</p>")
             top = _top_proportional_changes(diff.get("value_counts", {}))
             if top:
                 parts.append("<ul>")
