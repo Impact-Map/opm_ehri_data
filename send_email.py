@@ -6,7 +6,11 @@ import sys
 
 api_key = os.environ.get("BUTTONDOWN_API_KEY", "").strip()
 subject = os.environ.get("EMAIL_SUBJECT", "")
-body = os.environ.get("EMAIL_BODY", "")
+if os.path.exists("email_body.txt"):
+    with open("email_body.txt") as f:
+        body = f.read()
+else:
+    body = os.environ.get("EMAIL_BODY", "")
 
 if not api_key:
     print("ERROR: BUTTONDOWN_API_KEY not set")
