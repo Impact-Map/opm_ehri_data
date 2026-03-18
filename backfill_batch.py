@@ -234,6 +234,25 @@ async def backfill_batch():
             parquet_path.unlink(missing_ok=True)
         print(f"{ts()} Commit done in {time.time()-t_commit:.0f}s")
 
+    # Update local manifest with newly uploaded files
+    if downloaded:
+        from opm_pipeline.manifest import load_manifest, save_manifest
+        from datetime import datetime, timezone
+        manifest = load_manifest()
+        import re as _re
+        for _, hf_path in downloaded:
+            m = _re.search(r'_v(\d+)\.parquet$', hf_path)
+            version = int(m.group(1)) if m else 1
+            data_type = hf_path.split('/')[0]
+            manifest[hf_path] = {
+                "filename": hf_path,
+                "version": version,
+                "data_type": data_type,
+                "last_updated": datetime.now(timezone.utc).isoformat(),
+            }
+        save_manifest(manifest)
+        print(f"{ts()} Manifest updated with {len(downloaded)} new entries")
+
     total_on_hf = len(existing) + len(downloaded)
     print(f"\n{ts()} Done: {len(downloaded)} uploaded, {failed} failed, {total_on_hf} total on HF")
 

@@ -119,6 +119,13 @@ def _render_new_summary(key: str, summary: dict, lines: list):
         lines.append("")
 
 
+def _is_version_update(hf_path: str) -> bool:
+    """True if this is a new version of an existing month (v2+), not a brand-new month."""
+    import re
+    m = re.search(r'_v(\d+)\.parquet$', hf_path)
+    return bool(m and int(m.group(1)) > 1)
+
+
 def generate_report(changes: dict, diffs: dict, new_summaries: dict, run_date: date = None) -> str:
     """Generate a markdown report of pipeline changes.
 
@@ -129,20 +136,30 @@ def generate_report(changes: dict, diffs: dict, new_summaries: dict, run_date: d
 
     lines = []
 
+    # Split "new" into new months (v1) vs new versions (v2+)
+    new_months = [k for k in changes["new"] if not _is_version_update(k)]
+    new_versions = [k for k in changes["new"] if _is_version_update(k)]
+
     # --- Summary ---
     lines.append(f"## EHRI Data Pipeline Report - {run_date.isoformat()}")
     lines.append("")
 
-    if changes["new"] and changes["updated"]:
-        lines.append(f"**{len(changes['new'])} new** and **{len(changes['updated'])} updated** files processed.")
-    elif changes["new"]:
-        lines.append(f"**{len(changes['new'])} new** files processed.")
-    elif changes["updated"]:
-        lines.append(f"**{len(changes['updated'])} updated** files processed.")
-    lines.append("")
+    parts = []
+    if new_months:
+        parts.append(f"**{len(new_months)} new month{'s' if len(new_months) > 1 else ''}**")
+    if new_versions:
+        parts.append(f"**{len(new_versions)} updated version{'s' if len(new_versions) > 1 else ''}**")
+    if changes["updated"]:
+        parts.append(f"**{len(changes['updated'])} updated**")
+    if parts:
+        lines.append(f"{', '.join(parts)} processed.")
+        lines.append("")
 
-    if changes["new"]:
-        lines.append(f"**New:** {', '.join(f'`{k}`' for k in changes['new'])}")
+    if new_months:
+        lines.append(f"**New months:** {', '.join(f'`{k}`' for k in new_months)}")
+        lines.append("")
+    if new_versions:
+        lines.append(f"**New versions:** {', '.join(f'`{k}`' for k in new_versions)}")
         lines.append("")
     if changes["updated"]:
         lines.append(f"**Updated:** {', '.join(f'`{k}`' for k in changes['updated'])}")
@@ -170,6 +187,9 @@ def generate_report(changes: dict, diffs: dict, new_summaries: dict, run_date: d
 
 def create_github_issue(title: str, body: str) -> str | None:
     """Create a GitHub issue using `gh` CLI. Returns issue URL or None on failure."""
+    # GitHub issue body limit is 65536 chars
+    if len(body) > 65000:
+        body = body[:65000] + "\n\n*(report truncated — see Actions log for full output)*"
     try:
         result = subprocess.run(
             ["gh", "issue", "create", "--title", title, "--body-file", "-"],

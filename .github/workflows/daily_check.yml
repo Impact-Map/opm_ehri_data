@@ -68,7 +68,7 @@ jobs:
             -H "Authorization: Token ${BUTTONDOWN_API_KEY}" \
             -H "Content-Type: application/json" \
             -H "X-Buttondown-Live-Dangerously: true" \
-            -d "{\"subject\": \"${SUBJECT}\", \"body\": \"${BODY}\", \"status\": \"about_to_send\"}"
+            -d "{\"subject\": \"${SUBJECT}\", \"body\": \"${BODY}\", \"status\": \"about_to_send\", \"payload\": {}}"
 
       - name: Create failure issue with full output
         if: failure()
