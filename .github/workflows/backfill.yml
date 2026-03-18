@@ -34,4 +34,4 @@ jobs:
       - name: Run backfill batch
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: python backfill_batch.py
+        run: python -u backfill_batch.py
