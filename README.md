@@ -12,16 +12,18 @@ All data lives in one dataset: **[abigailhaddad/opm-federal-workforce](https://h
 
 Files are named after their OPM source, e.g. `accessions_202511.parquet`, `employment_202511.parquet`.
 
-- **Accessions** (new hires): Jan 2021 - Nov 2025
-- **Separations** (departures): Jan 2021 - Nov 2025
-- **Employment** (workforce snapshots): Jan 2021 - Nov 2025
+- **Accessions** (new hires): all available months
+- **Separations** (departures): all available months
+- **Employment** (workforce snapshots): all available months (notebook loads most recent 6 by default — they're large)
 
-Query directly with DuckDB — no download needed:
+**[→ Open the demo notebook in Colab](https://colab.research.google.com/github/abigailhaddad/fedscope_new/blob/main/demo.ipynb)** — loads all available months automatically, no setup needed.
+
+Or query directly with DuckDB — no download needed:
 
 ```python
 import duckdb
 
-url = "https://huggingface.co/datasets/abigailhaddad/opm-federal-workforce/resolve/main/accessions_202511.parquet"
+url = "https://huggingface.co/datasets/abigailhaddad/opm-federal-workforce/resolve/main/accessions/accessions_202601.parquet"
 df = duckdb.execute(f"SELECT * FROM read_parquet('{url}')").df()
 ```
 
