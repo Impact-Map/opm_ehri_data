@@ -36,6 +36,11 @@ from opm_pipeline.converter import convert_to_parquet
 from opm_pipeline.config import card_name_to_hf_path
 
 
+def ts() -> str:
+    """Current UTC timestamp prefix for log lines."""
+    return datetime.utcnow().strftime("[%H:%M:%SZ]")
+
+
 def get_existing_files() -> set[str]:
     """Get set of parquet paths already in HF repo."""
     try:
@@ -69,23 +74,27 @@ async def backfill_batch():
     PARQUET_DIR.mkdir(parents=True, exist_ok=True)
 
     # Get what's already uploaded
+    print(f"{ts()} Fetching existing HF files...")
     existing = get_existing_files()
-    print(f"Already on HF: {len(existing)} parquet files")
+    print(f"{ts()} Already on HF: {len(existing)} parquet files")
 
     async with async_playwright() as playwright:
+        print(f"{ts()} Launching browser...")
         browser, context, page = await setup_page(playwright)
+        print(f"{ts()} Browser ready")
 
         try:
             # Step 1: Scan OPM for all available files
             all_cards = []  # list of (card_name, data_type, page_num, card_index)
 
             for data_type in ["Accessions", "Separations", "Employment"]:
+                print(f"{ts()} Scanning OPM for {data_type}...")
                 total = await set_filters(page, data_type, "2015-01-01", "2030-12-31")
                 if total == 0:
-                    print(f"{data_type}: no files found")
+                    print(f"{ts()} {data_type}: no files found")
                     continue
 
-                print(f"{data_type}: {total} files on OPM")
+                print(f"{ts()} {data_type}: {total} files on OPM")
 
                 try:
                     rows_dropdown = page.get_by_label("rows per page")
@@ -115,9 +124,9 @@ async def backfill_batch():
             # Step 2: Sort missing files newest-first
             all_cards.sort(key=lambda x: _sort_key_newest_first(x[0]))
 
-            print(f"\nMissing from HF: {len(all_cards)} files")
+            print(f"\n{ts()} Missing from HF: {len(all_cards)} files")
             if not all_cards:
-                print("Nothing to backfill!")
+                print(f"{ts()} Nothing to backfill!")
                 await browser.close()
                 return
 
@@ -139,9 +148,12 @@ async def backfill_batch():
 
                 hf_path = card_name_to_hf_path(card_name)
 
+                print(f"{ts()} [{len(downloaded)+1}/{BATCH_SIZE}] Starting: {hf_path}")
                 try:
+                    print(f"{ts()}   Setting filters for {data_type}...")
                     total = await set_filters(page, data_type, "2015-01-01", "2030-12-31")
                     if total == 0:
+                        print(f"{ts()}   SKIPPED: no files after filter")
                         failed += 1
                         continue
 
@@ -162,16 +174,21 @@ async def backfill_batch():
                             if current_name != card_name:
                                 continue
 
+                            print(f"{ts()}   Downloading CSV...")
+                            t0 = time.time()
                             csv_path = await download_file_from_card(page, i, DOWNLOAD_DIR)
                             csv_size = csv_path.stat().st_size / (1024 * 1024)
+                            print(f"{ts()}   Download done: {csv_size:.0f}MB in {time.time()-t0:.0f}s — converting to parquet...")
+                            t1 = time.time()
                             parquet_path = convert_to_parquet(csv_path, PARQUET_DIR)
                             parquet_size = parquet_path.stat().st_size / (1024 * 1024)
+                            print(f"{ts()}   Converted in {time.time()-t1:.0f}s: {csv_size:.0f}MB -> {parquet_size:.1f}MB")
                             csv_path.unlink()
 
                             downloaded.append((parquet_path, hf_path))
                             if data_type == "Employment":
                                 employment_count += 1
-                            print(f"  [{len(downloaded)}/{BATCH_SIZE}] {hf_path} ({csv_size:.0f}MB -> {parquet_size:.1f}MB)")
+                            print(f"{ts()}   Done [{len(downloaded)}/{BATCH_SIZE}]: {hf_path}")
                             found = True
                             break
 
@@ -185,11 +202,11 @@ async def backfill_batch():
                         await asyncio.sleep(2)
 
                     if not found:
-                        print(f"  SKIPPED: {hf_path} (card not found)")
+                        print(f"{ts()}   SKIPPED: {hf_path} (card not found)")
                         failed += 1
 
                 except Exception as e:
-                    print(f"  FAILED: {hf_path}: {str(e)[:100]}")
+                    print(f"{ts()}   FAILED: {hf_path}: {str(e)[:200]}")
                     failed += 1
                     try:
                         await page.keyboard.press('Escape')
@@ -202,7 +219,8 @@ async def backfill_batch():
 
     # Step 4: Single commit for all downloaded files
     if downloaded:
-        print(f"\nUploading {len(downloaded)} files in one commit...")
+        print(f"\n{ts()} Committing {len(downloaded)} files to HF...")
+        t_commit = time.time()
         api = HfApi()
         ops = [CommitOperationAdd(path_in_repo=hf_path, path_or_fileobj=str(parquet_path))
                for parquet_path, hf_path in downloaded]
@@ -213,10 +231,10 @@ async def backfill_batch():
         )
         for parquet_path, _ in downloaded:
             parquet_path.unlink(missing_ok=True)
-        print(f"Committed {len(downloaded)} files.")
+        print(f"{ts()} Commit done in {time.time()-t_commit:.0f}s")
 
     total_on_hf = len(existing) + len(downloaded)
-    print(f"\nDone: {len(downloaded)} uploaded, {failed} failed, {total_on_hf} total on HF")
+    print(f"\n{ts()} Done: {len(downloaded)} uploaded, {failed} failed, {total_on_hf} total on HF")
 
     if len(downloaded) == 0 and failed == 0:
         print("Nothing left to upload — backfill complete!")
