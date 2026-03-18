@@ -217,18 +217,25 @@ def generate_email_html(changes: dict, diffs: dict, new_summaries: dict, run_dat
     if run_date is None:
         run_date = date.today()
 
+    import re as _re
     from .config import hf_path_to_date
     all_keys = changes["new"] + changes["updated"]
-    data_dates = [hf_path_to_date(k) for k in all_keys if hf_path_to_date(k)]
-    if data_dates:
-        data_month = max(data_dates).strftime("%B %Y")
+    data_dates = sorted({hf_path_to_date(k) for k in all_keys if hf_path_to_date(k)})
+    if len(data_dates) == 1:
+        heading_month = data_dates[0].strftime("%B %Y")
+    elif len(data_dates) > 1:
+        heading_month = " & ".join(d.strftime("%B %Y") for d in data_dates)
     else:
-        data_month = run_date.strftime("%B %Y")
-    parts = [f"<h2>EHRI Data Update: {data_month}</h2>"]
+        heading_month = run_date.strftime("%B %Y")
+    parts = [f"<h2>EHRI Data Update: {heading_month}</h2>"]
 
     for key in changes["new"] + changes["updated"]:
         dtype = key.split("/")[0].capitalize()
-        parts.append(f"<h3>{dtype}</h3>")
+        d = hf_path_to_date(key)
+        month_str = d.strftime("%B %Y") if d else ""
+        ver_m = _re.search(r'_v(\d+)\.parquet$', key)
+        ver_str = f" v{ver_m.group(1)}" if ver_m else ""
+        parts.append(f"<h3>{dtype} — {month_str}{ver_str}</h3>")
 
         if key in diffs:
             diff = diffs[key]
