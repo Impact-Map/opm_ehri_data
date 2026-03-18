@@ -164,6 +164,10 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
         start_date = "2026-01-01"
         end_date = "2026-01-31"
         stored_manifest = {}  # pretend manifest is empty so all files appear new
+        # Don't save manifest in test mode — override save_manifest to a no-op
+        from opm_pipeline import manifest as _manifest_mod
+        _real_save = _manifest_mod.save_manifest
+        _manifest_mod.save_manifest = lambda *a, **kw: print("TEST MODE: skipping manifest save")
 
     # Step 2: Scrape OPM site for current file listing
     print("Scanning OPM site...")
