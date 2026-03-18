@@ -243,25 +243,27 @@ async def backfill_batch():
             parquet_path.unlink(missing_ok=True)
         print(f"{ts()} Commit done in {time.time()-t_commit:.0f}s")
 
-    # Update local manifest with newly uploaded files
+    # Write new entries to a temp file; the commit step will merge into the manifest
+    # after pulling remote, avoiding conflicts when remote manifest changed mid-run.
     if downloaded:
-        from opm_pipeline.manifest import load_manifest, save_manifest
+        import json as _json
         from datetime import datetime, timezone
-        manifest = load_manifest()
+        new_entries = {}
         import re as _re
         for _, hf_path in downloaded:
             m = _re.search(r'_v(\d+)\.parquet$', hf_path)
             version = int(m.group(1)) if m else 1
             data_type = hf_path.split('/')[0]
-            manifest[hf_path] = {
+            new_entries[hf_path] = {
                 "filename": hf_path,
                 "version": version,
                 "data_type": data_type,
                 "columns": columns_by_hf_path.get(hf_path, []),
                 "last_updated": datetime.now(timezone.utc).isoformat(),
             }
-        save_manifest(manifest)
-        print(f"{ts()} Manifest updated with {len(downloaded)} new entries")
+        tmp_path = Path("/tmp/backfill_new_entries.json")
+        tmp_path.write_text(_json.dumps(new_entries, indent=2))
+        print(f"{ts()} Wrote {len(new_entries)} new entries to {tmp_path} for manifest merge")
 
     total_on_hf = len(existing) + len(downloaded)
     print(f"\n{ts()} Done: {len(downloaded)} uploaded, {failed} failed, {total_on_hf} total on HF")

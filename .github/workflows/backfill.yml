@@ -40,9 +40,22 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git pull origin main
+          python3 - <<'PYEOF'
+          import json, pathlib, sys
+          tmp = pathlib.Path("/tmp/backfill_new_entries.json")
+          if not tmp.exists():
+              print("No new entries to merge.")
+              sys.exit(0)
+          new_entries = json.loads(tmp.read_text())
+          manifest_path = pathlib.Path("metadata/file_manifest.json")
+          manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
+          manifest.update(new_entries)
+          manifest_path.write_text(json.dumps(manifest, indent=2))
+          print(f"Merged {len(new_entries)} new entries into manifest ({len(manifest)} total).")
+          PYEOF
           git add metadata/
           if ! git diff --staged --quiet; then
             git commit -m "Update file manifest after backfill [automated]"
-            git pull --rebase origin main
             git push
           fi
