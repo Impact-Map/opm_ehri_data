@@ -26,7 +26,7 @@ load_dotenv()
 HF_TOKEN = os.environ.get("HF_TOKEN")
 HF_REPO = "abigailhaddad/opm-federal-workforce"
 BATCH_SIZE = 30          # Max files per run (accessions/separations are small ~6MB CSV)
-MAX_EMPLOYMENT = 5       # Employment files are ~780MB CSV each — cap separately
+MAX_EMPLOYMENT = 20      # Employment files are ~780MB CSV each — cap separately
 DOWNLOAD_DIR = Path("data/downloads")
 PARQUET_DIR = Path("data/parquet")
 
