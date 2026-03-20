@@ -9,7 +9,7 @@ Every day at 10 AM ET, a GitHub Action automatically:
 1. Checks the OPM website (data.opm.gov) for new or updated federal workforce data
 2. Downloads any new files, converts them to parquet (a compact, efficient format), and uploads them to HuggingFace
 3. Creates a GitHub Issue summarizing what changed — row counts, schema changes, and the biggest shifts by agency and pay plan
-4. Optionally sends an email to subscribers with a shorter version of the same summary
+4. Sends an email to Buttondown subscribers with a summary of what changed (row count changes, biggest shifts by agency)
 
 **You do not need to run anything manually.** When it's working, you'll see GitHub Issues like:
 
