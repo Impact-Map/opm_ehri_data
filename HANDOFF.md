@@ -148,7 +148,7 @@ If you ever move the dataset to a different HuggingFace org, also update `HF_USE
 ### Buttondown API Key (`BUTTONDOWN_API_KEY`) — optional
 
 - **What it does:** Sends email notifications to subscribers when new data is published
-- **Current state:** The key in this repo is from the previous owner's Buttondown account (http://buttondown.com/abigailhaddad). It works, but emails come from that account.
+- **Current state:** The key in this repo is from Abigail Haddad's Buttondown account (http://buttondown.com/abigailhaddad). It works, but emails come from her account.
 
 **To see what the emails look like:**
 1. Subscribe at http://buttondown.com/abigailhaddad
