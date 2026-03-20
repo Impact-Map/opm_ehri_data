@@ -147,14 +147,22 @@ If you ever move the dataset to a different HuggingFace org, also update `HF_USE
 
 ### Buttondown API Key (`BUTTONDOWN_API_KEY`) — optional
 
-- **What it does:** Sends email notifications when new data is published
-- **How to set up your own:**
-  1. Create a free account at https://buttondown.email
-  2. Go to Settings > API to find your API key
-  3. Add or update the `BUTTONDOWN_API_KEY` secret in this repo
-  4. Share your Buttondown subscribe link so people can sign up for notifications
+- **What it does:** Sends email notifications to subscribers when new data is published
+- **Current state:** The key in this repo is from the previous owner's Buttondown account (http://buttondown.com/abigailhaddad). It works, but emails come from that account.
 
-If this secret is missing, the email step fails but everything else (data upload, GitHub Issue) still works fine.
+**To see what the emails look like:**
+1. Subscribe at http://buttondown.com/abigailhaddad
+2. Go to the Actions tab, click "Daily OPM Data Check", click "Run workflow", and check the **test_mode** box
+3. This will trigger a test run that sends an email with a sample data summary — you'll see the format in your inbox
+
+**To switch to your own Buttondown account:**
+1. Create a free account at https://buttondown.email
+2. Go to Settings > API to find your API key
+3. Update the `BUTTONDOWN_API_KEY` secret in this repo with your new key
+4. Share your Buttondown subscribe link so people can sign up for notifications
+5. (Optional) Ask the previous owner to export their subscriber list so you can import it
+
+**To turn off emails entirely:** Delete the `BUTTONDOWN_API_KEY` secret. The pipeline still works — data uploads and GitHub Issues are unaffected.
 
 ## If You Need to Change Something
 
