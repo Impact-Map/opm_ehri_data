@@ -189,6 +189,14 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
             # Step 3: Compare manifests
             changes = compare_manifests(stored_manifest, site_manifest)
             print(f"New: {len(changes['new'])}, Updated: {len(changes['updated'])}, Unchanged: {len(changes['unchanged'])}")
+            if changes["new"]:
+                print("  New files to download:")
+                for f in changes["new"]:
+                    print(f"    - {f}")
+            if changes["updated"]:
+                print("  Updated files to download:")
+                for f in changes["updated"]:
+                    print(f"    - {f}")
 
             # Emit step outputs for downstream workflow steps (e.g. email notification)
             github_output = os.environ.get("GITHUB_OUTPUT")
