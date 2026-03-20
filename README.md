@@ -1,29 +1,27 @@
-# OPM Federal Workforce Data
+# EHRI Federal Workforce Data
 
-> **Note:** This was put together quickly and may have errors. Please verify anything important against the original source at [data.opm.gov](https://data.opm.gov).
+This repo scrapes OPM's EHRI data (accessions, separations, employment), converts it to parquet, and publishes it to HuggingFace. A daily GitHub Action checks for new or updated files and creates a GitHub Issue summarizing what changed.
 
-OPM already has premade visualizations on [data.opm.gov](https://data.opm.gov) that cover common questions about the federal workforce — workforce size, demographics, separations, etc. If one of those answers your question, use that.
-
-This repo scrapes OPM's raw data (accessions, separations, employment), converts it to parquet, and publishes it to a single HuggingFace dataset. A daily GitHub Action checks for new or updated files and creates a GitHub Issue summarizing what changed.
+OPM also has premade visualizations on [data.opm.gov](https://data.opm.gov) that cover common questions about the federal workforce — workforce size, demographics, separations, etc. If one of those answers your question, use that.
 
 ## Data on HuggingFace
 
 All data lives in one dataset: **[impactproject/opm-ehri-data](https://huggingface.co/datasets/impactproject/opm-ehri-data)**
 
-Files are named after their OPM source, e.g. `accessions_202511.parquet`, `employment_202511.parquet`.
+Files are versioned and organized in folders, e.g. `accessions/accessions_202511_v3.parquet`.
 
 - **Accessions** (new hires): all available months
 - **Separations** (departures): all available months
-- **Employment** (workforce snapshots): all available months (notebook loads most recent 6 by default — they're large)
+- **Employment** (workforce snapshots): all available months
 
-**[→ Open the demo notebook in Colab](https://colab.research.google.com/github/Impact-Map/opm_ehri_data/blob/main/demo.ipynb)** — loads all available months automatically, no setup needed.
+**[→ Open the demo notebook in Colab](https://colab.research.google.com/github/Impact-Map/opm_ehri_data/blob/main/demo.ipynb)** — loads available months automatically, no setup needed.
 
 Or query directly with DuckDB — no download needed:
 
 ```python
 import duckdb
 
-url = "https://huggingface.co/datasets/impactproject/opm-ehri-data/resolve/main/accessions/accessions_202601.parquet"
+url = "https://huggingface.co/datasets/impactproject/opm-ehri-data/resolve/main/accessions/accessions_202601_v1.parquet"
 df = duckdb.execute(f"SELECT * FROM read_parquet('{url}')").df()
 ```
 
@@ -58,11 +56,6 @@ python run_daily.py
 python run_daily.py --rebuild-manifest
 ```
 
-**Bulk backfill (download everything):**
-```bash
-python analysis/download_and_upload.py --start 2021-01-01 --end 2025-11-30
-```
-
 ## Repo Structure
 
 ```
@@ -79,7 +72,7 @@ metadata/
   file_manifest.json          # Tracks what's on OPM (committed to repo)
 .github/workflows/
   daily_check.yml             # Runs daily at 10 AM ET
-analysis/                     # Notebooks, one-off scripts, web viewer
+demo.ipynb                    # Colab-compatible demo notebook
 ```
 
 ## Technical Details
@@ -94,3 +87,4 @@ analysis/                     # Notebooks, one-off scripts, web viewer
 
 - [OPM Visualization Catalog](https://newfedscope.netlify.app/) — Searchable index of OPM's built-in dashboards
 - [Colab Notebook](https://colab.research.google.com/github/Impact-Map/opm_ehri_data/blob/main/demo.ipynb) — Load and explore data without downloading
+- [HANDOFF.md](HANDOFF.md) — Operator guide: credentials, troubleshooting, notifications
