@@ -17,8 +17,8 @@ All files go into one HF repo, named by their OPM source and version (e.g. `acce
 - `opm_pipeline/` — Core package: config, scraper, converter, uploader, manifest, differ, reporter
 - `metadata/file_manifest.json` — Tracks what's on OPM site (version, row counts, columns); used for globally-new column detection
 - `.github/workflows/daily_check.yml` — Daily cron at 10 AM ET
-- `.github/workflows/backfill.yml` — Runs every 2 hours to upload historical files until complete
-- `backfill_batch.py` — Backfill script: finds gaps between OPM and HF, uploads newest-first in batches
+- `backfill_batch.py` — Backfill script (completed; available if needed again)
+- `.github/workflows/backfill.yml` — Backfill workflow (currently disabled)
 - `send_email.py` — Sends Buttondown email; reads `email_body.txt` written by the pipeline
 - `demo.ipynb` — Public demo notebook (Colab-compatible) for exploring the data
 
