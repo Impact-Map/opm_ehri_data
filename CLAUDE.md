@@ -21,7 +21,6 @@ All files go into one HF repo, named by their OPM source and version (e.g. `acce
 - `backfill_batch.py` — Backfill script: finds gaps between OPM and HF, uploads newest-first in batches
 - `send_email.py` — Sends Buttondown email; reads `email_body.txt` written by the pipeline
 - `demo.ipynb` — Public demo notebook (Colab-compatible) for exploring the data
-- `analysis/` — Notebooks and scripts (not part of the pipeline)
 
 ## Technical Details
 
@@ -42,10 +41,7 @@ On successful runs with new or updated files, the pipeline sends an email to But
 - Failures do NOT trigger emails (only GitHub issues)
 - Email body written to `email_body.txt` by pipeline, read by `send_email.py`
 
-### Handoff checklist for new owner
-1. Set up a Buttondown account at buttondown.email and add `BUTTONDOWN_API_KEY` secret (optional — pipeline works without it)
-2. Generate an HF token with Write access from an `impactproject` org member account and update `HF_TOKEN` secret
-3. Delete the old redirect repo at https://github.com/Impact-Map/fedscope_new
+See `HANDOFF.md` for operator guide (credentials, troubleshooting, Buttondown setup).
 
 ## Running
 
