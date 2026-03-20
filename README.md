@@ -1,22 +1,26 @@
 # EHRI Federal Workforce Data
 
-This repo scrapes OPM's EHRI data (accessions, separations, employment), converts it to parquet, and publishes it to HuggingFace. A daily GitHub Action checks for new or updated files and creates a GitHub Issue summarizing what changed.
+Public dataset of OPM/EHRI federal workforce data: accessions (new hires), separations (departures), and employment (point-in-time snapshots). Updated daily by an automated pipeline.
 
 OPM also has premade visualizations on [data.opm.gov](https://data.opm.gov) that cover common questions about the federal workforce — workforce size, demographics, separations, etc. If one of those answers your question, use that.
 
-## Data on HuggingFace
+## Using the Data
 
-All data lives in one dataset: **[impactproject/opm-ehri-data](https://huggingface.co/datasets/impactproject/opm-ehri-data)**
+The data is **public and free to use** — no account or token needed.
+
+All data lives in one HuggingFace dataset: **[impactproject/opm-ehri-data](https://huggingface.co/datasets/impactproject/opm-ehri-data)**
 
 Files are versioned and organized in folders, e.g. `accessions/accessions_202511_v3.parquet`.
 
-- **Accessions** (new hires): all available months
-- **Separations** (departures): all available months
-- **Employment** (workforce snapshots): all available months
+- **Accessions** (new hires): all available months since 2015
+- **Separations** (departures): all available months since 2015
+- **Employment** (workforce snapshots): all available months since 2022
+
+### Interactive notebook
 
 **[→ Open the demo notebook in Colab](https://colab.research.google.com/github/Impact-Map/opm_ehri_data/blob/main/demo.ipynb)** — loads available months automatically, no setup needed.
 
-Or query directly with DuckDB — no download needed:
+### Query directly with DuckDB
 
 ```python
 import duckdb
@@ -25,7 +29,21 @@ url = "https://huggingface.co/datasets/impactproject/opm-ehri-data/resolve/main/
 df = duckdb.execute(f"SELECT * FROM read_parquet('{url}')").df()
 ```
 
-## How It Works
+### Download with Python
+
+```python
+from huggingface_hub import hf_hub_download
+
+path = hf_hub_download("impactproject/opm-ehri-data", "accessions/accessions_202601_v1.parquet", repo_type="dataset")
+```
+
+---
+
+## About the Pipeline
+
+Everything below is for people maintaining or developing the pipeline itself. You don't need any of this to use the data.
+
+### How It Works
 
 1. A daily GitHub Action runs `run_daily.py`
 2. Playwright opens the OPM site (a Blazor app with no direct download URLs) and reads what files are available
@@ -33,30 +51,24 @@ df = duckdb.execute(f"SELECT * FROM read_parquet('{url}')").df()
 4. Downloads changed files, converts CSV to parquet, uploads to HuggingFace
 5. Creates a GitHub Issue with a summary: row count changes, schema changes, and per-column value diffs
 
-## Setup
+### Developer Setup
 
 **Requirements:**
 - Python 3.9+
-- A [HuggingFace token](https://huggingface.co/settings/tokens) with write access, set as `HF_TOKEN` environment variable
+- A [HuggingFace token](https://huggingface.co/settings/tokens) with write access to the `impactproject` org
 - For GitHub Actions: add `HF_TOKEN` as a repository secret
 
 ```bash
 pip install -r requirements.txt
 playwright install chromium
-```
 
-**Run the daily check manually:**
-```bash
 export HF_TOKEN=your_token_here
-python run_daily.py
+python run_daily.py                    # Daily check
+python run_daily.py --rebuild-manifest # Rebuild manifest from HF
+python run_daily.py --test             # Test mode (Jan 2026 only, no manifest save)
 ```
 
-**Rebuild the manifest from existing HuggingFace data:**
-```bash
-python run_daily.py --rebuild-manifest
-```
-
-## Repo Structure
+### Repo Structure
 
 ```
 run_daily.py                  # Daily pipeline entry point
@@ -75,7 +87,7 @@ metadata/
 demo.ipynb                    # Colab-compatible demo notebook
 ```
 
-## Technical Details
+### Technical Details
 
 - OPM files are **pipe-delimited** (`|`), not comma-separated
 - All columns read as strings (`dtype=str`) to avoid mixed-type issues
@@ -83,8 +95,6 @@ demo.ipynb                    # Colab-compatible demo notebook
 - Pipeline has resume logic: checks HuggingFace before downloading, skips existing files
 - Employment files are ~780 MB CSV / ~30 MB parquet — fits in GitHub Actions memory
 
-## Other Resources
+### Operations
 
-- [OPM Visualization Catalog](https://newfedscope.netlify.app/) — Searchable index of OPM's built-in dashboards
-- [Colab Notebook](https://colab.research.google.com/github/Impact-Map/opm_ehri_data/blob/main/demo.ipynb) — Load and explore data without downloading
-- [HANDOFF.md](HANDOFF.md) — Operator guide: credentials, troubleshooting, notifications
+See [HANDOFF.md](HANDOFF.md) for the operator guide: credentials, troubleshooting, email notifications.
