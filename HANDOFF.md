@@ -31,6 +31,10 @@ The failure issue will contain the full error output and plain-English instructi
 | Run history | Actions tab in this repo |
 | HuggingFace token | GitHub repo Settings > Secrets > `HF_TOKEN` |
 
+## Cleanup
+
+The old GitHub repo redirect at https://github.com/Impact-Map/fedscope_new can be deleted — it's just a redirect from the previous owner's repo name and is no longer needed.
+
 ## How to Tell If Things Are Working
 
 1. Go to the **Issues** tab in this repo
@@ -47,10 +51,15 @@ You can also check the **Actions** tab to see the history of all runs (green = s
 
 **How to fix:**
 1. Go to https://huggingface.co/settings/tokens
-2. Create a new token with **Write** access
-3. In this GitHub repo, go to Settings > Secrets and variables > Actions
-4. Update the `HF_TOKEN` secret with the new token
-5. Go to Actions tab, click "Daily OPM Data Check", click "Run workflow" to test
+2. Click **Create new token**
+3. Name it something like `opm-pipeline`
+4. Set access to **Write**
+5. Copy the token
+6. In this GitHub repo, go to Settings > Secrets and variables > Actions
+7. Update the `HF_TOKEN` secret with the new token
+8. Go to Actions tab, click "Daily OPM Data Check", click "Run workflow" to test
+
+The token must belong to a HuggingFace account that has **write access** to the `impactproject` organization's datasets.
 
 ### "Pipeline FAILED" — OPM changed their website
 
@@ -83,25 +92,42 @@ If you need to trigger a run outside the daily schedule:
 
 ## Credentials
 
-This system needs one credential:
+This system needs two credentials, stored as GitHub repo secrets (Settings > Secrets and variables > Actions):
 
-**HuggingFace Token (`HF_TOKEN`):**
-- Stored in: GitHub repo > Settings > Secrets and variables > Actions
-- What it does: Allows the pipeline to upload data to HuggingFace
-- How to get a new one: https://huggingface.co/settings/tokens (needs Write access)
-- Owned by: whoever controls the `impactproject` HuggingFace organization
+### HuggingFace Token (`HF_TOKEN`)
 
-If the HuggingFace account ownership changes, also update `HF_USERNAME` and `HF_REPO` in `opm_pipeline/config.py`.
+- **What it does:** Allows the pipeline to upload data to HuggingFace
+- **How to generate a new one:**
+  1. Log in to https://huggingface.co with an account that's a member of the `impactproject` organization
+  2. Go to https://huggingface.co/settings/tokens
+  3. Click **Create new token**, set access to **Write**
+  4. Copy the token and add it as the `HF_TOKEN` secret in this repo's GitHub settings
+
+If you need to move the dataset to a different HuggingFace account or org, update `HF_USERNAME` in `opm_pipeline/config.py`.
+
+### Buttondown API Key (`BUTTONDOWN_API_KEY`)
+
+- **What it does:** Sends email notifications to subscribers when new data is published
+- **This is optional** — the pipeline works fine without it; you just won't get email notifications
+- **How to set up from scratch:**
+  1. Create a free account at https://buttondown.email
+  2. Go to Settings > API to find your API key
+  3. Add the API key as the `BUTTONDOWN_API_KEY` secret in this repo's GitHub settings
+  4. People can subscribe to your Buttondown newsletter to get notified of new data
+
+If the `BUTTONDOWN_API_KEY` secret is missing or empty, the email step will fail but the rest of the pipeline (data download, upload, GitHub issue) will still succeed.
 
 ## What the Data Looks Like
 
-The HuggingFace dataset contains parquet files named like:
+The HuggingFace dataset contains versioned parquet files organized in folders:
 
-- `accessions_202511.parquet` — new federal hires for November 2025
-- `separations_202511.parquet` — federal employee departures for November 2025
-- `employment_202511.parquet` — full workforce snapshot for November 2025
+- `accessions/accessions_202511_v3.parquet` — new federal hires for November 2025 (version 3)
+- `separations/separations_202511_v3.parquet` — federal employee departures for November 2025
+- `employment/employment_202511_v2.parquet` — full workforce snapshot for November 2025
 
 "Accessions" = new hires. "Separations" = people leaving. "Employment" = everyone currently employed.
+
+Version numbers (v1, v2, v3) reflect OPM's own revisions — when OPM updates a previously published month, the pipeline uploads it with the new version number.
 
 ## If You Need to Change Something
 
@@ -110,7 +136,7 @@ The HuggingFace dataset contains parquet files named like:
 | Change when it runs | Edit `.github/workflows/daily_check.yml`, change the `cron` line |
 | Change which data types it checks | Edit `opm_pipeline/config.py`, change `DATA_TYPES` |
 | Change the date range | Edit `opm_pipeline/config.py`, change `START_DATE` / `END_DATE` |
-| Change the HuggingFace account | Edit `opm_pipeline/config.py`, change `HF_USERNAME` and `HF_REPO` |
+| Change the HuggingFace account | Edit `opm_pipeline/config.py`, change `HF_USERNAME`; update `HF_TOKEN` secret |
 | Re-download everything from scratch | Delete `metadata/file_manifest.json`, run with `--rebuild-manifest` |
 
 ## Contact

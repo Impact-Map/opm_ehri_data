@@ -43,11 +43,9 @@ On successful runs with new or updated files, the pipeline sends an email to But
 - Email body written to `email_body.txt` by pipeline, read by `send_email.py`
 
 ### Handoff checklist for new owner
-1. Create a Buttondown account at buttondown.email
-2. Add `BUTTONDOWN_API_KEY` secret to the GitHub repo (Settings > Secrets > Actions)
-3. Update `HF_USERNAME` in `opm_pipeline/config.py` to your HuggingFace username
-4. Update `HF_TOKEN` secret in GitHub repo settings
-5. (Optional) Export subscriber list from previous owner's Buttondown account
+1. Set up a Buttondown account at buttondown.email and add `BUTTONDOWN_API_KEY` secret (optional — pipeline works without it)
+2. Generate an HF token with Write access from an `impactproject` org member account and update `HF_TOKEN` secret
+3. Delete the old redirect repo at https://github.com/Impact-Map/fedscope_new
 
 ## Running
 
