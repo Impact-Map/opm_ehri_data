@@ -16,7 +16,7 @@ from tqdm import tqdm
 
 load_dotenv()
 
-HF_REPO = "abigailhaddad/opm-federal-workforce"
+HF_REPO = "impactproject/opm-ehri-data"
 OUTPUT_DIR = Path("data/agency_subsets")
 
 # Expected date range (inclusive)

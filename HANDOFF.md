@@ -25,7 +25,7 @@ The failure issue will contain the full error output and plain-English instructi
 
 | What | Where |
 |------|-------|
-| The data | https://huggingface.co/datasets/abigailhaddad/opm-federal-workforce |
+| The data | https://huggingface.co/datasets/impactproject/opm-ehri-data |
 | The code | This GitHub repo |
 | Daily run results | GitHub Issues tab in this repo |
 | Run history | Actions tab in this repo |
@@ -89,7 +89,7 @@ This system needs one credential:
 - Stored in: GitHub repo > Settings > Secrets and variables > Actions
 - What it does: Allows the pipeline to upload data to HuggingFace
 - How to get a new one: https://huggingface.co/settings/tokens (needs Write access)
-- Owned by: whoever controls the `abigailhaddad` HuggingFace account
+- Owned by: whoever controls the `impactproject` HuggingFace organization
 
 If the HuggingFace account ownership changes, also update `HF_USERNAME` and `HF_REPO` in `opm_pipeline/config.py`.
 

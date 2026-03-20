@@ -1,6 +1,6 @@
 """
 One-time migration: move all data from individual HF repos into the single
-abigailhaddad/opm-federal-workforce repo, then delete the old repos.
+impactproject/opm-ehri-data repo, then delete the old repos.
 """
 
 import re
@@ -18,13 +18,13 @@ import os
 load_dotenv()
 
 HF_TOKEN = os.environ.get("HF_TOKEN")
-HF_USERNAME = "abigailhaddad"
-NEW_REPO = f"{HF_USERNAME}/opm-federal-workforce"
+HF_USERNAME = "impactproject"
+NEW_REPO = f"{HF_USERNAME}/opm-ehri-data"
 
 
 def get_old_repos() -> list[str]:
     """Find all individual opm-federal-* dataset repos."""
-    datasets = list_datasets(author=HF_USERNAME, search="opm-federal-")
+    datasets = list_datasets(author=HF_USERNAME, search="opm-")
     repos = []
     for ds in datasets:
         # Skip the new combined repo
@@ -39,7 +39,7 @@ def get_old_repos() -> list[str]:
 def repo_id_to_filename(repo_id: str) -> str:
     """Convert old repo ID to a filename for the new repo.
 
-    abigailhaddad/opm-federal-accessions-202511 -> accessions_202511.parquet
+    impactproject/opm-federal-accessions-202511 -> accessions_202511.parquet
     """
     name = repo_id.split("/", 1)[1]  # opm-federal-accessions-202511
     name = name.replace("opm-federal-", "")  # accessions-202511

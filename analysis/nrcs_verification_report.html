@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NRCS Verification</title>
+<style>
+  :root { --g: #16a34a; --r: #dc2626; --bg: #f8fafc; --card: #fff; --bdr: #e2e8f0; --txt: #1e293b; --dim: #64748b; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+         background: var(--bg); color: var(--txt); line-height:1.5; padding:2rem; max-width:800px; margin:0 auto; }
+  .header { margin-bottom:1.5rem; padding-bottom:1rem; border-bottom:2px solid var(--bdr); }
+  h1 { font-size:1.4rem; }
+  .header p { color:var(--dim); font-size:.9rem; margin-top:.25rem; }
+  .score { display:inline-block; background:var(--card); border:1px solid var(--bdr); border-radius:8px;
+            padding:.5rem 1.25rem; margin:.75rem 0; }
+  .score .big { font-size:2.2rem; font-weight:700; color:var(--g); }
+  .score .lbl { font-size:.8rem; color:var(--dim); }
+  .card { background:var(--card); border:1px solid var(--bdr); border-radius:8px; padding:1.25rem; margin-bottom:1.25rem; }
+  .card h2 { font-size:1.05rem; margin-bottom:.75rem; }
+  .card.note { background:#fffbeb; border-color:#fde68a; }
+  .card.note h2 { color:#92400e; }
+  table { width:100%; border-collapse:collapse; font-size:.85rem; }
+  th,td { padding:.4rem .6rem; text-align:left; border-bottom:1px solid var(--bdr); }
+  th { background:#f1f5f9; font-weight:600; font-size:.75rem; text-transform:uppercase; letter-spacing:.03em; }
+  .n { text-align:right; font-variant-numeric:tabular-nums; }
+  .diff { color:var(--dim); }
+  .check { font-size:1.1rem; font-weight:700; }
+  .check.yes { color:var(--g); }
+  .check.no { color:var(--r); }
+  .indent { padding-left:1.5rem; }
+  .group td { background:#f8fafc; padding-top:.6rem; border-bottom:none; font-weight:600; font-size:.82rem; }
+  .total td { border-top:2px solid var(--bdr); }
+  .footer { color:var(--dim); font-size:.78rem; margin-top:1.5rem; padding-top:.75rem; border-top:1px solid var(--bdr); }
+</style>
+</head>
+<body>
+  <div class="header">
+    <h1>NRCS Report &mdash; Independent Verification</h1>
+    <p>We downloaded the raw OPM/EHRI employment snapshots (Dec 2024 and Dec 2025)
+       and verified the numbers in your report.</p>
+  </div>
+
+  
+    <div class="card">
+      <h2>Data Sources &amp; Methods</h2>
+      <p>We used the OPM/EHRI (Enterprise Human Resources Integration) employment data,
+         which is a monthly snapshot of every federal civilian employee.
+         OPM publishes this at
+         <a href="https://data.opm.gov/explore-data/data/data-downloads">data.opm.gov</a>.
+         We converted the raw pipe-delimited files to parquet and host them on HuggingFace:</p>
+      <ul style="margin: .5rem 0 .75rem 1.5rem; font-size:.85rem">
+        <li><strong>Dec 2024 snapshot:</strong>
+            <a href="https://huggingface.co/datasets/impactproject/opm-ehri-data/blob/main/employment/employment_202412_v2.parquet"><code>employment_202412_v2.parquet</code></a>
+            &mdash; "end of 2024"</li>
+        <li><strong>Dec 2025 snapshot:</strong>
+            <a href="https://huggingface.co/datasets/impactproject/opm-ehri-data/blob/main/employment/employment_202512_v2.parquet"><code>employment_202512_v2.parquet</code></a>
+            &mdash; "end of 2025"</li>
+        <li><strong>Full dataset:</strong>
+            <a href="https://huggingface.co/datasets/impactproject/opm-ehri-data"><code>impactproject/opm-ehri-data</code></a></li>
+      </ul>
+      <p><strong>Steps:</strong></p>
+      <ol style="margin: .5rem 0 .75rem 1.5rem; font-size:.85rem">
+        <li>Filter both snapshots to rows where <code>agency_subelement</code> contains
+            "NATURAL RESOURCES CONSERVATION SERVICE"</li>
+        <li>Build a FIPS code from <code>duty_station_state_code</code> + <code>duty_station_county_code</code></li>
+        <li>Sum the <code>count</code> column by FIPS (and by <code>occupational_series</code> where applicable)
+            for each snapshot</li>
+        <li>Outer-join the two snapshots by FIPS to compute net change per county</li>
+        <li>Classify each county as gain, no change, or loss; count how many lost 100% of staff</li>
+      </ol>
+      <p>Each row in the OPM data represents a unique combination of employee attributes
+         (agency, county, occupation, grade, etc.) with a <code>count</code> field.
+         Summing <code>count</code> by county gives the total headcount per county.
+         This is the same underlying data your workbook uses.</p>
+    </div>
+
+  
+    <div class="card note">
+      <h2>A note on territories and county counts</h2>
+      <p>Your county-level tables include 7 rows that aren't US counties. Six are US territories
+         where OPM reports a state code but no county. One is an invalid/missing duty station bucket.
+         These are all real NRCS employees (124 in 2024, 100 in 2025).
+         <strong>This doesn't affect the top-line headcount or any percentages</strong> &mdash;
+         it only affects how many "counties" appear in the county breakdown tables.</p>
+
+      <table style="width:auto; margin: .75rem 0">
+        <thead><tr><th>Location</th><th>Staff 2024</th><th>Staff 2025</th></tr></thead>
+        <tbody><tr><td>Puerto Rico</td><td class='n'>84</td><td class='n'>72</td></tr><tr><td>Invalid/missing data</td><td class='n'>21</td><td class='n'>11</td></tr><tr><td>American Samoa</td><td class='n'>5</td><td class='n'>5</td></tr><tr><td>N. Mariana Islands</td><td class='n'>5</td><td class='n'>3</td></tr><tr><td>Guam</td><td class='n'>5</td><td class='n'>5</td></tr><tr><td>US Virgin Islands</td><td class='n'>3</td><td class='n'>3</td></tr><tr><td>Palau</td><td class='n'>1</td><td class='n'>1</td></tr><tr class='total'><td><strong>Total</strong></td><td class='n'><strong>124</strong></td><td class='n'><strong>100</strong></td></tr></tbody>
+      </table>
+
+      <p><strong>A few ways to handle this:</strong></p>
+      <ol style="margin: .5rem 0 .5rem 1.5rem; font-size:.85rem">
+        <li><strong>Keep as-is.</strong> The current approach counts each territory as a "county" row.
+            This is the simplest option and doesn't lose any data.</li>
+        <li><strong>Say "counties and territories"</strong> instead of "counties" in the table headers,
+            and group the 6 territories into a single "US Territories" row.
+            Footnote the 21 invalid-data employees.</li>
+        <li><strong>Exclude territories and invalid rows entirely</strong> from the county tables.
+            The employees still appear in the top-line headcount. This is the strictest
+            definition of "county" but drops 124 employees from the county breakdowns.</li>
+      </ol>
+
+      
+        <p style="margin-top:1rem"><strong>What changes if you exclude them:</strong></p>
+        <table>
+          <thead><tr><th>Table</th><th>Metric</th><th>Current</th><th>Without territories</th><th>Diff</th></tr></thead>
+          <tbody><tr><td>All Occupations (PDF Table 1)</td><td>Total counties</td><td class='n'>2,418</td><td class='n'>2,411</td><td class='n diff'>-7</td></tr><tr><td>All Occupations (PDF Table 1)</td><td>Counties with loss</td><td class='n'>1,302</td><td class='n'>1,299</td><td class='n diff'>-3</td></tr><tr><td>All Occupations (PDF Table 1)</td><td>Counties with no change</td><td class='n'>949</td><td class='n'>945</td><td class='n diff'>-4</td></tr><tr><td>Soil Conservation + Gen NRM + Soil Tech (PDF Table 2)</td><td>Total counties</td><td class='n'>2,366</td><td class='n'>2,359</td><td class='n diff'>-7</td></tr><tr><td>Soil Conservation + Gen NRM + Soil Tech (PDF Table 2)</td><td>Counties with loss</td><td class='n'>1,043</td><td class='n'>1,040</td><td class='n diff'>-3</td></tr><tr><td>Soil Conservation + Gen NRM + Soil Tech (PDF Table 2)</td><td>Counties with no change</td><td class='n'>1,139</td><td class='n'>1,135</td><td class='n diff'>-4</td></tr><tr><td>Civil Engineering (PDF Table 4)</td><td>Total counties</td><td class='n'>333</td><td class='n'>329</td><td class='n diff'>-4</td></tr><tr><td>Civil Engineering (PDF Table 4)</td><td>Counties with loss</td><td class='n'>136</td><td class='n'>133</td><td class='n diff'>-3</td></tr><tr><td>Civil Engineering (PDF Table 4)</td><td>Counties with no change</td><td class='n'>154</td><td class='n'>153</td><td class='n diff'>-1</td></tr><tr><td>Civil Engineering (PDF Table 4)</td><td>100% loss</td><td class='n'>74</td><td class='n'>72</td><td class='n diff'>-2</td></tr></tbody>
+        </table>
+
+      <p style="margin-top:1rem"><strong>Everything else in the report is correct.</strong>
+         The top-line headcount, the percentages, and every county-level number all check out
+         against the raw data &mdash; see the claim-by-claim verification below.</p>
+      <p>If you want to use any of the alternative approaches above, I can get you an updated
+         Excel file with the adjusted numbers.</p>
+    </div>
+
+  <h2 style="margin: 1.5rem 0 .75rem; font-size:1.15rem;">Claim-by-Claim Verification</h2>
+
+  
+    <div class="card">
+      <h2>Top-Line Headcount</h2>
+      <table>
+        <thead><tr><th>Metric</th><th>Your Report</th><th>Our Data</th><th></th></tr></thead>
+        <tbody>
+          <tr><td>NRCS end of 2024</td><td class="n">—</td><td class="n">11,817</td><td></td></tr>
+          <tr><td>NRCS end of 2025</td><td class="n">—</td><td class="n">9,160</td><td></td></tr>
+          <tr><td>Net change</td><td class="n">-2,657</td><td class="n">-2,657</td><td><span class="check yes">&#10003;</span></td></tr>
+          <tr><td>Percent change</td><td class="n">-22%</td><td class="n">-22.5%</td><td><span class="check yes">&#10003;</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h2>All Occupations (PDF Table 1)</h2>
+      <table>
+        <thead><tr><th>Metric</th><th>Your Report</th><th>Our Data</th><th></th></tr></thead>
+        <tbody><tr><td>Counties with net gain</td><td class='n'>167</td><td class='n'>167</td><td><span class="check yes">&#10003;</span></td></tr><tr><td>Counties with no change</td><td class='n'>949</td><td class='n'>949</td><td><span class="check yes">&#10003;</span></td></tr><tr><td>Counties with net loss</td><td class='n'>1,302</td><td class='n'>1,302</td><td><span class="check yes">&#10003;</span></td></tr><tr><td>Total counties</td><td class='n'>2,418</td><td class='n'>2,418</td><td><span class="check yes">&#10003;</span></td></tr><tr><td>Counties with 100% loss</td><td class='n'>144</td><td class='n'>144</td><td><span class="check yes">&#10003;</span></td></tr></tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h2>Soil Conservation + Gen NRM + Soil Tech (PDF Table 2)</h2>
+      <table>
+        <thead><tr><th>Metric</th><th>Your Report</th><th>Our Data</th><th></th></tr></thead>
+        <tbody><tr><td>Counties with net gain</td><td class='n'>184</td><td class='n'>184</td><td><span class="check yes">&#10003;</span></td></tr><tr><td>Counties with no change</td><td class='n'>1,139</td><td class='n'>1,139</td><td><span class="check yes">&#10003;</span></td></tr><tr><td>Counties with net loss</td><td class='n'>1,043</td><td class='n'>1,043</td><td><span class="check yes">&#10003;</span></td></tr><tr><td>Total counties</td><td class='n'>2,366</td><td class='n'>2,366</td><td><span class="check yes">&#10003;</span></td></tr><tr><td>Counties with 100% loss</td><td class='n'>139</td><td class='n'>139</td><td><span class="check yes">&#10003;</span></td></tr></tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h2>Rangeland Management (PDF Table 3)</h2>
+      <table>
+        <thead><tr><th>Metric</th><th>Your Report</th><th>Our Data</th><th></th></tr></thead>
+        <tbody><tr><td>Counties with net gain</td><td class='n'>16</td><td class='n'>16</td><td><span class="check yes">&#10003;</span></td></tr><tr><td>Counties with no change</td><td class='n'>111</td><td class='n'>111</td><td><span class="check yes">&#10003;</span></td></tr><tr><td>Counties with net loss</td><td class='n'>57</td><td class='n'>57</td><td><span class="check yes">&#10003;</span></td></tr><tr><td>Total counties</td><td class='n'>184</td><td class='n'>184</td><td><span class="check yes">&#10003;</span></td></tr><tr><td>Counties with 100% loss</td><td class='n'>43</td><td class='n'>43</td><td><span class="check yes">&#10003;</span></td></tr></tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h2>Civil Engineering (PDF Table 4)</h2>
+      <table>
+        <thead><tr><th>Metric</th><th>Your Report</th><th>Our Data</th><th></th></tr></thead>
+        <tbody><tr><td>Counties with net gain</td><td class='n'>43</td><td class='n'>43</td><td><span class="check yes">&#10003;</span></td></tr><tr><td>Counties with no change</td><td class='n'>154</td><td class='n'>154</td><td><span class="check yes">&#10003;</span></td></tr><tr><td>Counties with net loss</td><td class='n'>136</td><td class='n'>136</td><td><span class="check yes">&#10003;</span></td></tr><tr><td>Total counties</td><td class='n'>333</td><td class='n'>333</td><td><span class="check yes">&#10003;</span></td></tr><tr><td>Counties with 100% loss</td><td class='n'>74</td><td class='n'>74</td><td><span class="check yes">&#10003;</span></td></tr></tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h2>Individual Occupations (PDF page 1)</h2>
+      <table>
+        <thead><tr><th>Metric</th><th>Your Report</th><th>Our Data</th><th></th></tr></thead>
+        <tbody><tr class='group'><td colspan='4'>SOIL CONSERVATION</td></tr><tr><td class='indent'>Counties with loss</td><td class='n'>694</td><td class='n'>694</td><td><span class="check yes">&#10003;</span></td></tr><tr><td class='indent'>Counties with 100% loss</td><td class='n'>158</td><td class='n'>158</td><td><span class="check yes">&#10003;</span></td></tr><tr class='group'><td colspan='4'>GENERAL NATURAL RESOURCES MANAGEMENT AND BIOLOGICAL SCIENCES</td></tr><tr><td class='indent'>Counties with loss</td><td class='n'>380</td><td class='n'>380</td><td><span class="check yes">&#10003;</span></td></tr><tr><td class='indent'>Counties with 100% loss</td><td class='n'>254</td><td class='n'>254</td><td><span class="check yes">&#10003;</span></td></tr><tr class='group'><td colspan='4'>SOIL CONSERVATION TECHNICIAN</td></tr><tr><td class='indent'>Counties with loss</td><td class='n'>286</td><td class='n'>286</td><td><span class="check yes">&#10003;</span></td></tr><tr><td class='indent'>Counties with 100% loss</td><td class='n'>255</td><td class='n'>255</td><td><span class="check yes">&#10003;</span></td></tr></tbody>
+      </table>
+    </div>
+
+  <div class="footer">
+    Generated 2026-03-19 17:15 &mdash;
+    Source: <a href="https://huggingface.co/datasets/impactproject/opm-ehri-data"><code>impactproject/opm-ehri-data</code></a>
+  </div>
+</body>
+</html>

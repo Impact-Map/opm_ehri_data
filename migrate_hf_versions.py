@@ -26,7 +26,7 @@ from opm_pipeline.scraper import setup_page, set_filters, get_card_filename, get
 load_dotenv()
 
 HF_TOKEN = os.environ.get("HF_TOKEN")
-HF_REPO = "abigailhaddad/opm-federal-workforce"
+HF_REPO = "impactproject/opm-ehri-data"
 
 # Matches old-style paths without version: accessions/accessions_202511.parquet
 OLD_PATH_RE = re.compile(r'^(accessions|separations|employment)/\1_(\d{6})\.parquet$')

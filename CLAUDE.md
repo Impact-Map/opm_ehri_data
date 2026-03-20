@@ -1,6 +1,6 @@
 # EHRI Federal Workforce Data Pipeline
 
-This repo scrapes OPM/EHRI federal workforce data and publishes it to a single HuggingFace dataset: `abigailhaddad/opm-federal-workforce`.
+This repo scrapes OPM/EHRI federal workforce data and publishes it to a single HuggingFace dataset: `impactproject/opm-ehri-data`.
 
 ## What This Does
 
@@ -29,7 +29,7 @@ All files go into one HF repo, named by their OPM source and version (e.g. `acce
 - All columns read as strings (`dtype=str`) to avoid mixed-type issues
 - Parquet uses zstd compression (~96% size reduction)
 - Uses Playwright because OPM site is a Blazor app with no direct download URLs
-- HF username hardcoded to `abigailhaddad` in `opm_pipeline/config.py`
+- HF org hardcoded to `impactproject` in `opm_pipeline/config.py`
 
 ## Email Notifications (Buttondown)
 

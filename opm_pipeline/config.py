@@ -7,8 +7,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 HF_TOKEN = os.environ.get("HF_TOKEN")
-HF_USERNAME = "abigailhaddad"
-HF_REPO = f"{HF_USERNAME}/opm-federal-workforce"
+HF_USERNAME = "impactproject"
+HF_REPO = f"{HF_USERNAME}/opm-ehri-data"
 
 OPM_URL = "https://data.opm.gov/explore-data/data/data-downloads"
 

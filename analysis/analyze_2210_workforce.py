@@ -15,7 +15,7 @@ from tqdm import tqdm
 
 load_dotenv()
 
-HF_REPO = "abigailhaddad/opm-federal-workforce"
+HF_REPO = "impactproject/opm-ehri-data"
 OUTPUT_DIR = Path("data/analysis")
 SERIES_CODE = "2210"  # IT Specialist
 
