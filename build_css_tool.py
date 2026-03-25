@@ -51,7 +51,7 @@ This tool loads federal workforce data from [OPM/EHRI](https://data.opm.gov) and
 
 # ── Cell 1: Install ────────────────────────────────────────────────────────
 code("""
-!pip install -q duckdb pandas ipywidgets huggingface_hub
+!pip install -q 'duckdb>=1.5,<2' 'pandas>=2,<4' 'ipywidgets>=8.1,<9' 'huggingface_hub>=1.4,<2'
 
 import re, base64, warnings
 import duckdb
@@ -245,7 +245,7 @@ def build_org_filter(selected_labels, org_dict):
     return ' OR '.join(clauses) if clauses else '1=0'
 
 def make_checkbox_group(labels, checked_labels=None, max_height='300px'):
-    # Create a scrollable group of checkboxes
+    # Create a scrollable group of checkboxes with Check All / Uncheck All buttons
     if checked_labels is None:
         checked_labels = labels
     boxes = []
@@ -257,7 +257,17 @@ def make_checkbox_group(labels, checked_labels=None, max_height='300px'):
             layout=widgets.Layout(width='auto')
         )
         boxes.append(cb)
-    container = widgets.VBox(
+    btn_all = widgets.Button(description='Check All', layout=widgets.Layout(width='100px', height='28px'))
+    btn_none = widgets.Button(description='Uncheck All', layout=widgets.Layout(width='100px', height='28px'))
+    def _check_all(_):
+        for cb in boxes:
+            cb.value = True
+    def _uncheck_all(_):
+        for cb in boxes:
+            cb.value = False
+    btn_all.on_click(_check_all)
+    btn_none.on_click(_uncheck_all)
+    scroll_box = widgets.VBox(
         boxes,
         layout=widgets.Layout(
             max_height=max_height,
@@ -266,6 +276,10 @@ def make_checkbox_group(labels, checked_labels=None, max_height='300px'):
             padding='5px'
         )
     )
+    container = widgets.VBox([
+        widgets.HBox([btn_all, btn_none]),
+        scroll_box
+    ])
     return container, boxes
 
 def get_checked(boxes):
@@ -278,30 +292,22 @@ def make_org_picker(prefix, max_height='300px'):
         value='Key Organizations',
         style={'description_width': '50px'}
     )
-    # Start with key orgs, all checked
     container, boxes = make_checkbox_group(list(key_orgs.keys()), max_height=max_height)
-
-    # Store boxes list on the container so we can access it later
     container._boxes = boxes
-    container._current_mode = 'key'
 
     def _update(change):
         if change['new'] == 'Key Organizations':
             new_container, new_boxes = make_checkbox_group(
                 list(key_orgs.keys()), max_height=max_height
             )
-            container.children = new_container.children
-            container._boxes = new_boxes
-            container._current_mode = 'key'
         else:
             new_container, new_boxes = make_checkbox_group(
                 list(all_orgs.keys()),
                 checked_labels=list(key_orgs.keys()),
                 max_height=max_height
             )
-            container.children = new_container.children
-            container._boxes = new_boxes
-            container._current_mode = 'all'
+        container.children = new_container.children
+        container._boxes = new_boxes
     toggle.observe(_update, names='value')
     return toggle, container
 
