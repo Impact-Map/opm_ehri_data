@@ -455,7 +455,7 @@ See how many federal employees left, broken down by **separation mechanism**.
 | Termination | Expired appointments, probationary terms, etc. |
 | Transfer Out | Moved to another agency |
 
-**DRP flag:** The Deferred Resignation Program is tracked as a separate Yes/No indicator — check the box below to include it as a column.""")
+**DRP flag:** The Deferred Resignation Program is tracked as a separate Yes/No indicator. When the DRP checkbox is checked (it is by default), your report will include a column showing whether each row's separations include DRP participants.""")
 
 code(r"""
 SEP_BREAKDOWN_OPTIONS = {
@@ -558,6 +558,7 @@ display(widgets.VBox([
     w2_picker,
     widgets.HTML('<h3>Separation mechanisms:</h3><p style="color:#666">All checked by default. Uncheck to exclude.</p>'),
     w2_cat_container,
+    widgets.HTML('<h3>Deferred Resignation Program (DRP):</h3>'),
     w2_drp,
     widgets.HTML('<h3>Optional: add breakdown dimensions</h3>'),
     w2_bd_container,
