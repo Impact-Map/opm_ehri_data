@@ -33,12 +33,12 @@ md("""[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg
 
 **No coding required.**
 
-This tool loads federal workforce data from [OPM/EHRI](https://data.opm.gov) and gives you dropdown menus to explore it. To get started:
+This tool loads federal workforce data from [OPM/EHRI](https://data.opm.gov) and gives you menus to explore it. To get started:
 
-1. Click **Runtime → Run all** in the menu bar above
-2. Wait until you see **"Ready ✓"** (takes ~30 seconds — no large downloads yet)
-3. Scroll down to the tools — use the dropdowns to pick organizations, months, and breakdowns
-4. Click **Generate Report** to see a table (data downloads on demand, ~10–30 seconds per query), then **Download CSV** to save it
+1. Click the **▶▶ (Run all)** button in the toolbar, or use **Runtime → Run all**
+2. Wait for the setup cells to finish running (~30 seconds) — you'll see output under each one
+3. Scroll down to the tools — check the boxes for the organizations and breakdowns you want
+4. Click **Generate Report** to see a table (each query takes ~10–30 seconds), then **Download CSV** to save it
 
 **Four tools included:**
 - **Workforce Size Comparison** — Compare total employees at two points in time (e.g., Jan 2025 vs. latest)
@@ -244,28 +244,66 @@ def build_org_filter(selected_labels, org_dict):
             clauses.append(f"(agency = '{esc_a}')")
     return ' OR '.join(clauses) if clauses else '1=0'
 
-def make_org_picker(prefix, height='250px'):
+def make_checkbox_group(labels, checked_labels=None, max_height='300px'):
+    # Create a scrollable group of checkboxes
+    if checked_labels is None:
+        checked_labels = labels
+    boxes = []
+    for label in labels:
+        cb = widgets.Checkbox(
+            value=(label in checked_labels),
+            description=label,
+            indent=False,
+            layout=widgets.Layout(width='auto')
+        )
+        boxes.append(cb)
+    container = widgets.VBox(
+        boxes,
+        layout=widgets.Layout(
+            max_height=max_height,
+            overflow_y='auto',
+            border='1px solid #ddd',
+            padding='5px'
+        )
+    )
+    return container, boxes
+
+def get_checked(boxes):
+    # Return list of labels for checked boxes
+    return [cb.description for cb in boxes if cb.value]
+
+def make_org_picker(prefix, max_height='300px'):
     toggle = widgets.ToggleButtons(
         options=['Key Organizations', 'All Organizations'],
         value='Key Organizations',
         style={'description_width': '50px'}
     )
-    picker = widgets.SelectMultiple(
-        options=list(key_orgs.keys()),
-        value=tuple(key_orgs.keys()),
-        description='Select:',
-        style={'description_width': '60px'},
-        layout=widgets.Layout(width='600px', height=height)
-    )
+    # Start with key orgs, all checked
+    container, boxes = make_checkbox_group(list(key_orgs.keys()), max_height=max_height)
+
+    # Store boxes list on the container so we can access it later
+    container._boxes = boxes
+    container._current_mode = 'key'
+
     def _update(change):
         if change['new'] == 'Key Organizations':
-            picker.options = list(key_orgs.keys())
-            picker.value = tuple(key_orgs.keys())
+            new_container, new_boxes = make_checkbox_group(
+                list(key_orgs.keys()), max_height=max_height
+            )
+            container.children = new_container.children
+            container._boxes = new_boxes
+            container._current_mode = 'key'
         else:
-            picker.options = list(all_orgs.keys())
-            picker.value = tuple(key_orgs.keys())
+            new_container, new_boxes = make_checkbox_group(
+                list(all_orgs.keys()),
+                checked_labels=list(key_orgs.keys()),
+                max_height=max_height
+            )
+            container.children = new_container.children
+            container._boxes = new_boxes
+            container._current_mode = 'all'
     toggle.observe(_update, names='value')
-    return toggle, picker
+    return toggle, container
 
 print(f"\nReady ✓")
 print(f"  {len(all_agencies)} agencies, {len(key_orgs)} key organizations pre-selected")
@@ -279,7 +317,7 @@ print(f"  Accessions: {month_label(acc_month_list[0])} – {month_label(acc_mont
 md("""---
 ## Tool 1: Workforce Size Comparison
 
-Compare total federal employees between two months. Hold **Ctrl** (Windows) or **Cmd** (Mac) to select multiple items in any list.""")
+Compare total federal employees between two months.""")
 
 code(r"""
 BREAKDOWN_OPTIONS = {
@@ -316,12 +354,8 @@ w1_comparison = widgets.Dropdown(
 
 w1_toggle, w1_picker = make_org_picker('w1')
 
-w1_breakdowns = widgets.SelectMultiple(
-    options=list(BREAKDOWN_OPTIONS.keys()),
-    value=(),
-    description='Group by:',
-    style={'description_width': '100px'},
-    layout=widgets.Layout(width='400px', height='180px')
+w1_bd_container, w1_bd_boxes = make_checkbox_group(
+    list(BREAKDOWN_OPTIONS.keys()), checked_labels=[], max_height='200px'
 )
 w1_button = widgets.Button(
     description='  Generate Report', button_style='primary', icon='table',
@@ -332,9 +366,9 @@ w1_output = widgets.Output()
 def run_comparison(_):
     with w1_output:
         clear_output(wait=True)
-        selected = list(w1_picker.value)
+        selected = get_checked(w1_picker._boxes)
         if not selected:
-            print("⚠ Select at least one organization.")
+            print("⚠ Check at least one organization.")
             return
         baseline = w1_baseline.value
         comparison = w1_comparison.value
@@ -342,11 +376,10 @@ def run_comparison(_):
             print("⚠ Baseline and comparison months must be different.")
             return
 
-        # Determine which org dict to use based on toggle
         current_orgs = key_orgs if w1_toggle.value == 'Key Organizations' else all_orgs
         org_filter = build_org_filter(selected, current_orgs)
 
-        breakdown_cols = [BREAKDOWN_OPTIONS[k] for k in w1_breakdowns.value]
+        breakdown_cols = [BREAKDOWN_OPTIONS[k] for k in get_checked(w1_bd_boxes)]
         group_cols = ['agency', 'agency_subelement'] + breakdown_cols
         group_sql = ', '.join(group_cols)
 
@@ -393,8 +426,8 @@ display(widgets.VBox([
     widgets.HTML('<h3>Select organizations:</h3>'),
     w1_toggle,
     w1_picker,
-    widgets.HTML('<h3>Optional: add breakdown dimensions</h3><p style="color:#666">Leave empty for agency/subagency totals only.</p>'),
-    w1_breakdowns,
+    widgets.HTML('<h3>Optional: add breakdown dimensions</h3><p style="color:#666">Check any boxes to add columns to the report.</p>'),
+    w1_bd_container,
     widgets.HTML('<br>'),
     w1_button,
     w1_output,
@@ -432,30 +465,18 @@ SEP_BREAKDOWN_OPTIONS = {
     'Age Bracket': 'age_bracket',
 }
 
-w2_months = widgets.SelectMultiple(
-    options=[(month_label(m), m) for m in sep_month_list],
-    value=tuple(sep_month_list),
-    description='Months:',
-    style={'description_width': '100px'},
-    layout=widgets.Layout(width='300px', height='150px')
+w2_months_container, w2_months_boxes = make_checkbox_group(
+    [month_label(m) for m in sep_month_list], max_height='150px'
 )
+# Store the raw month values for lookup
+_sep_month_map = {month_label(m): m for m in sep_month_list}
 
 w2_toggle, w2_picker = make_org_picker('w2')
 
-w2_categories = widgets.SelectMultiple(
-    options=sep_categories,
-    value=tuple(sep_categories),
-    description='Mechanisms:',
-    style={'description_width': '100px'},
-    layout=widgets.Layout(width='450px', height='160px')
-)
+w2_cat_container, w2_cat_boxes = make_checkbox_group(sep_categories, max_height='160px')
 w2_drp = widgets.Checkbox(value=True, description='Include DRP (Deferred Resignation) flag as a column', indent=False)
-w2_breakdowns = widgets.SelectMultiple(
-    options=list(SEP_BREAKDOWN_OPTIONS.keys()),
-    value=(),
-    description='Group by:',
-    style={'description_width': '100px'},
-    layout=widgets.Layout(width='400px', height='160px')
+w2_bd_container, w2_bd_boxes = make_checkbox_group(
+    list(SEP_BREAKDOWN_OPTIONS.keys()), checked_labels=[], max_height='160px'
 )
 w2_button = widgets.Button(
     description='  Generate Report', button_style='primary', icon='table',
@@ -466,17 +487,18 @@ w2_output = widgets.Output()
 def run_separations(_):
     with w2_output:
         clear_output(wait=True)
-        selected = list(w2_picker.value)
-        months = list(w2_months.value)
-        categories = list(w2_categories.value)
+        selected = get_checked(w2_picker._boxes)
+        month_labels = get_checked(w2_months_boxes)
+        months = [_sep_month_map[ml] for ml in month_labels]
+        categories = get_checked(w2_cat_boxes)
         if not selected or not months or not categories:
-            print("⚠ Select at least one organization, month, and separation category.")
+            print("⚠ Check at least one organization, month, and separation category.")
             return
 
         current_orgs = key_orgs if w2_toggle.value == 'Key Organizations' else all_orgs
         org_filter = build_org_filter(selected, current_orgs)
 
-        breakdown_cols = [SEP_BREAKDOWN_OPTIONS[k] for k in w2_breakdowns.value]
+        breakdown_cols = [SEP_BREAKDOWN_OPTIONS[k] for k in get_checked(w2_bd_boxes)]
         group_cols = ['personnel_action_effective_date_yyyymm', 'agency', 'agency_subelement', 'separation_category']
         if w2_drp.value:
             group_cols.append('drp_indicator')
@@ -524,15 +546,15 @@ w2_button.on_click(run_separations)
 
 display(widgets.VBox([
     widgets.HTML('<h3>Select months:</h3>'),
-    w2_months,
+    w2_months_container,
     widgets.HTML('<h3>Select organizations:</h3>'),
     w2_toggle,
     w2_picker,
-    widgets.HTML('<h3>Separation mechanisms:</h3><p style="color:#666">All selected by default. Deselect to filter.</p>'),
-    w2_categories,
+    widgets.HTML('<h3>Separation mechanisms:</h3><p style="color:#666">All checked by default. Uncheck to exclude.</p>'),
+    w2_cat_container,
     w2_drp,
     widgets.HTML('<h3>Optional: add breakdown dimensions</h3>'),
-    w2_breakdowns,
+    w2_bd_container,
     widgets.HTML('<br>'),
     w2_button,
     w2_output,
@@ -559,22 +581,15 @@ ACC_BREAKDOWN_OPTIONS = {
     'Education Level': 'education_level',
 }
 
-w3_months = widgets.SelectMultiple(
-    options=[(month_label(m), m) for m in acc_month_list],
-    value=tuple(acc_month_list),
-    description='Months:',
-    style={'description_width': '100px'},
-    layout=widgets.Layout(width='300px', height='150px')
+w3_months_container, w3_months_boxes = make_checkbox_group(
+    [month_label(m) for m in acc_month_list], max_height='150px'
 )
+_acc_month_map = {month_label(m): m for m in acc_month_list}
 
 w3_toggle, w3_picker = make_org_picker('w3')
 
-w3_breakdowns = widgets.SelectMultiple(
-    options=list(ACC_BREAKDOWN_OPTIONS.keys()),
-    value=(),
-    description='Group by:',
-    style={'description_width': '100px'},
-    layout=widgets.Layout(width='400px', height='160px')
+w3_bd_container, w3_bd_boxes = make_checkbox_group(
+    list(ACC_BREAKDOWN_OPTIONS.keys()), checked_labels=[], max_height='160px'
 )
 w3_button = widgets.Button(
     description='  Generate Report', button_style='primary', icon='table',
@@ -585,16 +600,17 @@ w3_output = widgets.Output()
 def run_accessions(_):
     with w3_output:
         clear_output(wait=True)
-        selected = list(w3_picker.value)
-        months = list(w3_months.value)
+        selected = get_checked(w3_picker._boxes)
+        month_labels = get_checked(w3_months_boxes)
+        months = [_acc_month_map[ml] for ml in month_labels]
         if not selected or not months:
-            print("⚠ Select at least one organization and month.")
+            print("⚠ Check at least one organization and month.")
             return
 
         current_orgs = key_orgs if w3_toggle.value == 'Key Organizations' else all_orgs
         org_filter = build_org_filter(selected, current_orgs)
 
-        breakdown_cols = [ACC_BREAKDOWN_OPTIONS[k] for k in w3_breakdowns.value]
+        breakdown_cols = [ACC_BREAKDOWN_OPTIONS[k] for k in get_checked(w3_bd_boxes)]
         group_cols = ['personnel_action_effective_date_yyyymm', 'agency', 'agency_subelement'] + breakdown_cols
         group_sql = ', '.join(group_cols)
         month_sql = ', '.join(f"'{m}'" for m in months)
@@ -632,12 +648,12 @@ w3_button.on_click(run_accessions)
 
 display(widgets.VBox([
     widgets.HTML('<h3>Select months:</h3>'),
-    w3_months,
+    w3_months_container,
     widgets.HTML('<h3>Select organizations:</h3>'),
     w3_toggle,
     w3_picker,
     widgets.HTML('<h3>Optional: add breakdown dimensions</h3>'),
-    w3_breakdowns,
+    w3_bd_container,
     widgets.HTML('<br>'),
     w3_button,
     w3_output,
@@ -664,12 +680,8 @@ TREND_BREAKDOWN_OPTIONS = {
 
 w4_toggle, w4_picker = make_org_picker('w4')
 
-w4_breakdowns = widgets.SelectMultiple(
-    options=list(TREND_BREAKDOWN_OPTIONS.keys()),
-    value=(),
-    description='Group by:',
-    style={'description_width': '100px'},
-    layout=widgets.Layout(width='400px', height='140px')
+w4_bd_container, w4_bd_boxes = make_checkbox_group(
+    list(TREND_BREAKDOWN_OPTIONS.keys()), checked_labels=[], max_height='140px'
 )
 w4_button = widgets.Button(
     description='  Generate Report', button_style='primary', icon='table',
@@ -680,15 +692,15 @@ w4_output = widgets.Output()
 def run_trends(_):
     with w4_output:
         clear_output(wait=True)
-        selected = list(w4_picker.value)
+        selected = get_checked(w4_picker._boxes)
         if not selected:
-            print("⚠ Select at least one organization.")
+            print("⚠ Check at least one organization.")
             return
 
         current_orgs = key_orgs if w4_toggle.value == 'Key Organizations' else all_orgs
         org_filter = build_org_filter(selected, current_orgs)
 
-        breakdown_cols = [TREND_BREAKDOWN_OPTIONS[k] for k in w4_breakdowns.value]
+        breakdown_cols = [TREND_BREAKDOWN_OPTIONS[k] for k in get_checked(w4_bd_boxes)]
         group_cols = ['snapshot_yyyymm', 'agency', 'agency_subelement'] + breakdown_cols
         group_sql = ', '.join(group_cols)
 
@@ -735,7 +747,7 @@ display(widgets.VBox([
     w4_toggle,
     w4_picker,
     widgets.HTML('<h3>Optional: add breakdown dimensions</h3>'),
-    w4_breakdowns,
+    w4_bd_container,
     widgets.HTML('<br>'),
     w4_button,
     w4_output,
