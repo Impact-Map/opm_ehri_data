@@ -1,0 +1,10 @@
+{
+  "months": [
+    {
+      "month": "202601",
+      "compared_to": "202512",
+      "total_findings": 50,
+      "generated_at": "2026-03-27T14:25:34.745731+00:00"
+    }
+  ]
+}

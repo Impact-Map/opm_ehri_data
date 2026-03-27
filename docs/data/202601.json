@@ -1,0 +1,2329 @@
+{
+  "month": "202601",
+  "compared_to": "202512",
+  "generated_at": "2026-03-27T14:25:34.745731+00:00",
+  "summary": {
+    "old_total": 2072351,
+    "new_total": 2033111,
+    "change": -39240,
+    "pct_change": -1.9,
+    "agencies_shrinking": 407,
+    "agencies_growing": 30,
+    "agencies_stable": 57,
+    "top_losses": [
+      {
+        "agency": "INTERNAL REVENUE SERVICE",
+        "change": -3347,
+        "pct": -4.3,
+        "old": 77661,
+        "new": 74314
+      },
+      {
+        "agency": "ENVIRONMENTAL PROTECTION AGENCY",
+        "change": -1812,
+        "pct": -12.4,
+        "old": 14661,
+        "new": 12849
+      },
+      {
+        "agency": "VETERANS HEALTH ADMINISTRATION",
+        "change": -1774,
+        "pct": -0.4,
+        "old": 402973,
+        "new": 401199
+      },
+      {
+        "agency": "DEPARTMENT OF ENERGY",
+        "change": -1446,
+        "pct": -10.7,
+        "old": 13559,
+        "new": 12113
+      },
+      {
+        "agency": "DEFENSE HUMAN RESOURCES ACTIVITY",
+        "change": -1235,
+        "pct": -54.9,
+        "old": 2251,
+        "new": 1016
+      }
+    ],
+    "top_gains": [
+      {
+        "agency": "IMMIGRATION AND CUSTOMS ENFORCEMENT",
+        "change": 2189,
+        "pct": 7.7,
+        "old": 28272,
+        "new": 30461
+      },
+      {
+        "agency": "OFFICE OF THE SECRETARY OF HEALTH AND HUMAN SERVICES",
+        "change": 253,
+        "pct": 10.8,
+        "old": 2332,
+        "new": 2585
+      },
+      {
+        "agency": "DEPARTMENT OF DEFENSE EDUCATION ACTIVITY",
+        "change": 191,
+        "pct": 1.3,
+        "old": 14208,
+        "new": 14399
+      },
+      {
+        "agency": "FARM SERVICE AGENCY",
+        "change": 43,
+        "pct": 1.7,
+        "old": 2561,
+        "new": 2604
+      },
+      {
+        "agency": "DEPUTY ASSISTANT SECRETARY FOR FINANCE",
+        "change": 36,
+        "pct": 2.5,
+        "old": 1453,
+        "new": 1489
+      }
+    ]
+  },
+  "renames_detected": [
+    {
+      "old_name": "BUREAU OF CONSUMER FINANCIAL PROTECTION",
+      "new_name": "CONSUMER FINANCIAL PROTECTION BUREAU",
+      "old_count": 1248,
+      "new_count": 1214
+    },
+    {
+      "old_name": "EXECUTIVE DIRECTOR, OFFICE OF ACQUISITION AND LOGISTICS",
+      "new_name": "EXECUTIVE DIRECTOR, OFFICE OF ACQUISITION, LOGISTICS AND CONSTRUCTION",
+      "old_count": 1050,
+      "new_count": 1019
+    }
+  ],
+  "separations": {
+    "total": 14912,
+    "by_category": [
+      {
+        "category": "QUIT",
+        "count": 6305,
+        "pct": 42.3
+      },
+      {
+        "category": "RETIREMENT - VOLUNTARY",
+        "count": 4157,
+        "pct": 27.9
+      },
+      {
+        "category": "TERMINATION (EXPIRED APPT/OTHER)",
+        "count": 2492,
+        "pct": 16.7
+      },
+      {
+        "category": "OTHER SEPARATION",
+        "count": 752,
+        "pct": 5.0
+      },
+      {
+        "category": "TRANSFER OUT - INDIVIDUAL TRANSFER",
+        "count": 613,
+        "pct": 4.1
+      },
+      {
+        "category": "RETIREMENT - EARLY OUT",
+        "count": 400,
+        "pct": 2.7
+      },
+      {
+        "category": "RETIREMENT - OTHER",
+        "count": 182,
+        "pct": 1.2
+      },
+      {
+        "category": "REDUCTION IN FORCE (RIF)",
+        "count": 6,
+        "pct": 0.0
+      },
+      {
+        "category": "TRANSFER OUT - MASS TRANSFER",
+        "count": 5,
+        "pct": 0.0
+      }
+    ],
+    "top_agencies": [
+      {
+        "agency": "DEPARTMENT OF VETERANS AFFAIRS",
+        "agency_subelement": "VETERANS HEALTH ADMINISTRATION",
+        "count": 2485
+      },
+      {
+        "agency": "DEPARTMENT OF DEFENSE",
+        "agency_subelement": "DEFENSE HUMAN RESOURCES ACTIVITY",
+        "count": 1206
+      },
+      {
+        "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+        "agency_subelement": "GODDARD SPACE FLIGHT CENTER",
+        "count": 506
+      },
+      {
+        "agency": "DEPARTMENT OF TREASURY",
+        "agency_subelement": "INTERNAL REVENUE SERVICE",
+        "count": 470
+      },
+      {
+        "agency": "DEPARTMENT OF HOMELAND SECURITY",
+        "agency_subelement": "FEDERAL EMERGENCY MANAGEMENT AGENCY",
+        "count": 343
+      },
+      {
+        "agency": "DEPARTMENT OF HOMELAND SECURITY",
+        "agency_subelement": "IMMIGRATION AND CUSTOMS ENFORCEMENT",
+        "count": 332
+      },
+      {
+        "agency": "DEPARTMENT OF THE ARMY",
+        "agency_subelement": "ARMY NATIONAL GUARD UNITS",
+        "count": 307
+      },
+      {
+        "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+        "agency_subelement": "HEADQUARTERS, NASA",
+        "count": 272
+      },
+      {
+        "agency": "DEPARTMENT OF HOMELAND SECURITY",
+        "agency_subelement": "CUSTOMS AND BORDER PROTECTION",
+        "count": 256
+      },
+      {
+        "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+        "agency_subelement": "LANGLEY RESEARCH CENTER",
+        "count": 251
+      }
+    ],
+    "drp": {
+      "total": 2051,
+      "pct_of_all_separations": 13.8,
+      "by_category": [
+        {
+          "category": "RETIREMENT - VOLUNTARY",
+          "count": 945,
+          "pct": 46.1
+        },
+        {
+          "category": "QUIT",
+          "count": 790,
+          "pct": 38.5
+        },
+        {
+          "category": "RETIREMENT - EARLY OUT",
+          "count": 312,
+          "pct": 15.2
+        },
+        {
+          "category": "RETIREMENT - OTHER",
+          "count": 2,
+          "pct": 0.1
+        },
+        {
+          "category": "TRANSFER OUT - INDIVIDUAL TRANSFER",
+          "count": 2,
+          "pct": 0.1
+        }
+      ],
+      "top_agencies": [
+        {
+          "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+          "agency_subelement": "GODDARD SPACE FLIGHT CENTER",
+          "count": 485
+        },
+        {
+          "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+          "agency_subelement": "HEADQUARTERS, NASA",
+          "count": 260
+        },
+        {
+          "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+          "agency_subelement": "LANGLEY RESEARCH CENTER",
+          "count": 233
+        },
+        {
+          "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+          "agency_subelement": "LYNDON B. JOHNSON SPACE CENTER",
+          "count": 208
+        },
+        {
+          "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+          "agency_subelement": "JOHN F. KENNEDY SPACE CENTER",
+          "count": 191
+        },
+        {
+          "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+          "agency_subelement": "GEORGE C. MARSHALL SPACE FLIGHT CENTER",
+          "count": 146
+        },
+        {
+          "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+          "agency_subelement": "AMES RESEARCH CENTER",
+          "count": 126
+        },
+        {
+          "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+          "agency_subelement": "JOHN GLENN RESEARCH CENTER AT LEWIS FIELD",
+          "count": 124
+        },
+        {
+          "agency": "DEPARTMENT OF ENERGY",
+          "agency_subelement": "DEPARTMENT OF ENERGY",
+          "count": 115
+        },
+        {
+          "agency": "DEPARTMENT OF HOMELAND SECURITY",
+          "agency_subelement": "DHS HEADQUARTERS",
+          "count": 44
+        }
+      ]
+    }
+  },
+  "themes": [
+    {
+      "dimension": "Age Bracket",
+      "group": "65 OR MORE",
+      "direction": "dropped",
+      "agency_count": 19,
+      "pct_range": [
+        23.2,
+        61.9
+      ],
+      "total_change": -2622,
+      "group_median_pct": -8.7,
+      "dimension_median_pct": -1.5,
+      "deviation_pp": -7.1,
+      "agencies": [
+        {
+          "agency": "ENVIRONMENTAL PROTECTION AGENCY",
+          "agency_subelement": "ENVIRONMENTAL PROTECTION AGENCY",
+          "old_count": 1088,
+          "new_count": 616,
+          "change": -472,
+          "pct_change": -43.4
+        },
+        {
+          "agency": "DEPARTMENT OF ENERGY",
+          "agency_subelement": "DEPARTMENT OF ENERGY",
+          "old_count": 910,
+          "new_count": 531,
+          "change": -379,
+          "pct_change": -41.6
+        },
+        {
+          "agency": "GENERAL SERVICES ADMINISTRATION",
+          "agency_subelement": "PUBLIC BUILDINGS SERVICE",
+          "old_count": 339,
+          "new_count": 129,
+          "change": -210,
+          "pct_change": -61.9
+        },
+        {
+          "agency": "DEPARTMENT OF INTERIOR",
+          "agency_subelement": "OFFICE OF THE SECRETARY OF THE INTERIOR",
+          "old_count": 423,
+          "new_count": 229,
+          "change": -194,
+          "pct_change": -45.9
+        },
+        {
+          "agency": "FEDERAL DEPOSIT INSURANCE CORPORATION",
+          "agency_subelement": "FEDERAL DEPOSIT INSURANCE CORPORATION",
+          "old_count": 420,
+          "new_count": 267,
+          "change": -153,
+          "pct_change": -36.4
+        },
+        {
+          "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+          "agency_subelement": "GODDARD SPACE FLIGHT CENTER",
+          "old_count": 249,
+          "new_count": 132,
+          "change": -117,
+          "pct_change": -47.0
+        },
+        {
+          "agency": "DEPARTMENT OF INTERIOR",
+          "agency_subelement": "INDIAN AFFAIRS",
+          "old_count": 349,
+          "new_count": 232,
+          "change": -117,
+          "pct_change": -33.5
+        },
+        {
+          "agency": "DEPARTMENT OF INTERIOR",
+          "agency_subelement": "GEOLOGICAL SURVEY",
+          "old_count": 315,
+          "new_count": 201,
+          "change": -114,
+          "pct_change": -36.2
+        },
+        {
+          "agency": "GENERAL SERVICES ADMINISTRATION",
+          "agency_subelement": "FEDERAL ACQUISITION SERVICE",
+          "old_count": 200,
+          "new_count": 89,
+          "change": -111,
+          "pct_change": -55.5
+        },
+        {
+          "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+          "agency_subelement": "LYNDON B. JOHNSON SPACE CENTER",
+          "old_count": 214,
+          "new_count": 110,
+          "change": -104,
+          "pct_change": -48.6
+        },
+        {
+          "agency": "DEPARTMENT OF INTERIOR",
+          "agency_subelement": "BUREAU OF RECLAMATION",
+          "old_count": 217,
+          "new_count": 114,
+          "change": -103,
+          "pct_change": -47.5
+        },
+        {
+          "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+          "agency_subelement": "AMES RESEARCH CENTER",
+          "old_count": 193,
+          "new_count": 101,
+          "change": -92,
+          "pct_change": -47.7
+        },
+        {
+          "agency": "DEPARTMENT OF INTERIOR",
+          "agency_subelement": "U.S. FISH AND WILDLIFE SERVICE",
+          "old_count": 241,
+          "new_count": 162,
+          "change": -79,
+          "pct_change": -32.8
+        },
+        {
+          "agency": "DEPARTMENT OF INTERIOR",
+          "agency_subelement": "BUREAU OF LAND MANAGEMENT",
+          "old_count": 323,
+          "new_count": 248,
+          "change": -75,
+          "pct_change": -23.2
+        },
+        {
+          "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+          "agency_subelement": "HEADQUARTERS, NASA",
+          "old_count": 135,
+          "new_count": 64,
+          "change": -71,
+          "pct_change": -52.6
+        },
+        {
+          "agency": "OFFICE OF PERSONNEL MANAGEMENT",
+          "agency_subelement": "OFFICE OF PERSONNEL MANAGEMENT",
+          "old_count": 138,
+          "new_count": 76,
+          "change": -62,
+          "pct_change": -44.9
+        },
+        {
+          "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+          "agency_subelement": "LANGLEY RESEARCH CENTER",
+          "old_count": 121,
+          "new_count": 63,
+          "change": -58,
+          "pct_change": -47.9
+        },
+        {
+          "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+          "agency_subelement": "GEORGE C. MARSHALL SPACE FLIGHT CENTER",
+          "old_count": 127,
+          "new_count": 70,
+          "change": -57,
+          "pct_change": -44.9
+        },
+        {
+          "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+          "agency_subelement": "JOHN F. KENNEDY SPACE CENTER",
+          "old_count": 112,
+          "new_count": 58,
+          "change": -54,
+          "pct_change": -48.2
+        }
+      ]
+    }
+  ],
+  "agency_profiles": [
+    {
+      "agency": "ENVIRONMENTAL PROTECTION AGENCY",
+      "agency_subelement": "ENVIRONMENTAL PROTECTION AGENCY",
+      "old_total": 14661,
+      "new_total": 12849,
+      "change": -1812,
+      "pct_change": -12.4,
+      "drivers": [
+        {
+          "dimension": "Supervisory Status",
+          "group": "MANAGEMENT OFFICIAL (CSRA)",
+          "old_count": 184,
+          "new_count": 120,
+          "change": -64,
+          "pct_change": -34.8
+        },
+        {
+          "dimension": "Age Bracket",
+          "group": "65 OR MORE",
+          "old_count": 1088,
+          "new_count": 616,
+          "change": -472,
+          "pct_change": -43.4
+        },
+        {
+          "dimension": "Age Bracket",
+          "group": "60-64",
+          "old_count": 1708,
+          "new_count": 1114,
+          "change": -594,
+          "pct_change": -34.8
+        },
+        {
+          "dimension": "Grade",
+          "group": "15",
+          "old_count": 1871,
+          "new_count": 1458,
+          "change": -413,
+          "pct_change": -22.1
+        },
+        {
+          "dimension": "Pay Plan",
+          "group": "SENIOR EXECUTIVE SERVICE",
+          "old_count": 289,
+          "new_count": 232,
+          "change": -57,
+          "pct_change": -19.7
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF VETERANS AFFAIRS",
+      "agency_subelement": "VETERANS HEALTH ADMINISTRATION",
+      "old_total": 402973,
+      "new_total": 401199,
+      "change": -1774,
+      "pct_change": -0.4,
+      "drivers": [
+        {
+          "dimension": "Pay Plan",
+          "group": "CLINICAL PODIATRISTS AND OPTOMETRISTS SCHEDULE",
+          "old_count": 1340,
+          "new_count": 962,
+          "change": -378,
+          "pct_change": -28.2
+        },
+        {
+          "dimension": "Grade",
+          "group": "15",
+          "old_count": 2388,
+          "new_count": 2681,
+          "change": 293,
+          "pct_change": 12.3
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF ENERGY",
+      "agency_subelement": "DEPARTMENT OF ENERGY",
+      "old_total": 13559,
+      "new_total": 12113,
+      "change": -1446,
+      "pct_change": -10.7,
+      "drivers": [
+        {
+          "dimension": "Age Bracket",
+          "group": "65 OR MORE",
+          "old_count": 910,
+          "new_count": 531,
+          "change": -379,
+          "pct_change": -41.6
+        },
+        {
+          "dimension": "Duty Station State",
+          "group": "ILLINOIS",
+          "old_count": 177,
+          "new_count": 126,
+          "change": -51,
+          "pct_change": -28.8
+        },
+        {
+          "dimension": "Pay Plan",
+          "group": "SENIOR EXECUTIVE SERVICE",
+          "old_count": 409,
+          "new_count": 322,
+          "change": -87,
+          "pct_change": -21.3
+        },
+        {
+          "dimension": "Age Bracket",
+          "group": "60-64",
+          "old_count": 1620,
+          "new_count": 1147,
+          "change": -473,
+          "pct_change": -29.2
+        },
+        {
+          "dimension": "Appointment Type",
+          "group": "CAREER (SENIOR EXECUTIVE SERVICE PERMANENT)",
+          "old_count": 384,
+          "new_count": 296,
+          "change": -88,
+          "pct_change": -22.9
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF DEFENSE",
+      "agency_subelement": "DEFENSE HUMAN RESOURCES ACTIVITY",
+      "old_total": 2251,
+      "new_total": 1016,
+      "change": -1235,
+      "pct_change": -54.9,
+      "drivers": [
+        {
+          "dimension": "Occupational Series",
+          "group": "MISCELLANEOUS ADMINISTRATION AND PROGRAM",
+          "old_count": 1313,
+          "new_count": 110,
+          "change": -1203,
+          "pct_change": -91.6
+        },
+        {
+          "dimension": "Education Level",
+          "group": "HIGH SCHOOL OR LESS",
+          "old_count": 1104,
+          "new_count": 134,
+          "change": -970,
+          "pct_change": -87.9
+        },
+        {
+          "dimension": "Occupational Category",
+          "group": "ADMINISTRATIVE",
+          "old_count": 2094,
+          "new_count": 867,
+          "change": -1227,
+          "pct_change": -58.6
+        },
+        {
+          "dimension": "Veteran Status",
+          "group": "N",
+          "old_count": 1794,
+          "new_count": 616,
+          "change": -1178,
+          "pct_change": -65.7
+        },
+        {
+          "dimension": "Supervisory Status",
+          "group": "ALL OTHER POSITIONS",
+          "old_count": 2023,
+          "new_count": 800,
+          "change": -1223,
+          "pct_change": -60.5
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF INTERIOR",
+      "agency_subelement": "OFFICE OF THE SECRETARY OF THE INTERIOR",
+      "old_total": 7595,
+      "new_total": 6717,
+      "change": -878,
+      "pct_change": -11.6,
+      "drivers": [
+        {
+          "dimension": "Age Bracket",
+          "group": "65 OR MORE",
+          "old_count": 423,
+          "new_count": 229,
+          "change": -194,
+          "pct_change": -45.9
+        },
+        {
+          "dimension": "Age Bracket",
+          "group": "60-64",
+          "old_count": 829,
+          "new_count": 562,
+          "change": -267,
+          "pct_change": -32.2
+        },
+        {
+          "dimension": "Grade",
+          "group": "15",
+          "old_count": 423,
+          "new_count": 335,
+          "change": -88,
+          "pct_change": -20.8
+        },
+        {
+          "dimension": "Occupational Series",
+          "group": "ACCOUNTING",
+          "old_count": 271,
+          "new_count": 217,
+          "change": -54,
+          "pct_change": -19.9
+        },
+        {
+          "dimension": "Occupational Series",
+          "group": "MANAGEMENT AND PROGRAM ANALYSIS",
+          "old_count": 338,
+          "new_count": 275,
+          "change": -63,
+          "pct_change": -18.6
+        }
+      ]
+    },
+    {
+      "agency": "GENERAL SERVICES ADMINISTRATION",
+      "agency_subelement": "PUBLIC BUILDINGS SERVICE",
+      "old_total": 4088,
+      "new_total": 3242,
+      "change": -846,
+      "pct_change": -20.7,
+      "drivers": [
+        {
+          "dimension": "Age Bracket",
+          "group": "65 OR MORE",
+          "old_count": 339,
+          "new_count": 129,
+          "change": -210,
+          "pct_change": -61.9
+        },
+        {
+          "dimension": "Age Bracket",
+          "group": "60-64",
+          "old_count": 538,
+          "new_count": 263,
+          "change": -275,
+          "pct_change": -51.1
+        },
+        {
+          "dimension": "Grade",
+          "group": "15",
+          "old_count": 193,
+          "new_count": 132,
+          "change": -61,
+          "pct_change": -31.6
+        },
+        {
+          "dimension": "Occupational Series",
+          "group": "MANAGEMENT AND PROGRAM ANALYSIS",
+          "old_count": 312,
+          "new_count": 216,
+          "change": -96,
+          "pct_change": -30.8
+        },
+        {
+          "dimension": "Occupational Series",
+          "group": "MISCELLANEOUS ADMINISTRATION AND PROGRAM",
+          "old_count": 222,
+          "new_count": 157,
+          "change": -65,
+          "pct_change": -29.3
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF INTERIOR",
+      "agency_subelement": "NATIONAL PARK SERVICE",
+      "old_total": 15156,
+      "new_total": 14319,
+      "change": -837,
+      "pct_change": -5.5,
+      "drivers": [
+        {
+          "dimension": "Occupational Series",
+          "group": "BIOLOGICAL SCIENCE TECHNICIAN",
+          "old_count": 410,
+          "new_count": 302,
+          "change": -108,
+          "pct_change": -26.3
+        },
+        {
+          "dimension": "Education Level",
+          "group": "NO DATA REPORTED",
+          "old_count": 321,
+          "new_count": 234,
+          "change": -87,
+          "pct_change": -27.1
+        },
+        {
+          "dimension": "Tenure",
+          "group": "NO TENURE GROUP - EMPLOYEES (E.G., TEMPORARIES OR SES) NOT IN TENURE GROUPS 1, 2, OR 3 FOR RIF PURPOSES",
+          "old_count": 1150,
+          "new_count": 846,
+          "change": -304,
+          "pct_change": -26.4
+        }
+      ]
+    },
+    {
+      "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+      "agency_subelement": "GODDARD SPACE FLIGHT CENTER",
+      "old_total": 2773,
+      "new_total": 2058,
+      "change": -715,
+      "pct_change": -25.8,
+      "drivers": [
+        {
+          "dimension": "Occupational Series",
+          "group": "MISCELLANEOUS ADMINISTRATION AND PROGRAM",
+          "old_count": 146,
+          "new_count": 90,
+          "change": -56,
+          "pct_change": -38.4
+        },
+        {
+          "dimension": "Education Level",
+          "group": "SOME COLLEGE OR ASSOCIATES DEGREE",
+          "old_count": 238,
+          "new_count": 131,
+          "change": -107,
+          "pct_change": -45.0
+        },
+        {
+          "dimension": "Age Bracket",
+          "group": "65 OR MORE",
+          "old_count": 249,
+          "new_count": 132,
+          "change": -117,
+          "pct_change": -47.0
+        },
+        {
+          "dimension": "Age Bracket",
+          "group": "60-64",
+          "old_count": 391,
+          "new_count": 214,
+          "change": -177,
+          "pct_change": -45.3
+        },
+        {
+          "dimension": "Occupational Category",
+          "group": "ADMINISTRATIVE",
+          "old_count": 613,
+          "new_count": 430,
+          "change": -183,
+          "pct_change": -29.9
+        }
+      ]
+    },
+    {
+      "agency": "GENERAL SERVICES ADMINISTRATION",
+      "agency_subelement": "FEDERAL ACQUISITION SERVICE",
+      "old_total": 3936,
+      "new_total": 3324,
+      "change": -612,
+      "pct_change": -15.5,
+      "drivers": [
+        {
+          "dimension": "Age Bracket",
+          "group": "65 OR MORE",
+          "old_count": 200,
+          "new_count": 89,
+          "change": -111,
+          "pct_change": -55.5
+        },
+        {
+          "dimension": "Duty Station State",
+          "group": "VIRGINIA",
+          "old_count": 233,
+          "new_count": 138,
+          "change": -95,
+          "pct_change": -40.8
+        },
+        {
+          "dimension": "Age Bracket",
+          "group": "60-64",
+          "old_count": 393,
+          "new_count": 219,
+          "change": -174,
+          "pct_change": -44.3
+        },
+        {
+          "dimension": "Education Level",
+          "group": "SOME COLLEGE OR ASSOCIATES DEGREE",
+          "old_count": 452,
+          "new_count": 339,
+          "change": -113,
+          "pct_change": -25.0
+        },
+        {
+          "dimension": "Age Bracket",
+          "group": "55-59",
+          "old_count": 564,
+          "new_count": 393,
+          "change": -171,
+          "pct_change": -30.3
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF INTERIOR",
+      "agency_subelement": "GEOLOGICAL SURVEY",
+      "old_total": 6515,
+      "new_total": 5983,
+      "change": -532,
+      "pct_change": -8.2,
+      "drivers": [
+        {
+          "dimension": "Age Bracket",
+          "group": "65 OR MORE",
+          "old_count": 315,
+          "new_count": 201,
+          "change": -114,
+          "pct_change": -36.2
+        },
+        {
+          "dimension": "Age Bracket",
+          "group": "60-64",
+          "old_count": 513,
+          "new_count": 355,
+          "change": -158,
+          "pct_change": -30.8
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF HOMELAND SECURITY",
+      "agency_subelement": "FEDERAL EMERGENCY MANAGEMENT AGENCY",
+      "old_total": 22195,
+      "new_total": 21696,
+      "change": -499,
+      "pct_change": -2.2,
+      "drivers": [
+        {
+          "dimension": "Grade",
+          "group": "00",
+          "old_count": 282,
+          "new_count": 232,
+          "change": -50,
+          "pct_change": -17.7
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF INTERIOR",
+      "agency_subelement": "U.S. FISH AND WILDLIFE SERVICE",
+      "old_total": 6994,
+      "new_total": 6501,
+      "change": -493,
+      "pct_change": -7.0,
+      "drivers": [
+        {
+          "dimension": "Age Bracket",
+          "group": "65 OR MORE",
+          "old_count": 241,
+          "new_count": 162,
+          "change": -79,
+          "pct_change": -32.8
+        },
+        {
+          "dimension": "Age Bracket",
+          "group": "60-64",
+          "old_count": 561,
+          "new_count": 394,
+          "change": -167,
+          "pct_change": -29.8
+        }
+      ]
+    },
+    {
+      "agency": "FEDERAL DEPOSIT INSURANCE CORPORATION",
+      "agency_subelement": "FEDERAL DEPOSIT INSURANCE CORPORATION",
+      "old_total": 5626,
+      "new_total": 5165,
+      "change": -461,
+      "pct_change": -8.2,
+      "drivers": [
+        {
+          "dimension": "Age Bracket",
+          "group": "65 OR MORE",
+          "old_count": 420,
+          "new_count": 267,
+          "change": -153,
+          "pct_change": -36.4
+        },
+        {
+          "dimension": "Age Bracket",
+          "group": "60-64",
+          "old_count": 596,
+          "new_count": 452,
+          "change": -144,
+          "pct_change": -24.2
+        },
+        {
+          "dimension": "Occupational Category",
+          "group": "CLERICAL",
+          "old_count": 454,
+          "new_count": 378,
+          "change": -76,
+          "pct_change": -16.7
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF INTERIOR",
+      "agency_subelement": "BUREAU OF RECLAMATION",
+      "old_total": 4025,
+      "new_total": 3626,
+      "change": -399,
+      "pct_change": -9.9,
+      "drivers": [
+        {
+          "dimension": "Age Bracket",
+          "group": "65 OR MORE",
+          "old_count": 217,
+          "new_count": 114,
+          "change": -103,
+          "pct_change": -47.5
+        },
+        {
+          "dimension": "Age Bracket",
+          "group": "60-64",
+          "old_count": 432,
+          "new_count": 292,
+          "change": -140,
+          "pct_change": -32.4
+        }
+      ]
+    },
+    {
+      "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+      "agency_subelement": "HEADQUARTERS, NASA",
+      "old_total": 1975,
+      "new_total": 1576,
+      "change": -399,
+      "pct_change": -20.2,
+      "drivers": [
+        {
+          "dimension": "Age Bracket",
+          "group": "65 OR MORE",
+          "old_count": 135,
+          "new_count": 64,
+          "change": -71,
+          "pct_change": -52.6
+        },
+        {
+          "dimension": "Age Bracket",
+          "group": "60-64",
+          "old_count": 268,
+          "new_count": 164,
+          "change": -104,
+          "pct_change": -38.8
+        },
+        {
+          "dimension": "Grade",
+          "group": "14",
+          "old_count": 449,
+          "new_count": 342,
+          "change": -107,
+          "pct_change": -23.8
+        },
+        {
+          "dimension": "Occupational Series",
+          "group": "GENERAL ENGINEERING",
+          "old_count": 272,
+          "new_count": 213,
+          "change": -59,
+          "pct_change": -21.7
+        },
+        {
+          "dimension": "Age Bracket",
+          "group": "55-59",
+          "old_count": 302,
+          "new_count": 209,
+          "change": -93,
+          "pct_change": -30.8
+        }
+      ]
+    },
+    {
+      "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+      "agency_subelement": "LYNDON B. JOHNSON SPACE CENTER",
+      "old_total": 3021,
+      "new_total": 2643,
+      "change": -378,
+      "pct_change": -12.5,
+      "drivers": [
+        {
+          "dimension": "Age Bracket",
+          "group": "65 OR MORE",
+          "old_count": 214,
+          "new_count": 110,
+          "change": -104,
+          "pct_change": -48.6
+        },
+        {
+          "dimension": "Age Bracket",
+          "group": "60-64",
+          "old_count": 355,
+          "new_count": 242,
+          "change": -113,
+          "pct_change": -31.8
+        },
+        {
+          "dimension": "Occupational Category",
+          "group": "ADMINISTRATIVE",
+          "old_count": 543,
+          "new_count": 445,
+          "change": -98,
+          "pct_change": -18.0
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF INTERIOR",
+      "agency_subelement": "BUREAU OF LAND MANAGEMENT",
+      "old_total": 7858,
+      "new_total": 7493,
+      "change": -365,
+      "pct_change": -4.6,
+      "drivers": [
+        {
+          "dimension": "Age Bracket",
+          "group": "65 OR MORE",
+          "old_count": 323,
+          "new_count": 248,
+          "change": -75,
+          "pct_change": -23.2
+        }
+      ]
+    },
+    {
+      "agency": "SMALL BUSINESS ADMINISTRATION",
+      "agency_subelement": "SMALL BUSINESS ADMINISTRATION",
+      "old_total": 5779,
+      "new_total": 5418,
+      "change": -361,
+      "pct_change": -6.2,
+      "drivers": [
+        {
+          "dimension": "Tenure",
+          "group": "NO TENURE GROUP - EMPLOYEES (E.G., TEMPORARIES OR SES) NOT IN TENURE GROUPS 1, 2, OR 3 FOR RIF PURPOSES",
+          "old_count": 602,
+          "new_count": 481,
+          "change": -121,
+          "pct_change": -20.1
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF AGRICULTURE",
+      "agency_subelement": "FOREST SERVICE",
+      "old_total": 26596,
+      "new_total": 26260,
+      "change": -336,
+      "pct_change": -1.3,
+      "drivers": [
+        {
+          "dimension": "Occupational Series",
+          "group": "WILDLAND FIRE MANAGEMENT",
+          "old_count": 536,
+          "new_count": 612,
+          "change": 76,
+          "pct_change": 14.2
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF INTERIOR",
+      "agency_subelement": "INDIAN AFFAIRS",
+      "old_total": 3485,
+      "new_total": 3151,
+      "change": -334,
+      "pct_change": -9.6,
+      "drivers": [
+        {
+          "dimension": "Age Bracket",
+          "group": "65 OR MORE",
+          "old_count": 349,
+          "new_count": 232,
+          "change": -117,
+          "pct_change": -33.5
+        }
+      ]
+    },
+    {
+      "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+      "agency_subelement": "LANGLEY RESEARCH CENTER",
+      "old_total": 1656,
+      "new_total": 1331,
+      "change": -325,
+      "pct_change": -19.6,
+      "drivers": [
+        {
+          "dimension": "Age Bracket",
+          "group": "65 OR MORE",
+          "old_count": 121,
+          "new_count": 63,
+          "change": -58,
+          "pct_change": -47.9
+        },
+        {
+          "dimension": "Age Bracket",
+          "group": "60-64",
+          "old_count": 280,
+          "new_count": 181,
+          "change": -99,
+          "pct_change": -35.4
+        },
+        {
+          "dimension": "Education Level",
+          "group": "SOME COLLEGE OR ASSOCIATES DEGREE",
+          "old_count": 190,
+          "new_count": 140,
+          "change": -50,
+          "pct_change": -26.3
+        },
+        {
+          "dimension": "Occupational Series",
+          "group": "GENERAL ENGINEERING",
+          "old_count": 230,
+          "new_count": 179,
+          "change": -51,
+          "pct_change": -22.2
+        },
+        {
+          "dimension": "Grade",
+          "group": "15",
+          "old_count": 499,
+          "new_count": 386,
+          "change": -113,
+          "pct_change": -22.6
+        }
+      ]
+    },
+    {
+      "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+      "agency_subelement": "JOHN F. KENNEDY SPACE CENTER",
+      "old_total": 1977,
+      "new_total": 1673,
+      "change": -304,
+      "pct_change": -15.4,
+      "drivers": [
+        {
+          "dimension": "Age Bracket",
+          "group": "65 OR MORE",
+          "old_count": 112,
+          "new_count": 58,
+          "change": -54,
+          "pct_change": -48.2
+        },
+        {
+          "dimension": "Age Bracket",
+          "group": "60-64",
+          "old_count": 289,
+          "new_count": 191,
+          "change": -98,
+          "pct_change": -33.9
+        },
+        {
+          "dimension": "Occupational Category",
+          "group": "ADMINISTRATIVE",
+          "old_count": 490,
+          "new_count": 403,
+          "change": -87,
+          "pct_change": -17.8
+        },
+        {
+          "dimension": "Veteran Status",
+          "group": "Y",
+          "old_count": 321,
+          "new_count": 260,
+          "change": -61,
+          "pct_change": -19.0
+        }
+      ]
+    },
+    {
+      "agency": "OFFICE OF PERSONNEL MANAGEMENT",
+      "agency_subelement": "OFFICE OF PERSONNEL MANAGEMENT",
+      "old_total": 2284,
+      "new_total": 1996,
+      "change": -288,
+      "pct_change": -12.6,
+      "drivers": [
+        {
+          "dimension": "Age Bracket",
+          "group": "65 OR MORE",
+          "old_count": 138,
+          "new_count": 76,
+          "change": -62,
+          "pct_change": -44.9
+        },
+        {
+          "dimension": "Occupational Series",
+          "group": "MISCELLANEOUS ADMINISTRATION AND PROGRAM",
+          "old_count": 230,
+          "new_count": 161,
+          "change": -69,
+          "pct_change": -30.0
+        },
+        {
+          "dimension": "Grade",
+          "group": "15",
+          "old_count": 188,
+          "new_count": 136,
+          "change": -52,
+          "pct_change": -27.7
+        },
+        {
+          "dimension": "Age Bracket",
+          "group": "60-64",
+          "old_count": 251,
+          "new_count": 159,
+          "change": -92,
+          "pct_change": -36.7
+        },
+        {
+          "dimension": "Grade",
+          "group": "14",
+          "old_count": 397,
+          "new_count": 328,
+          "change": -69,
+          "pct_change": -17.4
+        }
+      ]
+    },
+    {
+      "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+      "agency_subelement": "GEORGE C. MARSHALL SPACE FLIGHT CENTER",
+      "old_total": 2156,
+      "new_total": 1880,
+      "change": -276,
+      "pct_change": -12.8,
+      "drivers": [
+        {
+          "dimension": "Age Bracket",
+          "group": "65 OR MORE",
+          "old_count": 127,
+          "new_count": 70,
+          "change": -57,
+          "pct_change": -44.9
+        },
+        {
+          "dimension": "Age Bracket",
+          "group": "60-64",
+          "old_count": 308,
+          "new_count": 217,
+          "change": -91,
+          "pct_change": -29.5
+        },
+        {
+          "dimension": "Occupational Category",
+          "group": "ADMINISTRATIVE",
+          "old_count": 417,
+          "new_count": 332,
+          "change": -85,
+          "pct_change": -20.4
+        },
+        {
+          "dimension": "Grade",
+          "group": "15",
+          "old_count": 565,
+          "new_count": 456,
+          "change": -109,
+          "pct_change": -19.3
+        },
+        {
+          "dimension": "Supervisory Status",
+          "group": "SUPERVISOR OR MANAGER",
+          "old_count": 252,
+          "new_count": 200,
+          "change": -52,
+          "pct_change": -20.6
+        }
+      ]
+    },
+    {
+      "agency": "NATIONAL CREDIT UNION ADMINISTRATION",
+      "agency_subelement": "NATIONAL CREDIT UNION ADMINISTRATION",
+      "old_total": 1186,
+      "new_total": 938,
+      "change": -248,
+      "pct_change": -20.9,
+      "drivers": [
+        {
+          "dimension": "Age Bracket",
+          "group": "60-64",
+          "old_count": 134,
+          "new_count": 69,
+          "change": -65,
+          "pct_change": -48.5
+        },
+        {
+          "dimension": "Age Bracket",
+          "group": "55-59",
+          "old_count": 198,
+          "new_count": 123,
+          "change": -75,
+          "pct_change": -37.9
+        },
+        {
+          "dimension": "Supervisory Status",
+          "group": "SUPERVISOR OR MANAGER",
+          "old_count": 189,
+          "new_count": 139,
+          "change": -50,
+          "pct_change": -26.5
+        },
+        {
+          "dimension": "Duty Station State",
+          "group": "VIRGINIA",
+          "old_count": 352,
+          "new_count": 263,
+          "change": -89,
+          "pct_change": -25.3
+        },
+        {
+          "dimension": "Grade",
+          "group": "14",
+          "old_count": 361,
+          "new_count": 277,
+          "change": -84,
+          "pct_change": -23.3
+        }
+      ]
+    },
+    {
+      "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+      "agency_subelement": "AMES RESEARCH CENTER",
+      "old_total": 1229,
+      "new_total": 1013,
+      "change": -216,
+      "pct_change": -17.6,
+      "drivers": [
+        {
+          "dimension": "Age Bracket",
+          "group": "65 OR MORE",
+          "old_count": 193,
+          "new_count": 101,
+          "change": -92,
+          "pct_change": -47.7
+        },
+        {
+          "dimension": "Occupational Category",
+          "group": "ADMINISTRATIVE",
+          "old_count": 300,
+          "new_count": 234,
+          "change": -66,
+          "pct_change": -22.0
+        },
+        {
+          "dimension": "Education Level",
+          "group": "BACHELORS DEGREE",
+          "old_count": 351,
+          "new_count": 273,
+          "change": -78,
+          "pct_change": -22.2
+        },
+        {
+          "dimension": "Appointment Type",
+          "group": "CAREER (COMPETITIVE SERVICE PERMANENT)",
+          "old_count": 883,
+          "new_count": 707,
+          "change": -176,
+          "pct_change": -19.9
+        },
+        {
+          "dimension": "Pay Plan",
+          "group": "GENERAL SCHEDULE",
+          "old_count": 1177,
+          "new_count": 969,
+          "change": -208,
+          "pct_change": -17.7
+        }
+      ]
+    },
+    {
+      "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+      "agency_subelement": "JOHN GLENN RESEARCH CENTER AT LEWIS FIELD",
+      "old_total": 1350,
+      "new_total": 1138,
+      "change": -212,
+      "pct_change": -15.7,
+      "drivers": [
+        {
+          "dimension": "Age Bracket",
+          "group": "60-64",
+          "old_count": 197,
+          "new_count": 126,
+          "change": -71,
+          "pct_change": -36.0
+        },
+        {
+          "dimension": "Grade",
+          "group": "15",
+          "old_count": 296,
+          "new_count": 243,
+          "change": -53,
+          "pct_change": -17.9
+        },
+        {
+          "dimension": "Occupational Series",
+          "group": "AEROSPACE ENGINEERING",
+          "old_count": 313,
+          "new_count": 261,
+          "change": -52,
+          "pct_change": -16.6
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF LABOR",
+      "agency_subelement": "OFFICE OF WORKERS' COMPENSATION PROGRAMS",
+      "old_total": 1276,
+      "new_total": 1081,
+      "change": -195,
+      "pct_change": -15.3,
+      "drivers": [
+        {
+          "dimension": "Age Bracket",
+          "group": "60-64",
+          "old_count": 190,
+          "new_count": 114,
+          "change": -76,
+          "pct_change": -40.0
+        },
+        {
+          "dimension": "Supervisory Status",
+          "group": "SUPERVISOR OR MANAGER",
+          "old_count": 217,
+          "new_count": 163,
+          "change": -54,
+          "pct_change": -24.9
+        },
+        {
+          "dimension": "Grade",
+          "group": "13",
+          "old_count": 307,
+          "new_count": 246,
+          "change": -61,
+          "pct_change": -19.9
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF HOMELAND SECURITY",
+      "agency_subelement": "DHS HEADQUARTERS",
+      "old_total": 4402,
+      "new_total": 4233,
+      "change": -169,
+      "pct_change": -3.8,
+      "drivers": [
+        {
+          "dimension": "Duty Station State",
+          "group": "VIRGINIA",
+          "old_count": 885,
+          "new_count": 1083,
+          "change": 198,
+          "pct_change": 22.4
+        }
+      ]
+    },
+    {
+      "agency": "GENERAL SERVICES ADMINISTRATION",
+      "agency_subelement": "OFFICE OF THE CHIEF FINANCIAL OFFICER",
+      "old_total": 639,
+      "new_total": 493,
+      "change": -146,
+      "pct_change": -22.8,
+      "drivers": [
+        {
+          "dimension": "Occupational Series",
+          "group": "BUDGET ANALYSIS",
+          "old_count": 182,
+          "new_count": 120,
+          "change": -62,
+          "pct_change": -34.1
+        },
+        {
+          "dimension": "Occupational Category",
+          "group": "ADMINISTRATIVE",
+          "old_count": 471,
+          "new_count": 349,
+          "change": -122,
+          "pct_change": -25.9
+        },
+        {
+          "dimension": "Education Level",
+          "group": "HIGH SCHOOL OR LESS",
+          "old_count": 247,
+          "new_count": 177,
+          "change": -70,
+          "pct_change": -28.3
+        },
+        {
+          "dimension": "Occupational Series",
+          "group": "FINANCIAL ADMINISTRATION AND PROGRAM",
+          "old_count": 240,
+          "new_count": 186,
+          "change": -54,
+          "pct_change": -22.5
+        },
+        {
+          "dimension": "Pay Plan",
+          "group": "GENERAL SCHEDULE",
+          "old_count": 634,
+          "new_count": 489,
+          "change": -145,
+          "pct_change": -22.9
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF AGRICULTURE",
+      "agency_subelement": "AGRICULTURAL MARKETING SERVICE",
+      "old_total": 3935,
+      "new_total": 3890,
+      "change": -45,
+      "pct_change": -1.1,
+      "drivers": [
+        {
+          "dimension": "Work Schedule",
+          "group": "INTERMITTENT SEASONAL",
+          "old_count": 607,
+          "new_count": 837,
+          "change": 230,
+          "pct_change": 37.9
+        },
+        {
+          "dimension": "Work Schedule",
+          "group": "FULL-TIME SEASONAL",
+          "old_count": 931,
+          "new_count": 686,
+          "change": -245,
+          "pct_change": -26.3
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF AGRICULTURE",
+      "agency_subelement": "OFFICE OF THE CHIEF FINANCIAL OFFICER",
+      "old_total": 745,
+      "new_total": 730,
+      "change": -15,
+      "pct_change": -2.0,
+      "drivers": [
+        {
+          "dimension": "Occupational Series",
+          "group": "BUDGET ANALYSIS",
+          "old_count": 182,
+          "new_count": 120,
+          "change": -62,
+          "pct_change": -34.1
+        },
+        {
+          "dimension": "Occupational Category",
+          "group": "ADMINISTRATIVE",
+          "old_count": 471,
+          "new_count": 349,
+          "change": -122,
+          "pct_change": -25.9
+        },
+        {
+          "dimension": "Education Level",
+          "group": "HIGH SCHOOL OR LESS",
+          "old_count": 247,
+          "new_count": 177,
+          "change": -70,
+          "pct_change": -28.3
+        },
+        {
+          "dimension": "Occupational Series",
+          "group": "FINANCIAL ADMINISTRATION AND PROGRAM",
+          "old_count": 240,
+          "new_count": 186,
+          "change": -54,
+          "pct_change": -22.5
+        },
+        {
+          "dimension": "Pay Plan",
+          "group": "GENERAL SCHEDULE",
+          "old_count": 634,
+          "new_count": 489,
+          "change": -145,
+          "pct_change": -22.9
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF AGRICULTURE",
+      "agency_subelement": "FARM SERVICE AGENCY",
+      "old_total": 2561,
+      "new_total": 2604,
+      "change": 43,
+      "pct_change": 1.7,
+      "drivers": [
+        {
+          "dimension": "Occupational Series",
+          "group": "MISCELLANEOUS ADMINISTRATION AND PROGRAM",
+          "old_count": 292,
+          "new_count": 362,
+          "change": 70,
+          "pct_change": 24.0
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF HEALTH AND HUMAN SERVICES",
+      "agency_subelement": "OFFICE OF THE SECRETARY OF HEALTH AND HUMAN SERVICES",
+      "old_total": 2332,
+      "new_total": 2585,
+      "change": 253,
+      "pct_change": 10.8,
+      "drivers": [
+        {
+          "dimension": "Occupational Series",
+          "group": "HUMAN RESOURCES MANAGEMENT",
+          "old_count": 93,
+          "new_count": 229,
+          "change": 136,
+          "pct_change": 146.2
+        },
+        {
+          "dimension": "Duty Station State",
+          "group": "GEORGIA",
+          "old_count": 117,
+          "new_count": 215,
+          "change": 98,
+          "pct_change": 83.8
+        },
+        {
+          "dimension": "Veteran Status",
+          "group": "Y",
+          "old_count": 238,
+          "new_count": 303,
+          "change": 65,
+          "pct_change": 27.3
+        },
+        {
+          "dimension": "Grade",
+          "group": "12",
+          "old_count": 231,
+          "new_count": 287,
+          "change": 56,
+          "pct_change": 24.2
+        },
+        {
+          "dimension": "Occupational Category",
+          "group": "ADMINISTRATIVE",
+          "old_count": 1436,
+          "new_count": 1665,
+          "change": 229,
+          "pct_change": 15.9
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF HOMELAND SECURITY",
+      "agency_subelement": "IMMIGRATION AND CUSTOMS ENFORCEMENT",
+      "old_total": 28272,
+      "new_total": 30461,
+      "change": 2189,
+      "pct_change": 7.7,
+      "drivers": [
+        {
+          "dimension": "Occupational Series",
+          "group": "GENERAL LEGAL AND KINDRED ADMINISTRATION",
+          "old_count": 100,
+          "new_count": 169,
+          "change": 69,
+          "pct_change": 69.0
+        },
+        {
+          "dimension": "Grade",
+          "group": "09",
+          "old_count": 2205,
+          "new_count": 2992,
+          "change": 787,
+          "pct_change": 35.7
+        },
+        {
+          "dimension": "Pay Plan",
+          "group": "GENERAL SCHEDULE EMPLOYEES IN GRADES 3 THROUGH 10 PAID A LAW ENFORCEMENT OFFICER SPECIAL BASE RATE UNDER SECTION 403 OF THE FEDERAL LAW ENFORCEMENT PAY REFORM ACT OF 1990.",
+          "old_count": 6468,
+          "new_count": 8589,
+          "change": 2121,
+          "pct_change": 32.8
+        },
+        {
+          "dimension": "Grade",
+          "group": "05",
+          "old_count": 1558,
+          "new_count": 2028,
+          "change": 470,
+          "pct_change": 30.2
+        },
+        {
+          "dimension": "Age Bracket",
+          "group": "20-24",
+          "old_count": 555,
+          "new_count": 776,
+          "change": 221,
+          "pct_change": 39.8
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "rank": 1,
+      "agency": "DEPARTMENT OF HEALTH AND HUMAN SERVICES",
+      "agency_subelement": "OFFICE OF THE SECRETARY OF HEALTH AND HUMAN SERVICES",
+      "dimension": "Occupational Series",
+      "group": "HUMAN RESOURCES MANAGEMENT",
+      "old_count": 93,
+      "new_count": 229,
+      "change": 136,
+      "pct_change": 146.2
+    },
+    {
+      "rank": 2,
+      "agency": "DEPARTMENT OF DEFENSE",
+      "agency_subelement": "DEFENSE HUMAN RESOURCES ACTIVITY",
+      "dimension": "Occupational Series",
+      "group": "MISCELLANEOUS ADMINISTRATION AND PROGRAM",
+      "old_count": 1313,
+      "new_count": 110,
+      "change": -1203,
+      "pct_change": -91.6
+    },
+    {
+      "rank": 3,
+      "agency": "DEPARTMENT OF HEALTH AND HUMAN SERVICES",
+      "agency_subelement": "OFFICE OF THE SECRETARY OF HEALTH AND HUMAN SERVICES",
+      "dimension": "Duty Station State",
+      "group": "GEORGIA",
+      "old_count": 117,
+      "new_count": 215,
+      "change": 98,
+      "pct_change": 83.8
+    },
+    {
+      "rank": 4,
+      "agency": "DEPARTMENT OF DEFENSE",
+      "agency_subelement": "DEFENSE HUMAN RESOURCES ACTIVITY",
+      "dimension": "Education Level",
+      "group": "HIGH SCHOOL OR LESS",
+      "old_count": 1104,
+      "new_count": 134,
+      "change": -970,
+      "pct_change": -87.9
+    },
+    {
+      "rank": 5,
+      "agency": "DEPARTMENT OF HOMELAND SECURITY",
+      "agency_subelement": "IMMIGRATION AND CUSTOMS ENFORCEMENT",
+      "dimension": "Occupational Series",
+      "group": "GENERAL LEGAL AND KINDRED ADMINISTRATION",
+      "old_count": 100,
+      "new_count": 169,
+      "change": 69,
+      "pct_change": 69.0
+    },
+    {
+      "rank": 6,
+      "agency": "DEPARTMENT OF DEFENSE",
+      "agency_subelement": "DEFENSE HUMAN RESOURCES ACTIVITY",
+      "dimension": "Occupational Category",
+      "group": "ADMINISTRATIVE",
+      "old_count": 2094,
+      "new_count": 867,
+      "change": -1227,
+      "pct_change": -58.6
+    },
+    {
+      "rank": 7,
+      "agency": "DEPARTMENT OF LABOR",
+      "agency_subelement": "OFFICE OF FEDERAL CONTRACT COMPLIANCE PROGRAMS",
+      "dimension": "Pay Plan",
+      "group": "GENERAL SCHEDULE",
+      "old_count": 183,
+      "new_count": 77,
+      "change": -106,
+      "pct_change": -57.9
+    },
+    {
+      "rank": 8,
+      "agency": "DEPARTMENT OF LABOR",
+      "agency_subelement": "OFFICE OF FEDERAL CONTRACT COMPLIANCE PROGRAMS",
+      "dimension": "Occupational Category",
+      "group": "ADMINISTRATIVE",
+      "old_count": 168,
+      "new_count": 71,
+      "change": -97,
+      "pct_change": -57.7
+    },
+    {
+      "rank": 9,
+      "agency": "DEPARTMENT OF LABOR",
+      "agency_subelement": "OFFICE OF FEDERAL CONTRACT COMPLIANCE PROGRAMS",
+      "dimension": "Appointment Type",
+      "group": "CAREER (COMPETITIVE SERVICE PERMANENT)",
+      "old_count": 178,
+      "new_count": 72,
+      "change": -106,
+      "pct_change": -59.6
+    },
+    {
+      "rank": 10,
+      "agency": "GENERAL SERVICES ADMINISTRATION",
+      "agency_subelement": "PUBLIC BUILDINGS SERVICE",
+      "dimension": "Age Bracket",
+      "group": "65 OR MORE",
+      "old_count": 339,
+      "new_count": 129,
+      "change": -210,
+      "pct_change": -61.9
+    },
+    {
+      "rank": 11,
+      "agency": "U.S. AGENCY FOR INTERNATIONAL DEV",
+      "agency_subelement": "U.S. AGENCY FOR INTERNATIONAL DEVELOPMENT",
+      "dimension": "Duty Station State",
+      "group": "DISTRICT OF COLUMBIA",
+      "old_count": 142,
+      "new_count": 71,
+      "change": -71,
+      "pct_change": -50.0
+    },
+    {
+      "rank": 12,
+      "agency": "GENERAL SERVICES ADMINISTRATION",
+      "agency_subelement": "FEDERAL ACQUISITION SERVICE",
+      "dimension": "Age Bracket",
+      "group": "65 OR MORE",
+      "old_count": 200,
+      "new_count": 89,
+      "change": -111,
+      "pct_change": -55.5
+    },
+    {
+      "rank": 13,
+      "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+      "agency_subelement": "HEADQUARTERS, NASA",
+      "dimension": "Age Bracket",
+      "group": "65 OR MORE",
+      "old_count": 135,
+      "new_count": 64,
+      "change": -71,
+      "pct_change": -52.6
+    },
+    {
+      "rank": 14,
+      "agency": "GENERAL SERVICES ADMINISTRATION",
+      "agency_subelement": "PUBLIC BUILDINGS SERVICE",
+      "dimension": "Age Bracket",
+      "group": "60-64",
+      "old_count": 538,
+      "new_count": 263,
+      "change": -275,
+      "pct_change": -51.1
+    },
+    {
+      "rank": 15,
+      "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+      "agency_subelement": "GODDARD SPACE FLIGHT CENTER",
+      "dimension": "Education Level",
+      "group": "SOME COLLEGE OR ASSOCIATES DEGREE",
+      "old_count": 238,
+      "new_count": 131,
+      "change": -107,
+      "pct_change": -45.0
+    },
+    {
+      "rank": 16,
+      "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+      "agency_subelement": "LYNDON B. JOHNSON SPACE CENTER",
+      "dimension": "Age Bracket",
+      "group": "65 OR MORE",
+      "old_count": 214,
+      "new_count": 110,
+      "change": -104,
+      "pct_change": -48.6
+    },
+    {
+      "rank": 17,
+      "agency": "NATIONAL CREDIT UNION ADMINISTRATION",
+      "agency_subelement": "NATIONAL CREDIT UNION ADMINISTRATION",
+      "dimension": "Age Bracket",
+      "group": "60-64",
+      "old_count": 134,
+      "new_count": 69,
+      "change": -65,
+      "pct_change": -48.5
+    },
+    {
+      "rank": 18,
+      "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+      "agency_subelement": "JOHN F. KENNEDY SPACE CENTER",
+      "dimension": "Age Bracket",
+      "group": "65 OR MORE",
+      "old_count": 112,
+      "new_count": 58,
+      "change": -54,
+      "pct_change": -48.2
+    },
+    {
+      "rank": 19,
+      "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+      "agency_subelement": "LANGLEY RESEARCH CENTER",
+      "dimension": "Age Bracket",
+      "group": "65 OR MORE",
+      "old_count": 121,
+      "new_count": 63,
+      "change": -58,
+      "pct_change": -47.9
+    },
+    {
+      "rank": 20,
+      "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+      "agency_subelement": "AMES RESEARCH CENTER",
+      "dimension": "Age Bracket",
+      "group": "65 OR MORE",
+      "old_count": 193,
+      "new_count": 101,
+      "change": -92,
+      "pct_change": -47.7
+    },
+    {
+      "rank": 21,
+      "agency": "DEPARTMENT OF INTERIOR",
+      "agency_subelement": "BUREAU OF RECLAMATION",
+      "dimension": "Age Bracket",
+      "group": "65 OR MORE",
+      "old_count": 217,
+      "new_count": 114,
+      "change": -103,
+      "pct_change": -47.5
+    },
+    {
+      "rank": 22,
+      "agency": "GENERAL SERVICES ADMINISTRATION",
+      "agency_subelement": "FEDERAL ACQUISITION SERVICE",
+      "dimension": "Duty Station State",
+      "group": "VIRGINIA",
+      "old_count": 233,
+      "new_count": 138,
+      "change": -95,
+      "pct_change": -40.8
+    },
+    {
+      "rank": 23,
+      "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+      "agency_subelement": "GODDARD SPACE FLIGHT CENTER",
+      "dimension": "Age Bracket",
+      "group": "65 OR MORE",
+      "old_count": 249,
+      "new_count": 132,
+      "change": -117,
+      "pct_change": -47.0
+    },
+    {
+      "rank": 24,
+      "agency": "DEPARTMENT OF AGRICULTURE",
+      "agency_subelement": "AGRICULTURAL MARKETING SERVICE",
+      "dimension": "Work Schedule",
+      "group": "INTERMITTENT SEASONAL",
+      "old_count": 607,
+      "new_count": 837,
+      "change": 230,
+      "pct_change": 37.9
+    },
+    {
+      "rank": 25,
+      "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+      "agency_subelement": "GODDARD SPACE FLIGHT CENTER",
+      "dimension": "Occupational Series",
+      "group": "MISCELLANEOUS ADMINISTRATION AND PROGRAM",
+      "old_count": 146,
+      "new_count": 90,
+      "change": -56,
+      "pct_change": -38.4
+    },
+    {
+      "rank": 26,
+      "agency": "DEPARTMENT OF HOMELAND SECURITY",
+      "agency_subelement": "IMMIGRATION AND CUSTOMS ENFORCEMENT",
+      "dimension": "Grade",
+      "group": "09",
+      "old_count": 2205,
+      "new_count": 2992,
+      "change": 787,
+      "pct_change": 35.7
+    },
+    {
+      "rank": 27,
+      "agency": "DEPARTMENT OF INTERIOR",
+      "agency_subelement": "OFFICE OF THE SECRETARY OF THE INTERIOR",
+      "dimension": "Age Bracket",
+      "group": "65 OR MORE",
+      "old_count": 423,
+      "new_count": 229,
+      "change": -194,
+      "pct_change": -45.9
+    },
+    {
+      "rank": 28,
+      "agency": "OFFICE OF PERSONNEL MANAGEMENT",
+      "agency_subelement": "OFFICE OF PERSONNEL MANAGEMENT",
+      "dimension": "Age Bracket",
+      "group": "65 OR MORE",
+      "old_count": 138,
+      "new_count": 76,
+      "change": -62,
+      "pct_change": -44.9
+    },
+    {
+      "rank": 29,
+      "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+      "agency_subelement": "GEORGE C. MARSHALL SPACE FLIGHT CENTER",
+      "dimension": "Age Bracket",
+      "group": "65 OR MORE",
+      "old_count": 127,
+      "new_count": 70,
+      "change": -57,
+      "pct_change": -44.9
+    },
+    {
+      "rank": 30,
+      "agency": "GENERAL SERVICES ADMINISTRATION",
+      "agency_subelement": "FEDERAL ACQUISITION SERVICE",
+      "dimension": "Age Bracket",
+      "group": "60-64",
+      "old_count": 393,
+      "new_count": 219,
+      "change": -174,
+      "pct_change": -44.3
+    },
+    {
+      "rank": 31,
+      "agency": "DEPARTMENT OF HOMELAND SECURITY",
+      "agency_subelement": "IMMIGRATION AND CUSTOMS ENFORCEMENT",
+      "dimension": "Pay Plan",
+      "group": "GENERAL SCHEDULE EMPLOYEES IN GRADES 3 THROUGH 10 PAID A LAW ENFORCEMENT OFFICER SPECIAL BASE RATE UNDER SECTION 403 OF THE FEDERAL LAW ENFORCEMENT PAY REFORM ACT OF 1990.",
+      "old_count": 6468,
+      "new_count": 8589,
+      "change": 2121,
+      "pct_change": 32.8
+    },
+    {
+      "rank": 32,
+      "agency": "ENVIRONMENTAL PROTECTION AGENCY",
+      "agency_subelement": "ENVIRONMENTAL PROTECTION AGENCY",
+      "dimension": "Age Bracket",
+      "group": "65 OR MORE",
+      "old_count": 1088,
+      "new_count": 616,
+      "change": -472,
+      "pct_change": -43.4
+    },
+    {
+      "rank": 33,
+      "agency": "U.S. AGENCY FOR INTERNATIONAL DEV",
+      "agency_subelement": "U.S. AGENCY FOR INTERNATIONAL DEVELOPMENT",
+      "dimension": "Occupational Category",
+      "group": "ADMINISTRATIVE",
+      "old_count": 227,
+      "new_count": 146,
+      "change": -81,
+      "pct_change": -35.7
+    },
+    {
+      "rank": 34,
+      "agency": "DEPARTMENT OF ENERGY",
+      "agency_subelement": "DEPARTMENT OF ENERGY",
+      "dimension": "Age Bracket",
+      "group": "65 OR MORE",
+      "old_count": 910,
+      "new_count": 531,
+      "change": -379,
+      "pct_change": -41.6
+    },
+    {
+      "rank": 35,
+      "agency": "GENERAL SERVICES ADMINISTRATION",
+      "agency_subelement": "OFFICE OF THE CHIEF FINANCIAL OFFICER",
+      "dimension": "Occupational Series",
+      "group": "BUDGET ANALYSIS",
+      "old_count": 182,
+      "new_count": 120,
+      "change": -62,
+      "pct_change": -34.1
+    },
+    {
+      "rank": 36,
+      "agency": "DEPARTMENT OF LABOR",
+      "agency_subelement": "OFFICE OF WORKERS' COMPENSATION PROGRAMS",
+      "dimension": "Age Bracket",
+      "group": "60-64",
+      "old_count": 190,
+      "new_count": 114,
+      "change": -76,
+      "pct_change": -40.0
+    },
+    {
+      "rank": 37,
+      "agency": "ENVIRONMENTAL PROTECTION AGENCY",
+      "agency_subelement": "ENVIRONMENTAL PROTECTION AGENCY",
+      "dimension": "Supervisory Status",
+      "group": "MANAGEMENT OFFICIAL (CSRA)",
+      "old_count": 184,
+      "new_count": 120,
+      "change": -64,
+      "pct_change": -34.8
+    },
+    {
+      "rank": 38,
+      "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+      "agency_subelement": "HEADQUARTERS, NASA",
+      "dimension": "Age Bracket",
+      "group": "60-64",
+      "old_count": 268,
+      "new_count": 164,
+      "change": -104,
+      "pct_change": -38.8
+    },
+    {
+      "rank": 39,
+      "agency": "GENERAL SERVICES ADMINISTRATION",
+      "agency_subelement": "PUBLIC BUILDINGS SERVICE",
+      "dimension": "Grade",
+      "group": "15",
+      "old_count": 193,
+      "new_count": 132,
+      "change": -61,
+      "pct_change": -31.6
+    },
+    {
+      "rank": 40,
+      "agency": "NATIONAL CREDIT UNION ADMINISTRATION",
+      "agency_subelement": "NATIONAL CREDIT UNION ADMINISTRATION",
+      "dimension": "Age Bracket",
+      "group": "55-59",
+      "old_count": 198,
+      "new_count": 123,
+      "change": -75,
+      "pct_change": -37.9
+    },
+    {
+      "rank": 41,
+      "agency": "OFFICE OF PERSONNEL MANAGEMENT",
+      "agency_subelement": "OFFICE OF PERSONNEL MANAGEMENT",
+      "dimension": "Occupational Series",
+      "group": "MISCELLANEOUS ADMINISTRATION AND PROGRAM",
+      "old_count": 230,
+      "new_count": 161,
+      "change": -69,
+      "pct_change": -30.0
+    },
+    {
+      "rank": 42,
+      "agency": "FEDERAL DEPOSIT INSURANCE CORPORATION",
+      "agency_subelement": "FEDERAL DEPOSIT INSURANCE CORPORATION",
+      "dimension": "Age Bracket",
+      "group": "65 OR MORE",
+      "old_count": 420,
+      "new_count": 267,
+      "change": -153,
+      "pct_change": -36.4
+    },
+    {
+      "rank": 43,
+      "agency": "DEPARTMENT OF INTERIOR",
+      "agency_subelement": "GEOLOGICAL SURVEY",
+      "dimension": "Age Bracket",
+      "group": "65 OR MORE",
+      "old_count": 315,
+      "new_count": 201,
+      "change": -114,
+      "pct_change": -36.2
+    },
+    {
+      "rank": 44,
+      "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+      "agency_subelement": "JOHN GLENN RESEARCH CENTER AT LEWIS FIELD",
+      "dimension": "Age Bracket",
+      "group": "60-64",
+      "old_count": 197,
+      "new_count": 126,
+      "change": -71,
+      "pct_change": -36.0
+    },
+    {
+      "rank": 45,
+      "agency": "U.S. AGENCY FOR INTERNATIONAL DEV",
+      "agency_subelement": "U.S. AGENCY FOR INTERNATIONAL DEVELOPMENT",
+      "dimension": "Pay Plan",
+      "group": "GENERAL SCHEDULE",
+      "old_count": 225,
+      "new_count": 158,
+      "change": -67,
+      "pct_change": -29.8
+    },
+    {
+      "rank": 46,
+      "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+      "agency_subelement": "LANGLEY RESEARCH CENTER",
+      "dimension": "Age Bracket",
+      "group": "60-64",
+      "old_count": 280,
+      "new_count": 181,
+      "change": -99,
+      "pct_change": -35.4
+    },
+    {
+      "rank": 47,
+      "agency": "DEPARTMENT OF HEALTH AND HUMAN SERVICES",
+      "agency_subelement": "OFFICE OF THE SECRETARY OF HEALTH AND HUMAN SERVICES",
+      "dimension": "Veteran Status",
+      "group": "Y",
+      "old_count": 238,
+      "new_count": 303,
+      "change": 65,
+      "pct_change": 27.3
+    },
+    {
+      "rank": 48,
+      "agency": "ENVIRONMENTAL PROTECTION AGENCY",
+      "agency_subelement": "ENVIRONMENTAL PROTECTION AGENCY",
+      "dimension": "Age Bracket",
+      "group": "60-64",
+      "old_count": 1708,
+      "new_count": 1114,
+      "change": -594,
+      "pct_change": -34.8
+    },
+    {
+      "rank": 49,
+      "agency": "DEPARTMENT OF VETERANS AFFAIRS",
+      "agency_subelement": "VETERANS HEALTH ADMINISTRATION",
+      "dimension": "Pay Plan",
+      "group": "CLINICAL PODIATRISTS AND OPTOMETRISTS SCHEDULE",
+      "old_count": 1340,
+      "new_count": 962,
+      "change": -378,
+      "pct_change": -28.2
+    },
+    {
+      "rank": 50,
+      "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+      "agency_subelement": "JOHN F. KENNEDY SPACE CENTER",
+      "dimension": "Age Bracket",
+      "group": "60-64",
+      "old_count": 289,
+      "new_count": 191,
+      "change": -98,
+      "pct_change": -33.9
+    }
+  ]
+}
