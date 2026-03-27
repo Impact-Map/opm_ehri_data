@@ -24,12 +24,16 @@ from opm_pipeline.anomaly_detector import (
 DOCS_DATA_DIR = Path("docs/data")
 
 
+MIN_MONTH = "202412"  # Only run anomaly detection for recent data
+
+
 def _extract_months_from_changed(changed_keys: list[str]) -> set[str]:
     """Given a list of changed HF file paths, figure out which YYYYMM months are affected.
 
     Any data type (employment, separations, accessions) touching month X
     means we should re-run X. If employment for month X changed, we should
     also re-run X+1 (since it compares against X).
+    Only considers months >= MIN_MONTH.
     """
     pattern = re.compile(r"^(employment|separations|accessions)/\1_(\d{6})_v\d+\.parquet$")
     direct_months = set()
@@ -39,6 +43,8 @@ def _extract_months_from_changed(changed_keys: list[str]) -> set[str]:
         m = pattern.match(key)
         if m:
             data_type, yyyymm = m.group(1), m.group(2)
+            if yyyymm < MIN_MONTH:
+                continue
             direct_months.add(yyyymm)
             if data_type == "employment":
                 employment_months_changed.add(yyyymm)
