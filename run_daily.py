@@ -209,10 +209,12 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
                     parts.append(f"{len(changes['updated'])} updated files")
                 email_subject = f"New EHRI data available on OPM: {', '.join(parts)}"
                 email_subject = email_subject[:150]  # Buttondown subject line limit
+                changed_keys = changes["new"] + changes["updated"]
                 with open(github_output, "a") as _gho:
                     _gho.write(f"new_count={len(changes['new'])}\n")
                     _gho.write(f"updated_count={len(changes['updated'])}\n")
                     _gho.write(f"has_changes={has_changes}\n")
+                    _gho.write(f"changed_keys={','.join(changed_keys)}\n")
                     _gho.write(f"email_subject={email_subject}\n")
 
             if not changes["new"] and not changes["updated"]:

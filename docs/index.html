@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Federal Workforce Watch</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f5; color: #333; line-height: 1.5; }
+  header { background: #1a1a2e; color: #fff; padding: 20px 30px; }
+  header h1 { font-size: 1.4em; font-weight: 600; }
+  header p { color: #aaa; font-size: 0.85em; margin-top: 4px; }
+  .layout { display: flex; min-height: calc(100vh - 80px); }
+  .sidebar { width: 220px; background: #fff; border-right: 1px solid #ddd; padding: 16px; flex-shrink: 0; }
+  .sidebar h2 { font-size: 0.8em; text-transform: uppercase; color: #888; margin-bottom: 12px; }
+  .month-btn { display: block; width: 100%; text-align: left; padding: 8px 12px; margin-bottom: 4px;
+    border: none; background: none; cursor: pointer; border-radius: 6px; font-size: 0.9em; }
+  .month-btn:hover { background: #eef; }
+  .month-btn.active { background: #1a1a2e; color: #fff; }
+  .main { flex: 1; padding: 24px 32px; max-width: 960px; }
+
+  /* TOC */
+  .toc { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px 18px; margin-bottom: 24px; }
+  .toc a { color: #1a1a2e; text-decoration: none; font-size: 0.88em; display: inline-block; margin-right: 18px; padding: 2px 0; }
+  .toc a:hover { text-decoration: underline; }
+
+  /* Sections */
+  .section { margin-bottom: 36px; }
+  .section h2 { font-size: 1.15em; border-bottom: 2px solid #1a1a2e; padding-bottom: 6px; margin-bottom: 14px; }
+  .section h3 { font-size: 1em; margin: 16px 0 8px; }
+
+  /* Summary */
+  .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px; }
+  .stat-card { background: #fff; border-radius: 8px; padding: 16px; border: 1px solid #e0e0e0; }
+  .stat-card .value { font-size: 1.8em; font-weight: 700; }
+  .stat-card .value.neg { color: #dc3545; }
+  .stat-card .value.pos { color: #28a745; }
+  .stat-card .label { font-size: 0.8em; color: #888; margin-top: 4px; }
+  .movers { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px; }
+  .mover-table { width: 100%; border-collapse: collapse; font-size: 0.85em; }
+  .mover-table th, .mover-table td { text-align: left; padding: 4px 8px; border-bottom: 1px solid #eee; }
+  .mover-table th { color: #888; font-weight: 600; }
+  .neg-text { color: #dc3545; }
+  .pos-text { color: #28a745; }
+
+  /* Separations */
+  .sep-bar { display: flex; height: 32px; border-radius: 4px; overflow: hidden; margin: 8px 0 12px; }
+  .sep-bar div { display: flex; align-items: center; justify-content: center; font-size: 0.72em; color: #fff; min-width: 30px; }
+  .sep-legend { display: flex; flex-wrap: wrap; gap: 10px 18px; font-size: 0.82em; margin-bottom: 12px; }
+  .sep-top-agencies { font-size: 0.85em; }
+  .sep-top-agencies table { width: 100%; border-collapse: collapse; }
+  .sep-top-agencies td { padding: 3px 8px; border-bottom: 1px solid #f0f0f0; }
+
+  /* Themes */
+  .theme-card { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px 20px;
+    margin-bottom: 12px; border-left: 4px solid #6f42c1; }
+  .theme-card .headline { font-weight: 600; font-size: 0.95em; margin-bottom: 4px; }
+  .theme-card .context { font-size: 0.85em; color: #666; margin-bottom: 8px; }
+  .theme-card details { font-size: 0.85em; }
+  .theme-card summary { cursor: pointer; color: #6f42c1; }
+  .theme-agency-table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 0.85em; }
+  .theme-agency-table td { padding: 3px 8px; border-bottom: 1px solid #f0f0f0; }
+
+  /* Agency profiles — grouped by parent */
+  .parent-group { margin-bottom: 18px; }
+  .parent-group-header { font-size: 0.95em; font-weight: 600; color: #1a1a2e; padding: 8px 0 4px;
+    border-bottom: 1px solid #ddd; margin-bottom: 8px; display: flex; justify-content: space-between; }
+  .parent-group-header .parent-change { font-size: 0.85em; font-weight: 400; }
+  .profile { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; margin-bottom: 6px; transition: box-shadow 0.15s; }
+  .profile:hover { box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+  .profile-header { padding: 10px 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .profile-header:hover { background: #f9f9f9; }
+  .profile-header .name-col { flex: 1; display: flex; align-items: center; gap: 8px; }
+  .profile-header .name { font-weight: 500; font-size: 0.9em; }
+  .profile-header .chevron { color: #aaa; font-size: 0.75em; transition: transform 0.15s; }
+  .profile.open .profile-header .chevron { transform: rotate(90deg); }
+  .profile-header .pct-bar { width: 60px; height: 8px; background: #eee; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
+  .profile-header .pct-bar-fill { height: 100%; border-radius: 4px; }
+  .profile-header .pct-bar-fill.neg { background: #dc3545; }
+  .profile-header .pct-bar-fill.pos { background: #28a745; }
+  .profile-header .change-badge { font-size: 0.85em; font-weight: 600; padding: 2px 8px; border-radius: 12px; white-space: nowrap; }
+  .profile-header .change-badge.neg { background: #f8d7da; color: #721c24; }
+  .profile-header .change-badge.pos { background: #d4edda; color: #155724; }
+  .profile-body { padding: 0 16px 12px; display: none; }
+  .profile.open .profile-body { display: block; }
+  .driver-table { width: 100%; border-collapse: collapse; font-size: 0.85em; }
+  .driver-table th { text-align: left; color: #888; font-weight: 600; padding: 4px 8px; border-bottom: 1px solid #ddd; }
+  .driver-table td { padding: 4px 8px; border-bottom: 1px solid #f0f0f0; }
+
+  /* Findings table */
+  .findings-filter { margin-bottom: 10px; display: flex; gap: 10px; }
+  .findings-filter input, .findings-filter select { padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.85em; }
+  .findings-filter input { width: 220px; }
+  .findings-table { width: 100%; border-collapse: collapse; font-size: 0.82em; background: #fff; border-radius: 8px; overflow: hidden; }
+  .findings-table th { text-align: left; padding: 8px 10px; background: #f5f5f5; color: #666; font-weight: 600;
+    border-bottom: 1px solid #ddd; cursor: pointer; user-select: none; white-space: nowrap; }
+  .findings-table th:hover { background: #e8e8e8; }
+  .findings-table td { padding: 5px 10px; border-bottom: 1px solid #f0f0f0; }
+  .findings-table tbody tr:nth-child(even) { background: #fafafa; }
+  .findings-table tr:hover { background: #f0f4ff; }
+  .mover-table tbody tr:nth-child(even) { background: #fafafa; }
+  .driver-table tbody tr:nth-child(even) { background: #fafafa; }
+  .theme-agency-table tr:nth-child(even) { background: #fafafa; }
+  .findings-table .hidden { display: none; }
+
+  .renames-box { background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; font-size: 0.85em; }
+  .renames-box strong { color: #856404; }
+
+  .empty { text-align: center; padding: 60px; color: #999; }
+  .loading { text-align: center; padding: 40px; color: #999; }
+
+  @media (max-width: 700px) {
+    .layout { flex-direction: column; }
+    .sidebar { width: 100%; border-right: none; border-bottom: 1px solid #ddd; display: flex; overflow-x: auto; gap: 4px; padding: 8px; }
+    .sidebar h2 { display: none; }
+    .main { padding: 16px; }
+    .movers { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Federal Workforce Watch</h1>
+  <p>Monthly analysis of changes in the federal workforce, powered by OPM/EHRI data</p>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" id="sidebar"><h2>Reports</h2><div class="loading">Loading...</div></nav>
+  <main class="main" id="main"><div class="empty">Select a month to view.</div></main>
+</div>
+
+<script>
+const DATA_BASE = 'data';
+// Separation colors: semantic mapping
+const SEP_COLOR_MAP = {
+  'QUIT': '#ffc107',
+  'RETIREMENT - VOLUNTARY': '#28a745',
+  'RETIREMENT - DISABILITY': '#20c997',
+  'RETIREMENT - INVOLUNTARY': '#17a2b8',
+  'TERMINATION (EXPIRED APPT/OTHER)': '#fd7e14',
+  'REDUCTION IN FORCE': '#dc3545',
+  'TRANSFER OUT - INDIVIDUAL TRANSFER': '#6f42c1',
+  'OTHER SEPARATION': '#6c757d',
+  'DEATH': '#343a40',
+};
+const SEP_COLORS_FALLBACK = ['#5470c6','#91cc75','#fac858','#ee6666','#73c0de','#3ba272','#fc8452','#9a60b4','#ea7ccc','#999'];
+function sepColor(cat, i) { return SEP_COLOR_MAP[cat] || SEP_COLORS_FALLBACK[i % SEP_COLORS_FALLBACK.length]; }
+
+function ml(yyyymm) {
+  const y = yyyymm.slice(0,4), m = parseInt(yyyymm.slice(4,6),10)-1;
+  return new Date(y,m).toLocaleDateString('en-US',{month:'long',year:'numeric'});
+}
+function fmt(n) { return n.toLocaleString(); }
+function pct(n) { return (n>0?'+':'') + Math.round(n) + '%'; }
+
+async function loadIndex() {
+  try { const r = await fetch(`${DATA_BASE}/index.json`); return await r.json(); }
+  catch { return {months:[]}; }
+}
+
+function renderSidebar(index, active) {
+  const sb = document.getElementById('sidebar');
+  let h = '<h2>Reports</h2>';
+  for (const m of index.months) {
+    h += `<button class="month-btn${m.month===active?' active':''}" data-month="${m.month}">${ml(m.month)}</button>`;
+  }
+  sb.innerHTML = h;
+  sb.querySelectorAll('.month-btn').forEach(b => b.addEventListener('click', () => loadMonth(b.dataset.month)));
+}
+
+async function loadMonth(month) {
+  const main = document.getElementById('main');
+  main.innerHTML = '<div class="loading">Loading...</div>';
+  const data = await (await fetch(`${DATA_BASE}/${month}.json?_=${Date.now()}`)).json();
+  renderSidebar(await loadIndex(), month);
+  renderReport(data);
+}
+
+function renderReport(d) {
+  const main = document.getElementById('main');
+  let h = '';
+
+  // ── TOC ──
+  h += '<div class="toc">';
+  h += '<a href="#summary">Summary</a>';
+  if (d.separations) h += '<a href="#separations">Separations</a>';
+  if (d.themes?.length) h += '<a href="#themes">Themes</a>';
+  if (d.agency_profiles?.length) h += '<a href="#agencies">Agencies</a>';
+  if (d.findings?.length) h += '<a href="#findings">All Findings</a>';
+  h += '</div>';
+
+  // ── Summary ──
+  const s = d.summary;
+  h += `<div class="section" id="summary">
+    <h2>${ml(d.compared_to)} &rarr; ${ml(d.month)}</h2>
+    <div class="summary-grid">
+      <div class="stat-card">
+        <div class="value ${s.change<0?'neg':'pos'}">${fmt(s.change)}</div>
+        <div class="label">Net change (${pct(s.pct_change)})</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">${fmt(s.new_total)}</div>
+        <div class="label">Total workforce</div>
+      </div>
+      <div class="stat-card">
+        <div class="value neg">${s.agencies_shrinking}</div>
+        <div class="label">Agencies shrinking</div>
+      </div>
+      <div class="stat-card">
+        <div class="value pos">${s.agencies_growing}</div>
+        <div class="label">Agencies growing</div>
+      </div>
+    </div>
+    <div class="movers">`;
+
+  if (s.top_losses.length) {
+    h += '<div><h3>Biggest losses</h3><table class="mover-table"><tr><th>Agency</th><th>Size</th><th>Change</th><th>%</th></tr>';
+    for (const m of s.top_losses) h += `<tr><td>${m.agency}</td><td style="color:#888">${fmt(m.old)}</td><td class="neg-text">${fmt(m.change)}</td><td class="neg-text">${pct(m.pct)}</td></tr>`;
+    h += '</table></div>';
+  }
+  if (s.top_gains.length) {
+    h += '<div><h3>Biggest gains</h3><table class="mover-table"><tr><th>Agency</th><th>Size</th><th>Change</th><th>%</th></tr>';
+    for (const m of s.top_gains) h += `<tr><td>${m.agency}</td><td style="color:#888">${fmt(m.old)}</td><td class="pos-text">+${fmt(m.change)}</td><td class="pos-text">${pct(m.pct)}</td></tr>`;
+    h += '</table></div>';
+  }
+  h += '</div>';
+
+  if (d.renames_detected?.length) {
+    h += '<div class="renames-box"><strong>Agency renames detected (excluded from analysis):</strong><br>';
+    for (const r of d.renames_detected) h += `${r.old_name} &rarr; ${r.new_name}<br>`;
+    h += '</div>';
+  }
+  h += '</div>';
+
+  // ── Separations ──
+  if (d.separations) {
+    const sep = d.separations;
+    h += `<div class="section" id="separations"><h2>Separations: ${fmt(sep.total)} employees left</h2>`;
+    h += '<div class="sep-bar">';
+    sep.by_category.forEach((c,i) => {
+      const col = sepColor(c.category, i);
+      if (c.pct >= 2) h += `<div style="width:${c.pct}%;background:${col}">${Math.round(c.pct)}%</div>`;
+    });
+    h += '</div><div class="sep-legend">';
+    sep.by_category.forEach((c,i) => {
+      const col = sepColor(c.category, i);
+      h += `<span><span style="background:${col};display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:middle"></span>${c.category}: ${fmt(c.count)} (${Math.round(c.pct)}%)</span>`;
+    });
+    h += '</div>';
+
+    if (sep.top_agencies?.length) {
+      h += '<div class="sep-top-agencies"><h3>Most separations by agency</h3><table>';
+      for (const a of sep.top_agencies) {
+        h += `<tr><td>${a.agency_subelement}</td><td style="color:#888;font-size:0.9em">${a.agency}</td><td style="text-align:right">${fmt(a.count)}</td></tr>`;
+      }
+      h += '</table></div>';
+    }
+
+    // DRP
+    if (sep.drp && sep.drp.total > 0) {
+      h += `<div style="background:#fff;border:1px solid #e0e0e0;border-radius:8px;padding:16px 20px;margin-top:16px;border-left:4px solid #dc3545">
+        <h3 style="margin:0 0 8px">Deferred Resignation Program (DRP): ${fmt(sep.drp.total)} employees (${Math.round(sep.drp.pct_of_all_separations)}% of all separations)</h3>
+        <div style="font-size:0.85em;color:#666;margin-bottom:8px">
+          ${sep.drp.by_category.map(c => `${c.category}: ${fmt(c.count)} (${Math.round(c.pct)}%)`).join(' | ')}
+        </div>`;
+      if (sep.drp.top_agencies?.length) {
+        h += '<details><summary style="cursor:pointer;font-size:0.85em;color:#dc3545">Top agencies by DRP separations</summary><table class="theme-agency-table" style="margin-top:6px">';
+        for (const a of sep.drp.top_agencies) {
+          h += `<tr><td>${a.agency_subelement}</td><td style="text-align:right">${fmt(a.count)}</td></tr>`;
+        }
+        h += '</table></details>';
+      }
+      h += '</div>';
+    }
+    h += '</div>';
+  }
+
+  // ── Themes ──
+  if (d.themes?.length) {
+    h += '<div class="section" id="themes"><h2>Cross-Agency Themes</h2>';
+    h += '<p style="font-size:0.85em;color:#666;margin-bottom:12px">Patterns that appear across many agencies and are disproportionate compared to other groups in the same dimension.</p>';
+    for (const t of d.themes) {
+      const dirWord = t.direction === 'dropped' ? 'dropped' : 'grew';
+      h += `<div class="theme-card">
+        <div class="headline">${t.dimension}: "${t.group}" ${dirWord} across ${t.agency_count} agencies</div>
+        <div class="context">
+          Range: ${Math.round(t.pct_range[0])}%–${Math.round(t.pct_range[1])}% | Total: ${fmt(Math.abs(t.total_change))} employees |
+          This group's typical change: ${pct(t.group_median_pct)}, while ${t.dimension} groups overall changed ${pct(t.dimension_median_pct)}
+        </div>
+        <details><summary>Show ${t.agency_count} affected agencies</summary>
+        <table class="theme-agency-table">`;
+      for (const a of t.agencies) {
+        h += `<tr><td>${a.agency_subelement}</td><td>${fmt(a.old_count)} &rarr; ${fmt(a.new_count)}</td><td class="${a.change<0?'neg':'pos'}-text">${pct(a.pct_change)}</td></tr>`;
+      }
+      h += '</table></details></div>';
+    }
+    h += '</div>';
+  }
+
+  // ── Agency Profiles — grouped by parent ──
+  if (d.agency_profiles?.length) {
+    h += '<div class="section" id="agencies"><h2>Agency Profiles</h2>';
+    h += '<p style="font-size:0.85em;color:#666;margin-bottom:12px">Agencies with notable anomalies, grouped by department. Click to see what\'s driving the change.</p>';
+
+    // Group by parent agency
+    const groups = {};
+    for (const p of d.agency_profiles) {
+      const parent = p.agency || p.agency_subelement;
+      if (!groups[parent]) groups[parent] = { profiles: [], totalChange: 0, totalOld: 0, totalNew: 0 };
+      groups[parent].profiles.push(p);
+      groups[parent].totalChange += p.change;
+      groups[parent].totalOld += p.old_total;
+      groups[parent].totalNew += p.new_total;
+    }
+
+    // Sort parent groups by total absolute change
+    const sortedGroups = Object.entries(groups).sort((a,b) => Math.abs(b[1].totalChange) - Math.abs(a[1].totalChange));
+
+    for (const [parent, g] of sortedGroups) {
+      const pcls = g.totalChange < 0 ? 'neg' : 'pos';
+      const parentPct = g.totalOld > 0 ? pct(g.totalChange / g.totalOld * 100) : '';
+      h += `<div class="parent-group">
+        <div class="parent-group-header">
+          <span>${parent}</span>
+          <span class="parent-change ${pcls}-text">${fmt(g.totalChange)} total ${parentPct ? '(' + parentPct + ')' : ''}</span>
+        </div>`;
+
+      // Sort subagencies within group by change
+      g.profiles.sort((a,b) => a.change - b.change);
+      for (const p of g.profiles) {
+        const cls = p.change < 0 ? 'neg' : 'pos';
+        const isTopLevel = p.agency === p.agency_subelement || !p.agency;
+        const label = isTopLevel ? p.agency_subelement : p.agency_subelement;
+        const barW = Math.min(100, Math.abs(p.pct_change || 0) * 2);
+        h += `<div class="profile" onclick="this.classList.toggle('open')">
+          <div class="profile-header">
+            <div class="name-col"><span class="chevron">&#9654;</span><span class="name">${label}</span></div>
+            <div class="pct-bar"><div class="pct-bar-fill ${cls}" style="width:${barW}%"></div></div>
+            <span class="change-badge ${cls}">${fmt(p.change)} (${p.pct_change !== null ? pct(p.pct_change) : 'new'})</span>
+          </div>
+          <div class="profile-body">
+            <p style="font-size:0.85em;color:#666;margin-bottom:8px">${fmt(p.old_total)} &rarr; ${fmt(p.new_total)} employees</p>`;
+        if (p.drivers.length) {
+          h += '<table class="driver-table"><tr><th>Dimension</th><th>Group</th><th>Before</th><th>After</th><th>Change</th></tr>';
+          for (const dr of p.drivers) {
+            h += `<tr><td>${dr.dimension}</td><td>${dr.group}</td><td>${fmt(dr.old_count)}</td><td>${fmt(dr.new_count)}</td>
+              <td class="${dr.change<0?'neg':'pos'}-text">${fmt(dr.change)} (${pct(dr.pct_change)})</td></tr>`;
+          }
+          h += '</table>';
+        }
+        h += '</div></div>';
+      }
+      h += '</div>';
+    }
+    h += '</div>';
+  }
+
+  // ── All Findings (filterable/sortable table) ──
+  if (d.findings?.length) {
+    h += '<div class="section" id="findings"><h2>All Outlier Findings</h2>';
+    h += '<div class="findings-filter">';
+    h += '<input type="text" id="findingsSearch" placeholder="Search agency or group...">';
+    h += '<select id="findingsDim"><option value="">All dimensions</option>';
+    const dims = [...new Set(d.findings.map(f => f.dimension))].sort();
+    for (const dim of dims) h += `<option value="${dim}">${dim}</option>`;
+    h += '</select></div>';
+    h += '<table class="findings-table" id="findingsTable"><thead><tr>';
+    h += '<th data-sort="rank">#</th><th data-sort="agency_subelement">Agency</th><th data-sort="dimension">Dimension</th>';
+    h += '<th data-sort="group">Group</th><th data-sort="old_count">Before</th><th data-sort="new_count">After</th>';
+    h += '<th data-sort="change">Change</th></tr></thead><tbody>';
+    for (const f of d.findings) {
+      h += `<tr data-agency="${f.agency_subelement}" data-dim="${f.dimension}" data-group="${f.group}">
+        <td>${f.rank}</td><td>${f.agency_subelement}</td><td>${f.dimension}</td><td>${f.group}</td>
+        <td>${fmt(f.old_count)}</td><td>${fmt(f.new_count)}</td>
+        <td class="${f.change<0?'neg':'pos'}-text">${fmt(f.change)} (${pct(f.pct_change)})</td></tr>`;
+    }
+    h += '</tbody></table></div>';
+  }
+
+  main.innerHTML = h;
+
+  // Wire up findings filter
+  const search = document.getElementById('findingsSearch');
+  const dimFilter = document.getElementById('findingsDim');
+  if (search && dimFilter) {
+    const filterFn = () => {
+      const q = search.value.toLowerCase();
+      const dim = dimFilter.value;
+      document.querySelectorAll('#findingsTable tbody tr').forEach(tr => {
+        const matchText = !q || tr.dataset.agency.toLowerCase().includes(q) || tr.dataset.group.toLowerCase().includes(q);
+        const matchDim = !dim || tr.dataset.dim === dim;
+        tr.style.display = matchText && matchDim ? '' : 'none';
+      });
+    };
+    search.addEventListener('input', filterFn);
+    dimFilter.addEventListener('change', filterFn);
+  }
+
+  // Sortable table headers
+  document.querySelectorAll('#findingsTable th[data-sort]').forEach(th => {
+    th.addEventListener('click', () => {
+      const key = th.dataset.sort;
+      const tbody = document.querySelector('#findingsTable tbody');
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      const dir = th._sortDir === 'asc' ? 'desc' : 'asc';
+      th._sortDir = dir;
+      const fi = d.findings;
+      rows.sort((a,b) => {
+        const ai = parseInt(a.children[0].textContent) - 1;
+        const bi = parseInt(b.children[0].textContent) - 1;
+        let va = fi[ai]?.[key] ?? '', vb = fi[bi]?.[key] ?? '';
+        if (typeof va === 'number') return dir === 'asc' ? va - vb : vb - va;
+        return dir === 'asc' ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va));
+      });
+      rows.forEach(r => tbody.appendChild(r));
+    });
+  });
+}
+
+// Boot
+(async () => {
+  const index = await loadIndex();
+  renderSidebar(index, null);
+  if (index.months.length > 0) loadMonth(index.months[0].month);
+})();
+</script>
+</body>
+</html>
