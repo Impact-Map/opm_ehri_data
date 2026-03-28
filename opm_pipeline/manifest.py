@@ -38,8 +38,12 @@ def compare_manifests(stored: dict, site: dict) -> dict:
         else:
             stored_entry = stored[repo_name]
             # Check if version or opm_date changed
-            if (site_entry.get("version") != stored_entry.get("version")
-                    or site_entry.get("opm_date") != stored_entry.get("opm_date")):
+            if site_entry.get("version") != stored_entry.get("version"):
+                updated.append(repo_name)
+            elif (site_entry.get("opm_date", "") != stored_entry.get("opm_date", "")
+                  and stored_entry.get("opm_date", "") != ""):
+                # Only flag opm_date change if the stored entry actually had a date
+                # (entries rebuilt from HF don't have opm_date)
                 updated.append(repo_name)
             else:
                 unchanged.append(repo_name)
@@ -101,6 +105,7 @@ def build_manifest_from_hf(token: str) -> dict:
         manifest[filename] = {
             "filename": filename,
             "version": version,
+            "opm_date": "",
             "data_type": data_type,
             "columns": columns,
             "last_updated": datetime.now(timezone.utc).isoformat(),
