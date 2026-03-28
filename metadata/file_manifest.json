@@ -46429,7 +46429,7 @@
     ],
     "row_count": 1844953,
     "file_hash": "2c7e8d0fefd8a1b7",
-    "last_updated": "2026-03-27T20:28:41.150572+00:00"
+    "last_updated": "2026-03-28T14:33:30.397982+00:00"
   },
   "employment/employment_200612_v1.parquet": {
     "filename": "Employment data from December 2006",
@@ -46471,7 +46471,7 @@
     ],
     "row_count": 1845618,
     "file_hash": "43a9a019030f8bc3",
-    "last_updated": "2026-03-27T20:31:07.888526+00:00"
+    "last_updated": "2026-03-28T14:35:20.497287+00:00"
   },
   "employment/employment_200609_v1.parquet": {
     "filename": "Employment data from September 2006",
@@ -46513,7 +46513,7 @@
     ],
     "row_count": 1852808,
     "file_hash": "7a3f96779818871b",
-    "last_updated": "2026-03-27T20:33:36.875202+00:00"
+    "last_updated": "2026-03-28T14:37:12.008705+00:00"
   },
   "employment/employment_200606_v1.parquet": {
     "filename": "Employment data from June 2006",
@@ -46555,7 +46555,7 @@
     ],
     "row_count": 1865291,
     "file_hash": "6ec42b7e47ee38a7",
-    "last_updated": "2026-03-27T20:36:05.892892+00:00"
+    "last_updated": "2026-03-28T14:38:59.808501+00:00"
   },
   "employment/employment_200603_v1.parquet": {
     "filename": "Employment data from March 2006",
@@ -46597,7 +46597,7 @@
     ],
     "row_count": 1844499,
     "file_hash": "f32ebed174087ad3",
-    "last_updated": "2026-03-27T20:38:24.778235+00:00"
+    "last_updated": "2026-03-28T14:40:46.532697+00:00"
   },
   "employment/employment_200512_v1.parquet": {
     "filename": "Employment data from December 2005",
@@ -46639,7 +46639,7 @@
     ],
     "row_count": 1836848,
     "file_hash": "378d17602091007f",
-    "last_updated": "2026-03-27T20:40:44.892209+00:00"
+    "last_updated": "2026-03-28T14:42:36.436096+00:00"
   },
   "employment/employment_200509_v1.parquet": {
     "filename": "Employment data from September 2005",
@@ -46681,7 +46681,7 @@
     ],
     "row_count": 1846319,
     "file_hash": "208605036853d2c6",
-    "last_updated": "2026-03-27T20:43:09.448933+00:00"
+    "last_updated": "2026-03-28T14:44:37.214142+00:00"
   },
   "employment/employment_200506_v1.parquet": {
     "filename": "Employment data from June 2005",
@@ -46723,7 +46723,7 @@
     ],
     "row_count": 1868210,
     "file_hash": "fb1ecbfb825bdb95",
-    "last_updated": "2026-03-27T20:45:43.622323+00:00"
+    "last_updated": "2026-03-28T14:46:48.139262+00:00"
   },
   "employment/employment_200503_v1.parquet": {
     "filename": "Employment data from March 2005",
@@ -46765,6 +46765,6 @@
     ],
     "row_count": 1844598,
     "file_hash": "fd5220249d5cb0e2",
-    "last_updated": "2026-03-27T20:49:52.969186+00:00"
+    "last_updated": "2026-03-28T14:49:03.138086+00:00"
   }
 }
