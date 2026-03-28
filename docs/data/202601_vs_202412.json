@@ -1,0 +1,1788 @@
+{
+  "month": "202601",
+  "compared_to": "202412",
+  "generated_at": "2026-03-28T13:17:55.430217+00:00",
+  "summary": {
+    "old_total": 2298099,
+    "new_total": 2021325,
+    "change": -276774,
+    "pct_change": -12.0,
+    "agencies_shrinking": 463,
+    "agencies_growing": 28,
+    "agencies_stable": 13,
+    "top_losses": [
+      {
+        "agency": "INTERNAL REVENUE SERVICE",
+        "change": -27761,
+        "pct": -27.2,
+        "old": 102075,
+        "new": 74314
+      },
+      {
+        "agency": "VETERANS HEALTH ADMINISTRATION",
+        "change": -23913,
+        "pct": -5.6,
+        "old": 425112,
+        "new": 401199
+      },
+      {
+        "agency": "SOCIAL SECURITY ADMINISTRATION",
+        "change": -8072,
+        "pct": -13.9,
+        "old": 57952,
+        "new": 49880
+      },
+      {
+        "agency": "AIR FORCE MATERIEL COMMAND",
+        "change": -7451,
+        "pct": -10.3,
+        "old": 72217,
+        "new": 64766
+      },
+      {
+        "agency": "FOREST SERVICE",
+        "change": -5405,
+        "pct": -17.1,
+        "old": 31665,
+        "new": 26260
+      }
+    ],
+    "top_gains": [
+      {
+        "agency": "IMMIGRATION AND CUSTOMS ENFORCEMENT",
+        "change": 9693,
+        "pct": 46.7,
+        "old": 20768,
+        "new": 30461
+      },
+      {
+        "agency": "OFFICE OF THE SECRETARY OF THE INTERIOR",
+        "change": 3639,
+        "pct": 118.2,
+        "old": 3078,
+        "new": 6717
+      },
+      {
+        "agency": "NAVAL INTELLIGENCE ACTIVITY",
+        "change": 1464,
+        "pct": NaN,
+        "old": 0,
+        "new": 1464
+      },
+      {
+        "agency": "EXECUTIVE DIRECTOR, OFFICE OF ACQUISITION, LOGISTICS AND CONSTRUCTION",
+        "change": 1019,
+        "pct": NaN,
+        "old": 0,
+        "new": 1019
+      },
+      {
+        "agency": "CUSTOMS AND BORDER PROTECTION",
+        "change": 849,
+        "pct": 1.3,
+        "old": 66613,
+        "new": 67462
+      }
+    ]
+  },
+  "renames_detected": [
+    {
+      "old_name": "DEPUTY ASSISTANT SECRETARY FOR OFFICE OF RESOLUTION MANAGEMENT",
+      "new_name": "INVALID",
+      "old_count": 311,
+      "new_count": 311
+    },
+    {
+      "old_name": "COMMANDER, NAVY INSTALLATIONS",
+      "new_name": "COMMANDER, NAVY INSTALLATIONS COMMAND",
+      "old_count": 10953,
+      "new_count": 10832
+    },
+    {
+      "old_name": "EXECUTIVE DIRECTOR, OFFICE OF ACQUISITION AND LOGISTICS",
+      "new_name": "CONSUMER FINANCIAL PROTECTION BUREAU",
+      "old_count": 1255,
+      "new_count": 1214
+    },
+    {
+      "old_name": "GOVERNMENT PRINTING OFFICE",
+      "new_name": "GOVERNMENT PUBLISHING OFFICE",
+      "old_count": 1641,
+      "new_count": 1620
+    },
+    {
+      "old_name": "WOODROW WILSON INTERNATIONAL CENTER FOR SCHOLARS",
+      "new_name": "SPACE FORCE SERVICE WIDE SUPPORT ACTIVITIES",
+      "old_count": 42,
+      "new_count": 42
+    }
+  ],
+  "separations": {
+    "total": 14863,
+    "by_category": [
+      {
+        "category": "QUIT",
+        "count": 6279,
+        "pct": 42.2
+      },
+      {
+        "category": "RETIREMENT - VOLUNTARY",
+        "count": 4151,
+        "pct": 27.9
+      },
+      {
+        "category": "TERMINATION (EXPIRED APPT/OTHER)",
+        "count": 2490,
+        "pct": 16.8
+      },
+      {
+        "category": "OTHER SEPARATION",
+        "count": 749,
+        "pct": 5.0
+      },
+      {
+        "category": "TRANSFER OUT - INDIVIDUAL TRANSFER",
+        "count": 602,
+        "pct": 4.1
+      },
+      {
+        "category": "RETIREMENT - EARLY OUT",
+        "count": 400,
+        "pct": 2.7
+      },
+      {
+        "category": "RETIREMENT - OTHER",
+        "count": 182,
+        "pct": 1.2
+      },
+      {
+        "category": "REDUCTION IN FORCE (RIF)",
+        "count": 6,
+        "pct": 0.0
+      },
+      {
+        "category": "TRANSFER OUT - MASS TRANSFER",
+        "count": 4,
+        "pct": 0.0
+      }
+    ],
+    "top_agencies": [
+      {
+        "agency": "DEPARTMENT OF VETERANS AFFAIRS",
+        "agency_subelement": "VETERANS HEALTH ADMINISTRATION",
+        "count": 2485
+      },
+      {
+        "agency": "DEPARTMENT OF DEFENSE",
+        "agency_subelement": "DEFENSE HUMAN RESOURCES ACTIVITY",
+        "count": 1206
+      },
+      {
+        "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+        "agency_subelement": "GODDARD SPACE FLIGHT CENTER",
+        "count": 506
+      },
+      {
+        "agency": "DEPARTMENT OF TREASURY",
+        "agency_subelement": "INTERNAL REVENUE SERVICE",
+        "count": 470
+      },
+      {
+        "agency": "DEPARTMENT OF HOMELAND SECURITY",
+        "agency_subelement": "FEDERAL EMERGENCY MANAGEMENT AGENCY",
+        "count": 343
+      },
+      {
+        "agency": "DEPARTMENT OF HOMELAND SECURITY",
+        "agency_subelement": "IMMIGRATION AND CUSTOMS ENFORCEMENT",
+        "count": 332
+      },
+      {
+        "agency": "DEPARTMENT OF THE ARMY",
+        "agency_subelement": "ARMY NATIONAL GUARD UNITS",
+        "count": 307
+      },
+      {
+        "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+        "agency_subelement": "HEADQUARTERS, NASA",
+        "count": 272
+      },
+      {
+        "agency": "DEPARTMENT OF HOMELAND SECURITY",
+        "agency_subelement": "CUSTOMS AND BORDER PROTECTION",
+        "count": 256
+      },
+      {
+        "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+        "agency_subelement": "LANGLEY RESEARCH CENTER",
+        "count": 251
+      }
+    ],
+    "drp": {
+      "total": 2051,
+      "pct_of_all_separations": 13.8,
+      "by_category": [
+        {
+          "category": "RETIREMENT - VOLUNTARY",
+          "count": 945,
+          "pct": 46.1
+        },
+        {
+          "category": "QUIT",
+          "count": 790,
+          "pct": 38.5
+        },
+        {
+          "category": "RETIREMENT - EARLY OUT",
+          "count": 312,
+          "pct": 15.2
+        },
+        {
+          "category": "RETIREMENT - OTHER",
+          "count": 2,
+          "pct": 0.1
+        },
+        {
+          "category": "TRANSFER OUT - INDIVIDUAL TRANSFER",
+          "count": 2,
+          "pct": 0.1
+        }
+      ],
+      "top_agencies": [
+        {
+          "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+          "agency_subelement": "GODDARD SPACE FLIGHT CENTER",
+          "count": 485
+        },
+        {
+          "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+          "agency_subelement": "HEADQUARTERS, NASA",
+          "count": 260
+        },
+        {
+          "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+          "agency_subelement": "LANGLEY RESEARCH CENTER",
+          "count": 233
+        },
+        {
+          "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+          "agency_subelement": "LYNDON B. JOHNSON SPACE CENTER",
+          "count": 208
+        },
+        {
+          "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+          "agency_subelement": "JOHN F. KENNEDY SPACE CENTER",
+          "count": 191
+        },
+        {
+          "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+          "agency_subelement": "GEORGE C. MARSHALL SPACE FLIGHT CENTER",
+          "count": 146
+        },
+        {
+          "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+          "agency_subelement": "AMES RESEARCH CENTER",
+          "count": 126
+        },
+        {
+          "agency": "NAT AERONAUTICS AND SPACE ADMINISTRATION",
+          "agency_subelement": "JOHN GLENN RESEARCH CENTER AT LEWIS FIELD",
+          "count": 124
+        },
+        {
+          "agency": "DEPARTMENT OF ENERGY",
+          "agency_subelement": "DEPARTMENT OF ENERGY",
+          "count": 115
+        },
+        {
+          "agency": "DEPARTMENT OF HOMELAND SECURITY",
+          "agency_subelement": "DHS HEADQUARTERS",
+          "count": 44
+        }
+      ]
+    }
+  },
+  "themes": [],
+  "agency_profiles": [
+    {
+      "agency": "DEPARTMENT OF TREASURY",
+      "agency_subelement": "INTERNAL REVENUE SERVICE",
+      "old_total": 102075,
+      "new_total": 74314,
+      "change": -27761,
+      "pct_change": -27.2,
+      "drivers": [
+        {
+          "dimension": "Tenure",
+          "group": "TENURE GROUP 3 - TAPER/TERM OR PROVISIONAL OR APPTS W/OUT TIME LIMIT BUT NOT ACTUALLY OR POTENTIALLY PERMANENT",
+          "old_count": 243,
+          "new_count": 566,
+          "change": 323,
+          "pct_change": 132.9
+        },
+        {
+          "dimension": "Appointment Type",
+          "group": "NONPERMANENT (COMPETITTIVE SERVICE NONPERMANENT)",
+          "old_count": 390,
+          "new_count": 587,
+          "change": 197,
+          "pct_change": 50.5
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF VETERANS AFFAIRS",
+      "agency_subelement": "VETERANS HEALTH ADMINISTRATION",
+      "old_total": 425112,
+      "new_total": 401199,
+      "change": -23913,
+      "pct_change": -5.6,
+      "drivers": [
+        {
+          "dimension": "Supervisory Status",
+          "group": "LEADER",
+          "old_count": 1705,
+          "new_count": 6715,
+          "change": 5010,
+          "pct_change": 293.8
+        },
+        {
+          "dimension": "Supervisory Status",
+          "group": "SUPERVISOR OR MANAGER",
+          "old_count": 5534,
+          "new_count": 14068,
+          "change": 8534,
+          "pct_change": 154.2
+        },
+        {
+          "dimension": "Duty Station County",
+          "group": "FREDERICKSBURG",
+          "old_count": 231,
+          "new_count": 563,
+          "change": 332,
+          "pct_change": 143.7
+        },
+        {
+          "dimension": "Duty Station County",
+          "group": "CHESAPEAKE",
+          "old_count": 274,
+          "new_count": 447,
+          "change": 173,
+          "pct_change": 63.1
+        },
+        {
+          "dimension": "Duty Station County",
+          "group": "WAKE",
+          "old_count": 337,
+          "new_count": 512,
+          "change": 175,
+          "pct_change": 51.9
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF THE AIR FORCE",
+      "agency_subelement": "AIR FORCE MATERIEL COMMAND",
+      "old_total": 72217,
+      "new_total": 64766,
+      "change": -7451,
+      "pct_change": -10.3,
+      "drivers": [
+        {
+          "dimension": "Pay Plan",
+          "group": "TECHNICAL MANAGEMENT SUPPORT",
+          "old_count": 804,
+          "new_count": 3264,
+          "change": 2460,
+          "pct_change": 306.0
+        },
+        {
+          "dimension": "Occupational Category",
+          "group": "CLERICAL",
+          "old_count": 1501,
+          "new_count": 5054,
+          "change": 3553,
+          "pct_change": 236.7
+        },
+        {
+          "dimension": "Pay Plan",
+          "group": "ADMINISTRATION SUPPORT",
+          "old_count": 297,
+          "new_count": 711,
+          "change": 414,
+          "pct_change": 139.4
+        },
+        {
+          "dimension": "Pay Plan",
+          "group": "BUSINESS MANAGEMENT AND TECHNICAL MANAGEMENT PROFESSIONAL",
+          "old_count": 21874,
+          "new_count": 36170,
+          "change": 14296,
+          "pct_change": 65.4
+        },
+        {
+          "dimension": "Grade",
+          "group": "02",
+          "old_count": 4215,
+          "new_count": 8480,
+          "change": 4265,
+          "pct_change": 101.2
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF AGRICULTURE",
+      "agency_subelement": "FOREST SERVICE",
+      "old_total": 31665,
+      "new_total": 26260,
+      "change": -5405,
+      "pct_change": -17.1,
+      "drivers": [
+        {
+          "dimension": "Occupational Series",
+          "group": "WILDLAND FIRE MANAGEMENT",
+          "old_count": 441,
+          "new_count": 612,
+          "change": 171,
+          "pct_change": 38.8
+        }
+      ]
+    },
+    {
+      "agency": "U.S. AGENCY FOR INTERNATIONAL DEV",
+      "agency_subelement": "U.S. AGENCY FOR INTERNATIONAL DEVELOPMENT",
+      "old_total": 4895,
+      "new_total": 258,
+      "change": -4637,
+      "pct_change": -94.7,
+      "drivers": [
+        {
+          "dimension": "Work Schedule",
+          "group": "FULL-TIME",
+          "old_count": 4836,
+          "new_count": 256,
+          "change": -4580,
+          "pct_change": -94.7
+        },
+        {
+          "dimension": "Veteran Status",
+          "group": "N",
+          "old_count": 4495,
+          "new_count": 221,
+          "change": -4274,
+          "pct_change": -95.1
+        },
+        {
+          "dimension": "Tenure",
+          "group": "TENURE GROUP 1 - CAREER OR SERVING AN APPOINTMENT CARRYING NO RESTRICTION OR CONDITION",
+          "old_count": 2932,
+          "new_count": 222,
+          "change": -2710,
+          "pct_change": -92.4
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF HEALTH AND HUMAN SERVICES",
+      "agency_subelement": "NATIONAL INSTITUTES OF HEALTH",
+      "old_total": 21445,
+      "new_total": 16903,
+      "change": -4542,
+      "pct_change": -21.2,
+      "drivers": [
+        {
+          "dimension": "Occupational Series",
+          "group": "CONTRACTING",
+          "old_count": 512,
+          "new_count": 224,
+          "change": -288,
+          "pct_change": -56.2
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF ENERGY",
+      "agency_subelement": "DEPARTMENT OF ENERGY",
+      "old_total": 16016,
+      "new_total": 12113,
+      "change": -3903,
+      "pct_change": -24.4,
+      "drivers": [
+        {
+          "dimension": "Occupational Category",
+          "group": "CLERICAL",
+          "old_count": 304,
+          "new_count": 522,
+          "change": 218,
+          "pct_change": 71.7
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF THE NAVY",
+      "agency_subelement": "NAVAL SEA SYSTEMS COMMAND",
+      "old_total": 37382,
+      "new_total": 33553,
+      "change": -3829,
+      "pct_change": -10.2,
+      "drivers": [
+        {
+          "dimension": "Occupational Category",
+          "group": "CLERICAL",
+          "old_count": 519,
+          "new_count": 1123,
+          "change": 604,
+          "pct_change": 116.4
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF INTERIOR",
+      "agency_subelement": "NATIONAL PARK SERVICE",
+      "old_total": 18096,
+      "new_total": 14319,
+      "change": -3777,
+      "pct_change": -20.9,
+      "drivers": [
+        {
+          "dimension": "Occupational Series",
+          "group": "POLICE",
+          "old_count": 492,
+          "new_count": 652,
+          "change": 160,
+          "pct_change": 32.5
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF THE NAVY",
+      "agency_subelement": "NAVAL AIR SYSTEMS COMMAND",
+      "old_total": 30175,
+      "new_total": 26857,
+      "change": -3318,
+      "pct_change": -11.0,
+      "drivers": [
+        {
+          "dimension": "Occupational Category",
+          "group": "CLERICAL",
+          "old_count": 472,
+          "new_count": 1007,
+          "change": 535,
+          "pct_change": 113.3
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF AGRICULTURE",
+      "agency_subelement": "NATURAL RESOURCES CONSERVATION SERVICE",
+      "old_total": 11817,
+      "new_total": 9078,
+      "change": -2739,
+      "pct_change": -23.2,
+      "drivers": [
+        {
+          "dimension": "Age Bracket",
+          "group": "20-24",
+          "old_count": 724,
+          "new_count": 267,
+          "change": -457,
+          "pct_change": -63.1
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF THE NAVY",
+      "agency_subelement": "NAVAL FACILITIES ENGINEERING COMMAND",
+      "old_total": 18274,
+      "new_total": 15669,
+      "change": -2605,
+      "pct_change": -14.3,
+      "drivers": [
+        {
+          "dimension": "Occupational Category",
+          "group": "CLERICAL",
+          "old_count": 447,
+          "new_count": 1068,
+          "change": 621,
+          "pct_change": 138.9
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF HOMELAND SECURITY",
+      "agency_subelement": "CITIZENSHIP AND IMMIGRATION SERVICES",
+      "old_total": 22457,
+      "new_total": 19896,
+      "change": -2561,
+      "pct_change": -11.4,
+      "drivers": [
+        {
+          "dimension": "Grade",
+          "group": "11",
+          "old_count": 1491,
+          "new_count": 2595,
+          "change": 1104,
+          "pct_change": 74.0
+        },
+        {
+          "dimension": "Duty Station County",
+          "group": "PRINCE GEORGE'S",
+          "old_count": 927,
+          "new_count": 1306,
+          "change": 379,
+          "pct_change": 40.9
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF INTERIOR",
+      "agency_subelement": "BUREAU OF LAND MANAGEMENT",
+      "old_total": 9752,
+      "new_total": 7493,
+      "change": -2259,
+      "pct_change": -23.2,
+      "drivers": [
+        {
+          "dimension": "Occupational Series",
+          "group": "WILDLAND FIRE MANAGEMENT",
+          "old_count": 748,
+          "new_count": 1014,
+          "change": 266,
+          "pct_change": 35.6
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF AGRICULTURE",
+      "agency_subelement": "AGRICULTURAL RESEARCH SERVICE",
+      "old_total": 7127,
+      "new_total": 4916,
+      "change": -2211,
+      "pct_change": -31.0,
+      "drivers": [
+        {
+          "dimension": "Age Bracket",
+          "group": "20-24",
+          "old_count": 579,
+          "new_count": 209,
+          "change": -370,
+          "pct_change": -63.9
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF COMMERCE",
+      "agency_subelement": "U.S. CENSUS BUREAU",
+      "old_total": 13297,
+      "new_total": 11236,
+      "change": -2061,
+      "pct_change": -15.5,
+      "drivers": [
+        {
+          "dimension": "Tenure",
+          "group": "NO TENURE GROUP - EMPLOYEES (E.G., TEMPORARIES OR SES) NOT IN TENURE GROUPS 1, 2, OR 3 FOR RIF PURPOSES",
+          "old_count": 1342,
+          "new_count": 2057,
+          "change": 715,
+          "pct_change": 53.3
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF AGRICULTURE",
+      "agency_subelement": "ANIMAL AND PLANT HEALTH INSPECTION SERVICE",
+      "old_total": 8637,
+      "new_total": 6663,
+      "change": -1974,
+      "pct_change": -22.9,
+      "drivers": [
+        {
+          "dimension": "Work Schedule",
+          "group": "INTERMITTENT",
+          "old_count": 229,
+          "new_count": 283,
+          "change": 54,
+          "pct_change": 23.6
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF THE NAVY",
+      "agency_subelement": "UNITED STATES FLEET FORCES COMMAND",
+      "old_total": 35165,
+      "new_total": 33209,
+      "change": -1956,
+      "pct_change": -5.6,
+      "drivers": [
+        {
+          "dimension": "Occupational Series",
+          "group": "WIPER",
+          "old_count": 252,
+          "new_count": 430,
+          "change": 178,
+          "pct_change": 70.6
+        },
+        {
+          "dimension": "Occupational Category",
+          "group": "CLERICAL",
+          "old_count": 703,
+          "new_count": 1011,
+          "change": 308,
+          "pct_change": 43.8
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF DEFENSE",
+      "agency_subelement": "DEFENSE HUMAN RESOURCES ACTIVITY",
+      "old_total": 2872,
+      "new_total": 1016,
+      "change": -1856,
+      "pct_change": -64.6,
+      "drivers": [
+        {
+          "dimension": "Veteran Status",
+          "group": "N",
+          "old_count": 2309,
+          "new_count": 616,
+          "change": -1693,
+          "pct_change": -73.3
+        },
+        {
+          "dimension": "Supervisory Status",
+          "group": "ALL OTHER POSITIONS",
+          "old_count": 2604,
+          "new_count": 800,
+          "change": -1804,
+          "pct_change": -69.3
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF VETERANS AFFAIRS",
+      "agency_subelement": "DEPUTY ASSISTANT SECRETARY FOR INFORMATION AND TECHNOLOGY",
+      "old_total": 8537,
+      "new_total": 6940,
+      "change": -1597,
+      "pct_change": -18.7,
+      "drivers": [
+        {
+          "dimension": "Duty Station State",
+          "group": "DISTRICT OF COLUMBIA",
+          "old_count": 291,
+          "new_count": 398,
+          "change": 107,
+          "pct_change": 36.8
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF HOMELAND SECURITY",
+      "agency_subelement": "DHS HEADQUARTERS",
+      "old_total": 5705,
+      "new_total": 4233,
+      "change": -1472,
+      "pct_change": -25.8,
+      "drivers": [
+        {
+          "dimension": "Duty Station County",
+          "group": "FAIRFAX",
+          "old_count": 269,
+          "new_count": 951,
+          "change": 682,
+          "pct_change": 253.5
+        },
+        {
+          "dimension": "Duty Station State",
+          "group": "VIRGINIA",
+          "old_count": 521,
+          "new_count": 1083,
+          "change": 562,
+          "pct_change": 107.9
+        }
+      ]
+    },
+    {
+      "agency": "GENERAL SERVICES ADMINISTRATION",
+      "agency_subelement": "FEDERAL ACQUISITION SERVICE",
+      "old_total": 4730,
+      "new_total": 3324,
+      "change": -1406,
+      "pct_change": -29.7,
+      "drivers": [
+        {
+          "dimension": "Duty Station State",
+          "group": "DISTRICT OF COLUMBIA",
+          "old_count": 263,
+          "new_count": 823,
+          "change": 560,
+          "pct_change": 212.9
+        },
+        {
+          "dimension": "Duty Station County",
+          "group": "DISTRICT OF COLUMBIA",
+          "old_count": 263,
+          "new_count": 823,
+          "change": 560,
+          "pct_change": 212.9
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF DEFENSE",
+      "agency_subelement": "DEFENSE COMMISSARY AGENCY",
+      "old_total": 11313,
+      "new_total": 9911,
+      "change": -1402,
+      "pct_change": -12.4,
+      "drivers": [
+        {
+          "dimension": "Occupational Category",
+          "group": "CLERICAL",
+          "old_count": 2780,
+          "new_count": 4933,
+          "change": 2153,
+          "pct_change": 77.4
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF THE NAVY",
+      "agency_subelement": "U.S. PACIFIC FLEET, COMMANDER IN CHIEF",
+      "old_total": 26090,
+      "new_total": 25081,
+      "change": -1009,
+      "pct_change": -3.9,
+      "drivers": [
+        {
+          "dimension": "Occupational Category",
+          "group": "CLERICAL",
+          "old_count": 740,
+          "new_count": 1463,
+          "change": 723,
+          "pct_change": 97.7
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF COMMERCE",
+      "agency_subelement": "PATENT AND TRADEMARK OFFICE",
+      "old_total": 14349,
+      "new_total": 13403,
+      "change": -946,
+      "pct_change": -6.6,
+      "drivers": [
+        {
+          "dimension": "Duty Station County",
+          "group": "ALEXANDRIA",
+          "old_count": 1784,
+          "new_count": 3426,
+          "change": 1642,
+          "pct_change": 92.0
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF THE AIR FORCE",
+      "agency_subelement": "AIR FORCE CIVILIAN CAREER TRAINING",
+      "old_total": 3095,
+      "new_total": 2435,
+      "change": -660,
+      "pct_change": -21.3,
+      "drivers": [
+        {
+          "dimension": "Pay Plan",
+          "group": "BUSINESS MANAGEMENT AND TECHNICAL MANAGEMENT PROFESSIONAL",
+          "old_count": 271,
+          "new_count": 390,
+          "change": 119,
+          "pct_change": 43.9
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF AGRICULTURE",
+      "agency_subelement": "FOOD AND NUTRITION SERVICE",
+      "old_total": 1848,
+      "new_total": 1202,
+      "change": -646,
+      "pct_change": -35.0,
+      "drivers": [
+        {
+          "dimension": "Duty Station County",
+          "group": "ALEXANDRIA",
+          "old_count": 235,
+          "new_count": 388,
+          "change": 153,
+          "pct_change": 65.1
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF AGRICULTURE",
+      "agency_subelement": "AGRICULTURAL MARKETING SERVICE",
+      "old_total": 4478,
+      "new_total": 3890,
+      "change": -588,
+      "pct_change": -13.1,
+      "drivers": [
+        {
+          "dimension": "Work Schedule",
+          "group": "INTERMITTENT SEASONAL",
+          "old_count": 604,
+          "new_count": 837,
+          "change": 233,
+          "pct_change": 38.6
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF LABOR",
+      "agency_subelement": "BUREAU OF LABOR STATISTICS",
+      "old_total": 2312,
+      "new_total": 1863,
+      "change": -449,
+      "pct_change": -19.4,
+      "drivers": [
+        {
+          "dimension": "Duty Station State",
+          "group": "MARYLAND",
+          "old_count": 247,
+          "new_count": 889,
+          "change": 642,
+          "pct_change": 259.9
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF THE AIR FORCE",
+      "agency_subelement": "UNITED STATES SPACE FORCE",
+      "old_total": 2439,
+      "new_total": 2123,
+      "change": -316,
+      "pct_change": -13.0,
+      "drivers": [
+        {
+          "dimension": "Pay Plan",
+          "group": "BUSINESS MANAGEMENT AND TECHNICAL MANAGEMENT PROFESSIONAL",
+          "old_count": 608,
+          "new_count": 1008,
+          "change": 400,
+          "pct_change": 65.8
+        },
+        {
+          "dimension": "Grade",
+          "group": "02",
+          "old_count": 343,
+          "new_count": 672,
+          "change": 329,
+          "pct_change": 95.9
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF COMMERCE",
+      "agency_subelement": "OFFICE OF THE SECRETARY",
+      "old_total": 1102,
+      "new_total": 898,
+      "change": -204,
+      "pct_change": -18.5,
+      "drivers": [
+        {
+          "dimension": "Occupational Category",
+          "group": "ADMINISTRATIVE",
+          "old_count": 380,
+          "new_count": 625,
+          "change": 245,
+          "pct_change": 64.5
+        },
+        {
+          "dimension": "Work Schedule",
+          "group": "FULL-TIME",
+          "old_count": 734,
+          "new_count": 935,
+          "change": 201,
+          "pct_change": 27.4
+        },
+        {
+          "dimension": "Veteran Status",
+          "group": "Y",
+          "old_count": 317,
+          "new_count": 408,
+          "change": 91,
+          "pct_change": 28.7
+        },
+        {
+          "dimension": "Veteran Status",
+          "group": "N",
+          "old_count": 419,
+          "new_count": 531,
+          "change": 112,
+          "pct_change": 26.7
+        },
+        {
+          "dimension": "Duty Station State",
+          "group": "DISTRICT OF COLUMBIA",
+          "old_count": 240,
+          "new_count": 323,
+          "change": 83,
+          "pct_change": 34.6
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF THE AIR FORCE",
+      "agency_subelement": "AIR FORCE ELEMENTS, U.S. STRATEGIC COMMAND",
+      "old_total": 1417,
+      "new_total": 1273,
+      "change": -144,
+      "pct_change": -10.2,
+      "drivers": [
+        {
+          "dimension": "Pay Plan",
+          "group": "BUSINESS MANAGEMENT AND TECHNICAL MANAGEMENT PROFESSIONAL",
+          "old_count": 410,
+          "new_count": 708,
+          "change": 298,
+          "pct_change": 72.7
+        },
+        {
+          "dimension": "Grade",
+          "group": "03",
+          "old_count": 291,
+          "new_count": 576,
+          "change": 285,
+          "pct_change": 97.9
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF VETERANS AFFAIRS",
+      "agency_subelement": "OFFICE OF THE SECRETARY",
+      "old_total": 736,
+      "new_total": 939,
+      "change": 203,
+      "pct_change": 27.6,
+      "drivers": [
+        {
+          "dimension": "Occupational Category",
+          "group": "ADMINISTRATIVE",
+          "old_count": 380,
+          "new_count": 625,
+          "change": 245,
+          "pct_change": 64.5
+        },
+        {
+          "dimension": "Work Schedule",
+          "group": "FULL-TIME",
+          "old_count": 734,
+          "new_count": 935,
+          "change": 201,
+          "pct_change": 27.4
+        },
+        {
+          "dimension": "Veteran Status",
+          "group": "Y",
+          "old_count": 317,
+          "new_count": 408,
+          "change": 91,
+          "pct_change": 28.7
+        },
+        {
+          "dimension": "Veteran Status",
+          "group": "N",
+          "old_count": 419,
+          "new_count": 531,
+          "change": 112,
+          "pct_change": 26.7
+        },
+        {
+          "dimension": "Duty Station State",
+          "group": "DISTRICT OF COLUMBIA",
+          "old_count": 240,
+          "new_count": 323,
+          "change": 83,
+          "pct_change": 34.6
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF HOMELAND SECURITY",
+      "agency_subelement": "CUSTOMS AND BORDER PROTECTION",
+      "old_total": 66613,
+      "new_total": 67462,
+      "change": 849,
+      "pct_change": 1.3,
+      "drivers": [
+        {
+          "dimension": "Grade",
+          "group": "05",
+          "old_count": 898,
+          "new_count": 1660,
+          "change": 762,
+          "pct_change": 84.9
+        },
+        {
+          "dimension": "Age Bracket",
+          "group": "20-24",
+          "old_count": 1485,
+          "new_count": 2061,
+          "change": 576,
+          "pct_change": 38.8
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF INTERIOR",
+      "agency_subelement": "OFFICE OF THE SECRETARY OF THE INTERIOR",
+      "old_total": 3078,
+      "new_total": 6717,
+      "change": 3639,
+      "pct_change": 118.2,
+      "drivers": [
+        {
+          "dimension": "Occupational Series",
+          "group": "INFORMATION TECHNOLOGY MANAGEMENT",
+          "old_count": 294,
+          "new_count": 1313,
+          "change": 1019,
+          "pct_change": 346.6
+        },
+        {
+          "dimension": "Occupational Series",
+          "group": "CONTRACTING",
+          "old_count": 225,
+          "new_count": 779,
+          "change": 554,
+          "pct_change": 246.2
+        },
+        {
+          "dimension": "Veteran Status",
+          "group": "Y",
+          "old_count": 656,
+          "new_count": 1899,
+          "change": 1243,
+          "pct_change": 189.5
+        },
+        {
+          "dimension": "Education Level",
+          "group": "SOME COLLEGE OR ASSOCIATES DEGREE",
+          "old_count": 409,
+          "new_count": 1112,
+          "change": 703,
+          "pct_change": 171.9
+        },
+        {
+          "dimension": "Education Level",
+          "group": "BACHELORS DEGREE",
+          "old_count": 1112,
+          "new_count": 2652,
+          "change": 1540,
+          "pct_change": 138.5
+        }
+      ]
+    },
+    {
+      "agency": "DEPARTMENT OF HOMELAND SECURITY",
+      "agency_subelement": "IMMIGRATION AND CUSTOMS ENFORCEMENT",
+      "old_total": 20768,
+      "new_total": 30461,
+      "change": 9693,
+      "pct_change": 46.7,
+      "drivers": [
+        {
+          "dimension": "Grade",
+          "group": "05",
+          "old_count": 257,
+          "new_count": 2028,
+          "change": 1771,
+          "pct_change": 689.1
+        },
+        {
+          "dimension": "Appointment Type",
+          "group": "CAREER-CONDITIONAL (COMPETITIVE SERVICE PERMANENT)",
+          "old_count": 1759,
+          "new_count": 8907,
+          "change": 7148,
+          "pct_change": 406.4
+        },
+        {
+          "dimension": "Age Bracket",
+          "group": "25-29",
+          "old_count": 807,
+          "new_count": 2623,
+          "change": 1816,
+          "pct_change": 225.0
+        },
+        {
+          "dimension": "Grade",
+          "group": "07",
+          "old_count": 964,
+          "new_count": 4506,
+          "change": 3542,
+          "pct_change": 367.4
+        },
+        {
+          "dimension": "Tenure",
+          "group": "TENURE GROUP 2 - CAREER-CONDITIONAL OR OTHER APPT THAT IS CONDITIONAL OR REQUIRES PROBATIONARY OR TRIAL PERIOD",
+          "old_count": 2874,
+          "new_count": 10701,
+          "change": 7827,
+          "pct_change": 272.3
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "rank": 1,
+      "agency": "DEPARTMENT OF HOMELAND SECURITY",
+      "agency_subelement": "IMMIGRATION AND CUSTOMS ENFORCEMENT",
+      "dimension": "Grade",
+      "group": "05",
+      "old_count": 257,
+      "new_count": 2028,
+      "change": 1771,
+      "pct_change": 689.1
+    },
+    {
+      "rank": 2,
+      "agency": "DEPARTMENT OF INTERIOR",
+      "agency_subelement": "OFFICE OF THE SECRETARY OF THE INTERIOR",
+      "dimension": "Occupational Series",
+      "group": "INFORMATION TECHNOLOGY MANAGEMENT",
+      "old_count": 294,
+      "new_count": 1313,
+      "change": 1019,
+      "pct_change": 346.6
+    },
+    {
+      "rank": 3,
+      "agency": "DEPARTMENT OF HOMELAND SECURITY",
+      "agency_subelement": "IMMIGRATION AND CUSTOMS ENFORCEMENT",
+      "dimension": "Appointment Type",
+      "group": "CAREER-CONDITIONAL (COMPETITIVE SERVICE PERMANENT)",
+      "old_count": 1759,
+      "new_count": 8907,
+      "change": 7148,
+      "pct_change": 406.4
+    },
+    {
+      "rank": 4,
+      "agency": "DEPARTMENT OF THE AIR FORCE",
+      "agency_subelement": "AIR FORCE MATERIEL COMMAND",
+      "dimension": "Pay Plan",
+      "group": "TECHNICAL MANAGEMENT SUPPORT",
+      "old_count": 804,
+      "new_count": 3264,
+      "change": 2460,
+      "pct_change": 306.0
+    },
+    {
+      "rank": 5,
+      "agency": "DEPARTMENT OF VETERANS AFFAIRS",
+      "agency_subelement": "VETERANS HEALTH ADMINISTRATION",
+      "dimension": "Supervisory Status",
+      "group": "LEADER",
+      "old_count": 1705,
+      "new_count": 6715,
+      "change": 5010,
+      "pct_change": 293.8
+    },
+    {
+      "rank": 6,
+      "agency": "DEPARTMENT OF INTERIOR",
+      "agency_subelement": "OFFICE OF THE SECRETARY OF THE INTERIOR",
+      "dimension": "Occupational Series",
+      "group": "CONTRACTING",
+      "old_count": 225,
+      "new_count": 779,
+      "change": 554,
+      "pct_change": 246.2
+    },
+    {
+      "rank": 7,
+      "agency": "DEPARTMENT OF LABOR",
+      "agency_subelement": "BUREAU OF LABOR STATISTICS",
+      "dimension": "Duty Station State",
+      "group": "MARYLAND",
+      "old_count": 247,
+      "new_count": 889,
+      "change": 642,
+      "pct_change": 259.9
+    },
+    {
+      "rank": 8,
+      "agency": "DEPARTMENT OF HOMELAND SECURITY",
+      "agency_subelement": "DHS HEADQUARTERS",
+      "dimension": "Duty Station County",
+      "group": "FAIRFAX",
+      "old_count": 269,
+      "new_count": 951,
+      "change": 682,
+      "pct_change": 253.5
+    },
+    {
+      "rank": 9,
+      "agency": "DEPARTMENT OF HOMELAND SECURITY",
+      "agency_subelement": "IMMIGRATION AND CUSTOMS ENFORCEMENT",
+      "dimension": "Age Bracket",
+      "group": "25-29",
+      "old_count": 807,
+      "new_count": 2623,
+      "change": 1816,
+      "pct_change": 225.0
+    },
+    {
+      "rank": 10,
+      "agency": "DEPARTMENT OF THE AIR FORCE",
+      "agency_subelement": "AIR FORCE MATERIEL COMMAND",
+      "dimension": "Occupational Category",
+      "group": "CLERICAL",
+      "old_count": 1501,
+      "new_count": 5054,
+      "change": 3553,
+      "pct_change": 236.7
+    },
+    {
+      "rank": 11,
+      "agency": "GENERAL SERVICES ADMINISTRATION",
+      "agency_subelement": "FEDERAL ACQUISITION SERVICE",
+      "dimension": "Duty Station State",
+      "group": "DISTRICT OF COLUMBIA",
+      "old_count": 263,
+      "new_count": 823,
+      "change": 560,
+      "pct_change": 212.9
+    },
+    {
+      "rank": 12,
+      "agency": "GENERAL SERVICES ADMINISTRATION",
+      "agency_subelement": "FEDERAL ACQUISITION SERVICE",
+      "dimension": "Duty Station County",
+      "group": "DISTRICT OF COLUMBIA",
+      "old_count": 263,
+      "new_count": 823,
+      "change": 560,
+      "pct_change": 212.9
+    },
+    {
+      "rank": 13,
+      "agency": "DEPARTMENT OF INTERIOR",
+      "agency_subelement": "OFFICE OF THE SECRETARY OF THE INTERIOR",
+      "dimension": "Veteran Status",
+      "group": "Y",
+      "old_count": 656,
+      "new_count": 1899,
+      "change": 1243,
+      "pct_change": 189.5
+    },
+    {
+      "rank": 14,
+      "agency": "DEPARTMENT OF VETERANS AFFAIRS",
+      "agency_subelement": "VETERANS HEALTH ADMINISTRATION",
+      "dimension": "Supervisory Status",
+      "group": "SUPERVISOR OR MANAGER",
+      "old_count": 5534,
+      "new_count": 14068,
+      "change": 8534,
+      "pct_change": 154.2
+    },
+    {
+      "rank": 15,
+      "agency": "DEPARTMENT OF VETERANS AFFAIRS",
+      "agency_subelement": "VETERANS HEALTH ADMINISTRATION",
+      "dimension": "Duty Station County",
+      "group": "FREDERICKSBURG",
+      "old_count": 231,
+      "new_count": 563,
+      "change": 332,
+      "pct_change": 143.7
+    },
+    {
+      "rank": 16,
+      "agency": "DEPARTMENT OF THE NAVY",
+      "agency_subelement": "NAVAL FACILITIES ENGINEERING COMMAND",
+      "dimension": "Occupational Category",
+      "group": "CLERICAL",
+      "old_count": 447,
+      "new_count": 1068,
+      "change": 621,
+      "pct_change": 138.9
+    },
+    {
+      "rank": 17,
+      "agency": "DEPARTMENT OF THE AIR FORCE",
+      "agency_subelement": "AIR FORCE MATERIEL COMMAND",
+      "dimension": "Pay Plan",
+      "group": "ADMINISTRATION SUPPORT",
+      "old_count": 297,
+      "new_count": 711,
+      "change": 414,
+      "pct_change": 139.4
+    },
+    {
+      "rank": 18,
+      "agency": "DEPARTMENT OF TREASURY",
+      "agency_subelement": "INTERNAL REVENUE SERVICE",
+      "dimension": "Tenure",
+      "group": "TENURE GROUP 3 - TAPER/TERM OR PROVISIONAL OR APPTS W/OUT TIME LIMIT BUT NOT ACTUALLY OR POTENTIALLY PERMANENT",
+      "old_count": 243,
+      "new_count": 566,
+      "change": 323,
+      "pct_change": 132.9
+    },
+    {
+      "rank": 19,
+      "agency": "DEPARTMENT OF THE NAVY",
+      "agency_subelement": "NAVAL SEA SYSTEMS COMMAND",
+      "dimension": "Occupational Category",
+      "group": "CLERICAL",
+      "old_count": 519,
+      "new_count": 1123,
+      "change": 604,
+      "pct_change": 116.4
+    },
+    {
+      "rank": 20,
+      "agency": "DEPARTMENT OF HOMELAND SECURITY",
+      "agency_subelement": "DHS HEADQUARTERS",
+      "dimension": "Duty Station State",
+      "group": "VIRGINIA",
+      "old_count": 521,
+      "new_count": 1083,
+      "change": 562,
+      "pct_change": 107.9
+    },
+    {
+      "rank": 21,
+      "agency": "DEPARTMENT OF THE NAVY",
+      "agency_subelement": "NAVAL AIR SYSTEMS COMMAND",
+      "dimension": "Occupational Category",
+      "group": "CLERICAL",
+      "old_count": 472,
+      "new_count": 1007,
+      "change": 535,
+      "pct_change": 113.3
+    },
+    {
+      "rank": 22,
+      "agency": "DEPARTMENT OF THE NAVY",
+      "agency_subelement": "U.S. PACIFIC FLEET, COMMANDER IN CHIEF",
+      "dimension": "Occupational Category",
+      "group": "CLERICAL",
+      "old_count": 740,
+      "new_count": 1463,
+      "change": 723,
+      "pct_change": 97.7
+    },
+    {
+      "rank": 23,
+      "agency": "U.S. AGENCY FOR INTERNATIONAL DEV",
+      "agency_subelement": "U.S. AGENCY FOR INTERNATIONAL DEVELOPMENT",
+      "dimension": "Work Schedule",
+      "group": "FULL-TIME",
+      "old_count": 4836,
+      "new_count": 256,
+      "change": -4580,
+      "pct_change": -94.7
+    },
+    {
+      "rank": 24,
+      "agency": "DEPARTMENT OF COMMERCE",
+      "agency_subelement": "PATENT AND TRADEMARK OFFICE",
+      "dimension": "Duty Station County",
+      "group": "ALEXANDRIA",
+      "old_count": 1784,
+      "new_count": 3426,
+      "change": 1642,
+      "pct_change": 92.0
+    },
+    {
+      "rank": 25,
+      "agency": "U.S. AGENCY FOR INTERNATIONAL DEV",
+      "agency_subelement": "U.S. AGENCY FOR INTERNATIONAL DEVELOPMENT",
+      "dimension": "Veteran Status",
+      "group": "N",
+      "old_count": 4495,
+      "new_count": 221,
+      "change": -4274,
+      "pct_change": -95.1
+    },
+    {
+      "rank": 26,
+      "agency": "DEPARTMENT OF THE NAVY",
+      "agency_subelement": "UNITED STATES FLEET FORCES COMMAND",
+      "dimension": "Occupational Series",
+      "group": "WIPER",
+      "old_count": 252,
+      "new_count": 430,
+      "change": 178,
+      "pct_change": 70.6
+    },
+    {
+      "rank": 27,
+      "agency": "DEPARTMENT OF THE AIR FORCE",
+      "agency_subelement": "AIR FORCE ELEMENTS, U.S. STRATEGIC COMMAND",
+      "dimension": "Grade",
+      "group": "03",
+      "old_count": 291,
+      "new_count": 576,
+      "change": 285,
+      "pct_change": 97.9
+    },
+    {
+      "rank": 28,
+      "agency": "DEPARTMENT OF DEFENSE",
+      "agency_subelement": "DEFENSE COMMISSARY AGENCY",
+      "dimension": "Occupational Category",
+      "group": "CLERICAL",
+      "old_count": 2780,
+      "new_count": 4933,
+      "change": 2153,
+      "pct_change": 77.4
+    },
+    {
+      "rank": 29,
+      "agency": "DEPARTMENT OF THE AIR FORCE",
+      "agency_subelement": "UNITED STATES SPACE FORCE",
+      "dimension": "Grade",
+      "group": "02",
+      "old_count": 343,
+      "new_count": 672,
+      "change": 329,
+      "pct_change": 95.9
+    },
+    {
+      "rank": 30,
+      "agency": "DEPARTMENT OF ENERGY",
+      "agency_subelement": "DEPARTMENT OF ENERGY",
+      "dimension": "Occupational Category",
+      "group": "CLERICAL",
+      "old_count": 304,
+      "new_count": 522,
+      "change": 218,
+      "pct_change": 71.7
+    },
+    {
+      "rank": 31,
+      "agency": "DEPARTMENT OF THE AIR FORCE",
+      "agency_subelement": "AIR FORCE ELEMENTS, U.S. STRATEGIC COMMAND",
+      "dimension": "Pay Plan",
+      "group": "BUSINESS MANAGEMENT AND TECHNICAL MANAGEMENT PROFESSIONAL",
+      "old_count": 410,
+      "new_count": 708,
+      "change": 298,
+      "pct_change": 72.7
+    },
+    {
+      "rank": 32,
+      "agency": "U.S. AGENCY FOR INTERNATIONAL DEV",
+      "agency_subelement": "U.S. AGENCY FOR INTERNATIONAL DEVELOPMENT",
+      "dimension": "Tenure",
+      "group": "TENURE GROUP 1 - CAREER OR SERVING AN APPOINTMENT CARRYING NO RESTRICTION OR CONDITION",
+      "old_count": 2932,
+      "new_count": 222,
+      "change": -2710,
+      "pct_change": -92.4
+    },
+    {
+      "rank": 33,
+      "agency": "DEPARTMENT OF DEFENSE",
+      "agency_subelement": "DEFENSE HUMAN RESOURCES ACTIVITY",
+      "dimension": "Veteran Status",
+      "group": "N",
+      "old_count": 2309,
+      "new_count": 616,
+      "change": -1693,
+      "pct_change": -73.3
+    },
+    {
+      "rank": 34,
+      "agency": "DEPARTMENT OF HOMELAND SECURITY",
+      "agency_subelement": "CUSTOMS AND BORDER PROTECTION",
+      "dimension": "Grade",
+      "group": "05",
+      "old_count": 898,
+      "new_count": 1660,
+      "change": 762,
+      "pct_change": 84.9
+    },
+    {
+      "rank": 35,
+      "agency": "DEPARTMENT OF AGRICULTURE",
+      "agency_subelement": "FOOD AND NUTRITION SERVICE",
+      "dimension": "Duty Station County",
+      "group": "ALEXANDRIA",
+      "old_count": 235,
+      "new_count": 388,
+      "change": 153,
+      "pct_change": 65.1
+    },
+    {
+      "rank": 36,
+      "agency": "DEPARTMENT OF THE AIR FORCE",
+      "agency_subelement": "UNITED STATES SPACE FORCE",
+      "dimension": "Pay Plan",
+      "group": "BUSINESS MANAGEMENT AND TECHNICAL MANAGEMENT PROFESSIONAL",
+      "old_count": 608,
+      "new_count": 1008,
+      "change": 400,
+      "pct_change": 65.8
+    },
+    {
+      "rank": 37,
+      "agency": "DEPARTMENT OF VETERANS AFFAIRS",
+      "agency_subelement": "OFFICE OF THE SECRETARY",
+      "dimension": "Occupational Category",
+      "group": "ADMINISTRATIVE",
+      "old_count": 380,
+      "new_count": 625,
+      "change": 245,
+      "pct_change": 64.5
+    },
+    {
+      "rank": 38,
+      "agency": "DEPARTMENT OF HOMELAND SECURITY",
+      "agency_subelement": "CITIZENSHIP AND IMMIGRATION SERVICES",
+      "dimension": "Grade",
+      "group": "11",
+      "old_count": 1491,
+      "new_count": 2595,
+      "change": 1104,
+      "pct_change": 74.0
+    },
+    {
+      "rank": 39,
+      "agency": "DEPARTMENT OF DEFENSE",
+      "agency_subelement": "DEFENSE HUMAN RESOURCES ACTIVITY",
+      "dimension": "Supervisory Status",
+      "group": "ALL OTHER POSITIONS",
+      "old_count": 2604,
+      "new_count": 800,
+      "change": -1804,
+      "pct_change": -69.3
+    },
+    {
+      "rank": 40,
+      "agency": "DEPARTMENT OF AGRICULTURE",
+      "agency_subelement": "AGRICULTURAL RESEARCH SERVICE",
+      "dimension": "Age Bracket",
+      "group": "20-24",
+      "old_count": 579,
+      "new_count": 209,
+      "change": -370,
+      "pct_change": -63.9
+    },
+    {
+      "rank": 41,
+      "agency": "DEPARTMENT OF AGRICULTURE",
+      "agency_subelement": "NATURAL RESOURCES CONSERVATION SERVICE",
+      "dimension": "Age Bracket",
+      "group": "20-24",
+      "old_count": 724,
+      "new_count": 267,
+      "change": -457,
+      "pct_change": -63.1
+    },
+    {
+      "rank": 42,
+      "agency": "DEPARTMENT OF COMMERCE",
+      "agency_subelement": "U.S. CENSUS BUREAU",
+      "dimension": "Tenure",
+      "group": "NO TENURE GROUP - EMPLOYEES (E.G., TEMPORARIES OR SES) NOT IN TENURE GROUPS 1, 2, OR 3 FOR RIF PURPOSES",
+      "old_count": 1342,
+      "new_count": 2057,
+      "change": 715,
+      "pct_change": 53.3
+    },
+    {
+      "rank": 43,
+      "agency": "DEPARTMENT OF HEALTH AND HUMAN SERVICES",
+      "agency_subelement": "NATIONAL INSTITUTES OF HEALTH",
+      "dimension": "Occupational Series",
+      "group": "CONTRACTING",
+      "old_count": 512,
+      "new_count": 224,
+      "change": -288,
+      "pct_change": -56.2
+    },
+    {
+      "rank": 44,
+      "agency": "DEPARTMENT OF AGRICULTURE",
+      "agency_subelement": "AGRICULTURAL MARKETING SERVICE",
+      "dimension": "Work Schedule",
+      "group": "INTERMITTENT SEASONAL",
+      "old_count": 604,
+      "new_count": 837,
+      "change": 233,
+      "pct_change": 38.6
+    },
+    {
+      "rank": 45,
+      "agency": "GENERAL SERVICES ADMINISTRATION",
+      "agency_subelement": "OFFICE OF THE HUMAN RESOURCES MANAGEMENT",
+      "dimension": "Work Schedule",
+      "group": "FULL-TIME",
+      "old_count": 462,
+      "new_count": 211,
+      "change": -251,
+      "pct_change": -54.3
+    },
+    {
+      "rank": 46,
+      "agency": "DEPARTMENT OF TREASURY",
+      "agency_subelement": "INTERNAL REVENUE SERVICE",
+      "dimension": "Appointment Type",
+      "group": "NONPERMANENT (COMPETITTIVE SERVICE NONPERMANENT)",
+      "old_count": 390,
+      "new_count": 587,
+      "change": 197,
+      "pct_change": 50.5
+    },
+    {
+      "rank": 47,
+      "agency": "DEPARTMENT OF AGRICULTURE",
+      "agency_subelement": "FOREST SERVICE",
+      "dimension": "Occupational Series",
+      "group": "WILDLAND FIRE MANAGEMENT",
+      "old_count": 441,
+      "new_count": 612,
+      "change": 171,
+      "pct_change": 38.8
+    },
+    {
+      "rank": 48,
+      "agency": "DEPARTMENT OF THE NAVY",
+      "agency_subelement": "UNITED STATES FLEET FORCES COMMAND",
+      "dimension": "Occupational Category",
+      "group": "CLERICAL",
+      "old_count": 703,
+      "new_count": 1011,
+      "change": 308,
+      "pct_change": 43.8
+    },
+    {
+      "rank": 49,
+      "agency": "DEPARTMENT OF THE AIR FORCE",
+      "agency_subelement": "AIR FORCE CIVILIAN CAREER TRAINING",
+      "dimension": "Pay Plan",
+      "group": "BUSINESS MANAGEMENT AND TECHNICAL MANAGEMENT PROFESSIONAL",
+      "old_count": 271,
+      "new_count": 390,
+      "change": 119,
+      "pct_change": 43.9
+    },
+    {
+      "rank": 50,
+      "agency": "DEPARTMENT OF HOMELAND SECURITY",
+      "agency_subelement": "CUSTOMS AND BORDER PROTECTION",
+      "dimension": "Age Bracket",
+      "group": "20-24",
+      "old_count": 1485,
+      "new_count": 2061,
+      "change": 576,
+      "pct_change": 38.8
+    }
+  ]
+}

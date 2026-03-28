@@ -161,19 +161,26 @@ async function loadIndex() {
 
 function renderSidebar(index, active) {
   const sb = document.getElementById('sidebar');
-  let h = '<h2>Reports</h2>';
-  for (const m of index.months) {
-    h += `<button class="month-btn${m.month===active?' active':''}" data-month="${m.month}">${ml(m.month)}</button>`;
+  let h = '<h2>Monthly</h2>';
+  for (const m of index.months || []) {
+    const key = m.key || m.month;
+    h += `<button class="month-btn${key===active?' active':''}" data-key="${key}">${ml(m.month)}</button>`;
+  }
+  if (index.baselines?.length) {
+    h += '<h2 style="margin-top:16px">Since Baseline</h2>';
+    for (const m of index.baselines) {
+      h += `<button class="month-btn${m.key===active?' active':''}" data-key="${m.key}">${ml(m.compared_to)} &rarr; ${ml(m.month)}</button>`;
+    }
   }
   sb.innerHTML = h;
-  sb.querySelectorAll('.month-btn').forEach(b => b.addEventListener('click', () => loadMonth(b.dataset.month)));
+  sb.querySelectorAll('.month-btn').forEach(b => b.addEventListener('click', () => loadMonth(b.dataset.key)));
 }
 
-async function loadMonth(month) {
+async function loadMonth(key) {
   const main = document.getElementById('main');
   main.innerHTML = '<div class="loading">Loading...</div>';
-  const data = await (await fetch(`${DATA_BASE}/${month}.json?_=${Date.now()}`)).json();
-  renderSidebar(await loadIndex(), month);
+  const data = await (await fetch(`${DATA_BASE}/${key}.json?_=${Date.now()}`)).json();
+  renderSidebar(await loadIndex(), key);
   renderReport(data);
 }
 
@@ -422,7 +429,7 @@ function renderReport(d) {
 (async () => {
   const index = await loadIndex();
   renderSidebar(index, null);
-  if (index.months.length > 0) loadMonth(index.months[0].month);
+  if (index.months?.length > 0) loadMonth(index.months[0].key || index.months[0].month);
 })();
 </script>
 </body>

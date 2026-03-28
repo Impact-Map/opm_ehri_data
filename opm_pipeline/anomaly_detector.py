@@ -27,6 +27,7 @@ DIMENSIONS = [
     ("supervisory_status", "Supervisory Status"),
     ("occupational_category", "Occupational Category"),
     ("duty_station_state", "Duty Station State"),
+    ("duty_station_county", "Duty Station County"),
     ("veteran_indicator", "Veteran Status"),
     ("work_schedule", "Work Schedule"),
     ("occupational_series", "Occupational Series"),
@@ -308,21 +309,35 @@ def _build_separations_summary(new_month, token, exclude):
 
 # ── Dimension changes & outliers ─────────────────────────────────────────────
 
+EXCLUDE_VALUES = {
+    "duty_station_county": {"REDACTED", "NO DATA REPORTED", "INVALID"},
+    "duty_station_state": {"REDACTED", "NO DATA REPORTED", "INVALID"},
+}
+
+
 def _compute_changes(df_old, df_new, dim_col, min_count, exclude_agencies):
     """Compute headcount changes for one dimension across all agencies."""
     if dim_col not in df_old.columns or dim_col not in df_new.columns:
         return pd.DataFrame()
 
     group_cols = ["agency", "agency_subelement", dim_col]
+    skip_vals = EXCLUDE_VALUES.get(dim_col, set())
+
+    old_filtered = df_old[
+        ~df_old["agency_subelement"].isin(exclude_agencies) &
+        ~df_old[dim_col].isin(skip_vals)
+    ]
+    new_filtered = df_new[
+        ~df_new["agency_subelement"].isin(exclude_agencies) &
+        ~df_new[dim_col].isin(skip_vals)
+    ]
 
     old_agg = (
-        df_old[~df_old["agency_subelement"].isin(exclude_agencies)]
-        .groupby(group_cols)["count"].sum().reset_index()
+        old_filtered.groupby(group_cols)["count"].sum().reset_index()
         .rename(columns={"count": "old_count"})
     )
     new_agg = (
-        df_new[~df_new["agency_subelement"].isin(exclude_agencies)]
-        .groupby(group_cols)["count"].sum().reset_index()
+        new_filtered.groupby(group_cols)["count"].sum().reset_index()
         .rename(columns={"count": "new_count"})
     )
 
@@ -562,11 +577,16 @@ def _build_output(new_month, old_month, summary, renames, separations,
     }
 
 
-def save_findings(results: dict, output_dir: Path) -> Path:
-    """Write findings JSON and update the index file."""
+def save_findings(results: dict, output_dir: Path, key: str | None = None) -> Path:
+    """Write findings JSON and update the index file.
+
+    key: filename stem (without .json). Defaults to the month.
+         Use e.g. '202601_vs_202412' for baseline comparisons.
+    """
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    month_file = output_dir / f"{results['month']}.json"
+    file_key = key or results["month"]
+    month_file = output_dir / f"{file_key}.json"
     with open(month_file, "w") as f:
         json.dump(results, f, indent=2)
 
@@ -575,17 +595,25 @@ def save_findings(results: dict, output_dir: Path) -> Path:
         with open(index_file) as f:
             index = json.load(f)
     else:
-        index = {"months": []}
+        index = {"months": [], "baselines": []}
 
     entry = {
+        "key": file_key,
         "month": results["month"],
         "compared_to": results["compared_to"],
         "total_findings": len(results["findings"]),
         "generated_at": results["generated_at"],
     }
-    index["months"] = [m for m in index["months"] if m["month"] != results["month"]]
-    index["months"].append(entry)
-    index["months"].sort(key=lambda m: m["month"], reverse=True)
+
+    # Baseline comparisons go in a separate list
+    is_baseline = key and key != results["month"]
+    list_name = "baselines" if is_baseline else "months"
+
+    if list_name not in index:
+        index[list_name] = []
+    index[list_name] = [m for m in index[list_name] if m.get("key", m.get("month")) != file_key]
+    index[list_name].append(entry)
+    index[list_name].sort(key=lambda m: m["key"], reverse=True)
 
     with open(index_file, "w") as f:
         json.dump(index, f, indent=2)

@@ -72,6 +72,7 @@ def main():
     group.add_argument("--backfill", action="store_true", help="Generate for all month pairs")
 
     parser.add_argument("--compare", help="Comparison month (YYYYMM). Default: prior month")
+    parser.add_argument("--baseline", help="Baseline month (YYYYMM) to compare latest against. Saved separately from month-over-month reports.")
     parser.add_argument("--token", default=os.environ.get("HF_TOKEN"), help="HuggingFace token")
     parser.add_argument("--top-n", type=int, default=50, help="Number of findings (default 50)")
     parser.add_argument("--output-dir", type=Path, default=DOCS_DATA_DIR, help="Output directory")
@@ -120,6 +121,14 @@ def main():
             old_month = month_list[idx - 1]
         pairs = [(new_month, old_month)]
 
+    # If --baseline, add a baseline comparison for latest vs that month
+    baseline_pair = None
+    if args.baseline:
+        if args.baseline not in months:
+            print(f"Baseline month {args.baseline} not found. Available: {month_list}")
+            sys.exit(1)
+        baseline_pair = (month_list[-1], args.baseline)
+
     # Deduplicate pairs (same month might come from multiple changed files)
     pairs = list(dict.fromkeys(pairs))
 
@@ -134,6 +143,23 @@ def main():
         )
 
         out_file = save_findings(results, args.output_dir)
+        print(f"Saved to {out_file}")
+        print(f"  {len(results['findings'])} findings, {len(results['renames_detected'])} renames")
+
+    # Baseline comparison
+    if baseline_pair:
+        new_month, old_month = baseline_pair
+        file_key = f"{new_month}_vs_{old_month}"
+        print(f"\n{'='*60}")
+        print(f"Baseline comparison: {old_month} → {new_month}")
+        print(f"{'='*60}")
+
+        results = detect_anomalies(
+            new_month, old_month, token=args.token,
+            top_n=args.top_n,
+        )
+
+        out_file = save_findings(results, args.output_dir, key=file_key)
         print(f"Saved to {out_file}")
         print(f"  {len(results['findings'])} findings, {len(results['renames_detected'])} renames")
 

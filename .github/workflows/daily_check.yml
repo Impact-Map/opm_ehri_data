@@ -70,7 +70,7 @@ jobs:
         if: success() && steps.pipeline.outputs.has_changes == 'true'
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: python run_anomaly.py --changed "${{ steps.pipeline.outputs.changed_keys }}"
+        run: python run_anomaly.py --changed "${{ steps.pipeline.outputs.changed_keys }}" --baseline 202412
 
       - name: Commit anomaly findings
         if: success()

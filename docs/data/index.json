@@ -1,10 +1,20 @@
 {
   "months": [
     {
+      "key": "202601",
       "month": "202601",
       "compared_to": "202512",
       "total_findings": 50,
-      "generated_at": "2026-03-27T14:25:34.745731+00:00"
+      "generated_at": "2026-03-28T11:17:39.862213+00:00"
+    }
+  ],
+  "baselines": [
+    {
+      "key": "202601_vs_202412",
+      "month": "202601",
+      "compared_to": "202412",
+      "total_findings": 50,
+      "generated_at": "2026-03-28T13:17:55.430217+00:00"
     }
   ]
 }
