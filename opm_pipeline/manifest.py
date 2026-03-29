@@ -69,14 +69,18 @@ def update_manifest_entry(manifest: dict, repo_name: str, site_entry: dict, meta
 def build_manifest_from_hf(token: str) -> dict:
     """Bootstrap manifest by querying existing files in the single HF repo.
 
-    Reads parquet schema (footer only, ~KB per file) to populate column info.
+    Reads parquet schema and metadata (footer only, ~KB per file) to populate
+    column info, row counts, and file hashes. Sets opm_date to "" since HF
+    doesn't have that info — compare_manifests handles this gracefully.
+
     The manifest key is the HF path (e.g. 'accessions/accessions_202511_v3.parquet').
     """
     from huggingface_hub import repo_exists, list_repo_files, HfFileSystem
     import pyarrow.parquet as pq
+    import hashlib
     import re
 
-    from .config import HF_REPO
+    from .config import HF_REPO, hf_path_to_card_stem
 
     HF_PATH_RE = re.compile(r'^(accessions|separations|employment)/\1_(\d{6})(?:_v(\d+))?\.parquet$')
 
@@ -96,18 +100,24 @@ def build_manifest_from_hf(token: str) -> dict:
         version = int(m.group(3)) if m.group(3) else 0
 
         columns = []
+        row_count = 0
         try:
-            schema = pq.read_schema(f"datasets/{HF_REPO}/{filename}", filesystem=fs)
-            columns = schema.names
+            pf = pq.ParquetFile(f"datasets/{HF_REPO}/{filename}", filesystem=fs)
+            columns = pf.schema_arrow.names
+            row_count = pf.metadata.num_rows
         except Exception as e:
-            print(f"  Warning: could not read schema for {filename}: {e}")
+            print(f"  Warning: could not read metadata for {filename}: {e}")
+
+        # Generate a card-style filename for consistency with pipeline entries
+        card_name = hf_path_to_card_stem(filename) or filename
 
         manifest[filename] = {
-            "filename": filename,
+            "filename": card_name,
             "version": version,
             "opm_date": "",
             "data_type": data_type,
             "columns": columns,
+            "row_count": row_count,
             "last_updated": datetime.now(timezone.utc).isoformat(),
         }
 
