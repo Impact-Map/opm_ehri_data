@@ -83,10 +83,28 @@ def load_employment(hf_path: str, token: str | None = None) -> pd.DataFrame:
     return df
 
 
+def _name_similarity(a: str, b: str) -> float:
+    """Fraction of words shared between two agency names."""
+    words_a = set(a.upper().split())
+    words_b = set(b.upper().split())
+    # Remove trivial words
+    stop = {"OF", "THE", "AND", "FOR", "IN", "TO", "A", "AN"}
+    words_a -= stop
+    words_b -= stop
+    if not words_a or not words_b:
+        return 0.0
+    shared = words_a & words_b
+    return len(shared) / min(len(words_a), len(words_b))
+
+
 def detect_renames(
     df_old: pd.DataFrame, df_new: pd.DataFrame, tolerance: float = 0.05,
 ) -> list[dict]:
-    """Find agencies that disappeared and reappeared under a new name."""
+    """Find agencies that disappeared and reappeared under a new name.
+
+    Requires both headcount proximity AND name similarity (at least 40%
+    shared words) to avoid false matches over long time spans.
+    """
     old_totals = df_old.groupby("agency_subelement")["count"].sum()
     new_totals = df_new.groupby("agency_subelement")["count"].sum()
 
@@ -105,8 +123,10 @@ def detect_renames(
             new_n = new_totals[new_name]
             diff = abs(new_n - old_n) / old_n
             if diff < tolerance and diff < best_diff:
-                best_match = new_name
-                best_diff = diff
+                # Also require name similarity
+                if _name_similarity(old_name, new_name) >= 0.4:
+                    best_match = new_name
+                    best_diff = diff
         if best_match:
             matched_new.add(best_match)
             renames.append({
