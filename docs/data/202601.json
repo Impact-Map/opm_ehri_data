@@ -1,7 +1,7 @@
 {
   "month": "202601",
   "compared_to": "202512",
-  "generated_at": "2026-03-28T11:17:39.862213+00:00",
+  "generated_at": "2026-03-29T21:03:23.976030+00:00",
   "summary": {
     "old_total": 2072351,
     "new_total": 2033111,
@@ -87,16 +87,16 @@
   },
   "renames_detected": [
     {
-      "old_name": "BUREAU OF CONSUMER FINANCIAL PROTECTION",
-      "new_name": "CONSUMER FINANCIAL PROTECTION BUREAU",
-      "old_count": 1248,
-      "new_count": 1214
-    },
-    {
       "old_name": "EXECUTIVE DIRECTOR, OFFICE OF ACQUISITION AND LOGISTICS",
       "new_name": "EXECUTIVE DIRECTOR, OFFICE OF ACQUISITION, LOGISTICS AND CONSTRUCTION",
       "old_count": 1050,
       "new_count": 1019
+    },
+    {
+      "old_name": "BUREAU OF CONSUMER FINANCIAL PROTECTION",
+      "new_name": "CONSUMER FINANCIAL PROTECTION BUREAU",
+      "old_count": 1248,
+      "new_count": 1214
     }
   ],
   "separations": {

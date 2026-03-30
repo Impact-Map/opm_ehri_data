@@ -1,7 +1,7 @@
 {
   "month": "202601",
   "compared_to": "202412",
-  "generated_at": "2026-03-28T13:17:55.430217+00:00",
+  "generated_at": "2026-03-29T22:58:31.259495+00:00",
   "summary": {
     "old_total": 2298099,
     "new_total": 2021325,
@@ -65,14 +65,14 @@
       {
         "agency": "NAVAL INTELLIGENCE ACTIVITY",
         "change": 1464,
-        "pct": NaN,
+        "pct": 0.0,
         "old": 0,
         "new": 1464
       },
       {
         "agency": "EXECUTIVE DIRECTOR, OFFICE OF ACQUISITION, LOGISTICS AND CONSTRUCTION",
         "change": 1019,
-        "pct": NaN,
+        "pct": 0.0,
         "old": 0,
         "new": 1019
       },
@@ -87,24 +87,6 @@
   },
   "renames_detected": [
     {
-      "old_name": "DEPUTY ASSISTANT SECRETARY FOR OFFICE OF RESOLUTION MANAGEMENT",
-      "new_name": "INVALID",
-      "old_count": 311,
-      "new_count": 311
-    },
-    {
-      "old_name": "COMMANDER, NAVY INSTALLATIONS",
-      "new_name": "COMMANDER, NAVY INSTALLATIONS COMMAND",
-      "old_count": 10953,
-      "new_count": 10832
-    },
-    {
-      "old_name": "EXECUTIVE DIRECTOR, OFFICE OF ACQUISITION AND LOGISTICS",
-      "new_name": "CONSUMER FINANCIAL PROTECTION BUREAU",
-      "old_count": 1255,
-      "new_count": 1214
-    },
-    {
       "old_name": "GOVERNMENT PRINTING OFFICE",
       "new_name": "GOVERNMENT PUBLISHING OFFICE",
       "old_count": 1641,
@@ -115,6 +97,24 @@
       "new_name": "SPACE FORCE SERVICE WIDE SUPPORT ACTIVITIES",
       "old_count": 42,
       "new_count": 42
+    },
+    {
+      "old_name": "EXECUTIVE DIRECTOR, OFFICE OF ACQUISITION AND LOGISTICS",
+      "new_name": "CONSUMER FINANCIAL PROTECTION BUREAU",
+      "old_count": 1255,
+      "new_count": 1214
+    },
+    {
+      "old_name": "COMMANDER, NAVY INSTALLATIONS",
+      "new_name": "COMMANDER, NAVY INSTALLATIONS COMMAND",
+      "old_count": 10953,
+      "new_count": 10832
+    },
+    {
+      "old_name": "DEPUTY ASSISTANT SECRETARY FOR OFFICE OF RESOLUTION MANAGEMENT",
+      "new_name": "INVALID",
+      "old_count": 311,
+      "new_count": 311
     }
   ],
   "separations": {

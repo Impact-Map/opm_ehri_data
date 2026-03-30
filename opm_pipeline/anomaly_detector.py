@@ -53,8 +53,8 @@ def get_employment_months(token: str | None = None) -> dict[str, str]:
     return {m: best[m][1] for m in sorted(best)}
 
 
-def _get_separations_url(month: str, token: str | None = None) -> str | None:
-    """Return HF URL for the best separations file for a given month."""
+def _get_separations_path(month: str, token: str | None = None) -> str | None:
+    """Download and return local path for the best separations file for a given month."""
     pattern = re.compile(r"^separations/separations_(\d{6})_v(\d+)\.parquet$")
     best: tuple[int, str] | None = None
     for f in list_repo_files(HF_REPO, repo_type="dataset", token=token):
@@ -65,15 +65,19 @@ def _get_separations_url(month: str, token: str | None = None) -> str | None:
                 best = (ver, f)
     if best is None:
         return None
-    local = hf_hub_download(repo_id=HF_REPO, filename=best[1], repo_type="dataset", token=token)
-    return local
+    return _hf_local(best[1], token)
+
+
+def _hf_local(hf_path: str, token: str | None = None) -> str:
+    """Download a file from HuggingFace and return the local path (cached)."""
+    return hf_hub_download(
+        repo_id=HF_REPO, filename=hf_path, repo_type="dataset", token=token,
+    )
 
 
 def load_employment(hf_path: str, token: str | None = None) -> pd.DataFrame:
-    """Download and load an employment parquet file."""
-    local = hf_hub_download(
-        repo_id=HF_REPO, filename=hf_path, repo_type="dataset", token=token,
-    )
+    """Download and load an employment parquet file from HuggingFace."""
+    local = _hf_local(hf_path, token)
     df = duckdb.execute(f"SELECT * FROM read_parquet('{local}')").df()
     df["count"] = df["count"].astype(int)
     return df
@@ -140,7 +144,7 @@ def _build_summary(df_old, df_new, exclude):
 
     # Biggest movers (by absolute change, min 100 employees)
     big = merged[merged[["old", "new"]].max(axis=1) >= 100].copy()
-    big["pct"] = (big["change"] / big["old"].replace(0, np.nan) * 100).round(1)
+    big["pct"] = (big["change"] / big["old"].replace(0, np.nan) * 100).round(1).fillna(0)
     top_losses = big.nsmallest(5, "change")
     top_gains = big.nlargest(5, "change")
     top_gains = top_gains[top_gains["change"] > 0]
@@ -226,7 +230,7 @@ def _build_agency_profiles(df_old, df_new, outliers_df, changes_df, exclude, min
 
 def _build_separations_summary(new_month, token, exclude):
     """Load separations for the new month and summarize by category and agency."""
-    local = _get_separations_url(new_month, token)
+    local = _get_separations_path(new_month, token)
     if not local:
         return None
 
@@ -587,8 +591,11 @@ def save_findings(results: dict, output_dir: Path, key: str | None = None) -> Pa
 
     file_key = key or results["month"]
     month_file = output_dir / f"{file_key}.json"
+    # Replace any NaN/Infinity with null for valid JSON
+    json_str = json.dumps(results, indent=2)
+    json_str = json_str.replace(": NaN", ": null").replace(": Infinity", ": null").replace(": -Infinity", ": null")
     with open(month_file, "w") as f:
-        json.dump(results, f, indent=2)
+        f.write(json_str)
 
     index_file = output_dir / "index.json"
     if index_file.exists():
