@@ -228,7 +228,7 @@ def _top_proportional_changes(vc: dict, n: int = 4, min_old: int = 100) -> list:
             prop = v["diff"] / v["old_count"] * 100
             candidates.append((abs(prop), prop, col, v))
 
-    candidates.sort(reverse=True)
+    candidates.sort(key=lambda x: (x[0], x[1], x[2]), reverse=True)
     return candidates[:n]
 
 
