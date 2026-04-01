@@ -85,7 +85,7 @@ jobs:
           fi
 
       - name: Send Buttondown email notification
-        if: success() && steps.pipeline.outputs.has_changes == 'true'
+        if: always() && steps.pipeline.outcome == 'success' && steps.pipeline.outputs.has_changes == 'true'
         env:
           BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
           EMAIL_SUBJECT: ${{ steps.pipeline.outputs.email_subject }}
