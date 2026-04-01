@@ -1,0 +1,29 @@
+name: Resend Email (Feb 2026)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  resend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Generate email body
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: python resend_email.py
+
+      - name: Send email
+        env:
+          BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
+          EMAIL_SUBJECT: "New EHRI data available on OPM: 3 new files"
+        run: python3 send_email.py
