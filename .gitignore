@@ -1,3 +1,9 @@
+# Claude Code
+.claude/
+
+# Netlify
+.netlify/
+
 # Playwright MCP
 .playwright-mcp/
 
