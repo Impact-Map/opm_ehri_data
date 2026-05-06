@@ -31,63 +31,30 @@ class LayoutChangedError(RuntimeError):
 
 
 async def set_filters(page, data_type: str, start_date: str, end_date: str) -> int:
-    """Set the date range and data type filters. Returns total file count.
+    """Set the data type filter. Returns total file count.
 
-    Raises LayoutChangedError if any selector fails to match or the filter
-    doesn't actually take effect — better to fail the whole run than silently
-    report no changes.
+    Date filtering is intentionally NOT applied: OPM moved to a readonly
+    MudBlazor date picker that can't be driven by .fill(), and the diff
+    is done by comparing site_manifest → stored_manifest anyway. Iterating
+    every card for a data_type is cheap (~250 cards, paginated 100 at a
+    time) and avoids depending on a fragile picker UI.
+
+    The start_date / end_date args are kept for backwards compatibility
+    with the existing call sites (and smoke_test.py); they're ignored.
+
+    Raises LayoutChangedError if the dropdown or count text can't be
+    found / doesn't take effect — better to fail the whole run than
+    silently report no changes.
     """
-    # OPM has used multiple aria-label conventions; try each. If you see this
-    # raise, inspect data.opm.gov/explore-data/data/data-downloads and add
-    # the new label to the lists below.
-    start_selector = (
-        'input[aria-label="From date selector"], '
-        'input[aria-label="Select start date"]'
-    )
-    end_selector = (
-        'input[aria-label="To date selector"], '
-        'input[aria-label="Select end date"]'
-    )
-
-    start_input = page.locator(start_selector).first
-    end_input = page.locator(end_selector).first
-
-    try:
-        await start_input.wait_for(state="visible", timeout=15000)
-        await end_input.wait_for(state="visible", timeout=15000)
-    except Exception as e:
-        raise LayoutChangedError(
-            f"Could not find date input fields on OPM site. The aria-labels "
-            f"may have changed again. Update the selectors in "
-            f"opm_pipeline/scraper.py:set_filters. Underlying error: {e}"
-        )
-
-    await start_input.fill(start_date)
-    await start_input.press('Enter')
-    await asyncio.sleep(1)
-
-    await end_input.fill(end_date)
-    await end_input.press('Enter')
-    await asyncio.sleep(1)
-
-    # Verify the date filter was actually applied. If the inputs are still
-    # empty, the fill silently dropped (e.g. wrong element type) and we'd
-    # otherwise scrape unfiltered results that look identical to the manifest.
-    actual_start = await start_input.input_value()
-    actual_end = await end_input.input_value()
-    if not actual_start or not actual_end:
-        raise LayoutChangedError(
-            f"Date filter did not stick. start={actual_start!r}, end={actual_end!r}. "
-            f"OPM site layout has likely changed."
-        )
+    del start_date, end_date  # see docstring
 
     dropdown = page.locator('#data-sources')
     try:
         await dropdown.wait_for(state="visible", timeout=15000)
     except Exception as e:
         raise LayoutChangedError(
-            f"Could not find #data-sources dropdown. OPM site layout has likely changed. "
-            f"Underlying error: {e}"
+            f"Could not find #data-sources dropdown on OPM site. Layout has "
+            f"likely changed. Underlying error: {e}"
         )
     await dropdown.select_option(data_type)
     await asyncio.sleep(2)
