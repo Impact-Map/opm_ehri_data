@@ -1,0 +1,3567 @@
+{
+  "accessions/accessions_202603_v1.parquet": {
+    "filename": "Accessions data from March 2026",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202602_v2.parquet": {
+    "filename": "Accessions data from February 2026",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202601_v2.parquet": {
+    "filename": "Accessions data from January 2026",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202512_v3.parquet": {
+    "filename": "Accessions data from December 2025",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202511_v4.parquet": {
+    "filename": "Accessions data from November 2025",
+    "version": 4,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202510_v4.parquet": {
+    "filename": "Accessions data from October 2025",
+    "version": 4,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202509_v4.parquet": {
+    "filename": "Accessions data from September 2025",
+    "version": 4,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202508_v4.parquet": {
+    "filename": "Accessions data from August 2025",
+    "version": 4,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202507_v4.parquet": {
+    "filename": "Accessions data from July 2025",
+    "version": 4,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202506_v4.parquet": {
+    "filename": "Accessions data from June 2025",
+    "version": 4,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202505_v4.parquet": {
+    "filename": "Accessions data from May 2025",
+    "version": 4,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202504_v4.parquet": {
+    "filename": "Accessions data from April 2025",
+    "version": 4,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202503_v4.parquet": {
+    "filename": "Accessions data from March 2025",
+    "version": 4,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202502_v4.parquet": {
+    "filename": "Accessions data from February 2025",
+    "version": 4,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202501_v3.parquet": {
+    "filename": "Accessions data from January 2025",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202412_v3.parquet": {
+    "filename": "Accessions data from December 2024",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202411_v3.parquet": {
+    "filename": "Accessions data from November 2024",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202410_v3.parquet": {
+    "filename": "Accessions data from October 2024",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202409_v3.parquet": {
+    "filename": "Accessions data from September 2024",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202408_v3.parquet": {
+    "filename": "Accessions data from August 2024",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202407_v3.parquet": {
+    "filename": "Accessions data from July 2024",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202406_v3.parquet": {
+    "filename": "Accessions data from June 2024",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202405_v3.parquet": {
+    "filename": "Accessions data from May 2024",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202404_v3.parquet": {
+    "filename": "Accessions data from April 2024",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202403_v3.parquet": {
+    "filename": "Accessions data from March 2024",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202402_v3.parquet": {
+    "filename": "Accessions data from February 2024",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202401_v3.parquet": {
+    "filename": "Accessions data from January 2024",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202312_v3.parquet": {
+    "filename": "Accessions data from December 2023",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202311_v3.parquet": {
+    "filename": "Accessions data from November 2023",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202310_v3.parquet": {
+    "filename": "Accessions data from October 2023",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202309_v3.parquet": {
+    "filename": "Accessions data from September 2023",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202308_v3.parquet": {
+    "filename": "Accessions data from August 2023",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202307_v3.parquet": {
+    "filename": "Accessions data from July 2023",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202306_v3.parquet": {
+    "filename": "Accessions data from June 2023",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202305_v3.parquet": {
+    "filename": "Accessions data from May 2023",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202304_v3.parquet": {
+    "filename": "Accessions data from April 2023",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202303_v3.parquet": {
+    "filename": "Accessions data from March 2023",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202302_v3.parquet": {
+    "filename": "Accessions data from February 2023",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202301_v3.parquet": {
+    "filename": "Accessions data from January 2023",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202212_v3.parquet": {
+    "filename": "Accessions data from December 2022",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202211_v3.parquet": {
+    "filename": "Accessions data from November 2022",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202210_v3.parquet": {
+    "filename": "Accessions data from October 2022",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202209_v3.parquet": {
+    "filename": "Accessions data from September 2022",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202208_v3.parquet": {
+    "filename": "Accessions data from August 2022",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202207_v3.parquet": {
+    "filename": "Accessions data from July 2022",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202206_v3.parquet": {
+    "filename": "Accessions data from June 2022",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202205_v3.parquet": {
+    "filename": "Accessions data from May 2022",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202204_v3.parquet": {
+    "filename": "Accessions data from April 2022",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202203_v3.parquet": {
+    "filename": "Accessions data from March 2022",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202202_v3.parquet": {
+    "filename": "Accessions data from February 2022",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202201_v3.parquet": {
+    "filename": "Accessions data from January 2022",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202112_v3.parquet": {
+    "filename": "Accessions data from December 2021",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202111_v3.parquet": {
+    "filename": "Accessions data from November 2021",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202110_v3.parquet": {
+    "filename": "Accessions data from October 2021",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202109_v3.parquet": {
+    "filename": "Accessions data from September 2021",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202108_v3.parquet": {
+    "filename": "Accessions data from August 2021",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202107_v3.parquet": {
+    "filename": "Accessions data from July 2021",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202106_v3.parquet": {
+    "filename": "Accessions data from June 2021",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202105_v3.parquet": {
+    "filename": "Accessions data from May 2021",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202104_v3.parquet": {
+    "filename": "Accessions data from April 2021",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202103_v3.parquet": {
+    "filename": "Accessions data from March 2021",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202102_v3.parquet": {
+    "filename": "Accessions data from February 2021",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202101_v3.parquet": {
+    "filename": "Accessions data from January 2021",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202012_v3.parquet": {
+    "filename": "Accessions data from December 2020",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202011_v3.parquet": {
+    "filename": "Accessions data from November 2020",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202010_v3.parquet": {
+    "filename": "Accessions data from October 2020",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202009_v3.parquet": {
+    "filename": "Accessions data from September 2020",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202008_v3.parquet": {
+    "filename": "Accessions data from August 2020",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202007_v3.parquet": {
+    "filename": "Accessions data from July 2020",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202006_v3.parquet": {
+    "filename": "Accessions data from June 2020",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202005_v3.parquet": {
+    "filename": "Accessions data from May 2020",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202004_v3.parquet": {
+    "filename": "Accessions data from April 2020",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202003_v3.parquet": {
+    "filename": "Accessions data from March 2020",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202002_v3.parquet": {
+    "filename": "Accessions data from February 2020",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_202001_v3.parquet": {
+    "filename": "Accessions data from January 2020",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201912_v3.parquet": {
+    "filename": "Accessions data from December 2019",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201911_v3.parquet": {
+    "filename": "Accessions data from November 2019",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201910_v3.parquet": {
+    "filename": "Accessions data from October 2019",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201909_v3.parquet": {
+    "filename": "Accessions data from September 2019",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201908_v3.parquet": {
+    "filename": "Accessions data from August 2019",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201907_v3.parquet": {
+    "filename": "Accessions data from July 2019",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201906_v3.parquet": {
+    "filename": "Accessions data from June 2019",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201905_v3.parquet": {
+    "filename": "Accessions data from May 2019",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201904_v3.parquet": {
+    "filename": "Accessions data from April 2019",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201903_v3.parquet": {
+    "filename": "Accessions data from March 2019",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201902_v3.parquet": {
+    "filename": "Accessions data from February 2019",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201901_v3.parquet": {
+    "filename": "Accessions data from January 2019",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201812_v3.parquet": {
+    "filename": "Accessions data from December 2018",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201811_v3.parquet": {
+    "filename": "Accessions data from November 2018",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201810_v3.parquet": {
+    "filename": "Accessions data from October 2018",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201809_v3.parquet": {
+    "filename": "Accessions data from September 2018",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201808_v3.parquet": {
+    "filename": "Accessions data from August 2018",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201807_v3.parquet": {
+    "filename": "Accessions data from July 2018",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201806_v3.parquet": {
+    "filename": "Accessions data from June 2018",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201805_v3.parquet": {
+    "filename": "Accessions data from May 2018",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201804_v3.parquet": {
+    "filename": "Accessions data from April 2018",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201803_v3.parquet": {
+    "filename": "Accessions data from March 2018",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201802_v3.parquet": {
+    "filename": "Accessions data from February 2018",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201801_v3.parquet": {
+    "filename": "Accessions data from January 2018",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201712_v3.parquet": {
+    "filename": "Accessions data from December 2017",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201711_v3.parquet": {
+    "filename": "Accessions data from November 2017",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201710_v3.parquet": {
+    "filename": "Accessions data from October 2017",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201709_v3.parquet": {
+    "filename": "Accessions data from September 2017",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201708_v3.parquet": {
+    "filename": "Accessions data from August 2017",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201707_v3.parquet": {
+    "filename": "Accessions data from July 2017",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201706_v3.parquet": {
+    "filename": "Accessions data from June 2017",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201705_v3.parquet": {
+    "filename": "Accessions data from May 2017",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201704_v3.parquet": {
+    "filename": "Accessions data from April 2017",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201703_v3.parquet": {
+    "filename": "Accessions data from March 2017",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201702_v3.parquet": {
+    "filename": "Accessions data from February 2017",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201701_v3.parquet": {
+    "filename": "Accessions data from January 2017",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201612_v3.parquet": {
+    "filename": "Accessions data from December 2016",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201611_v3.parquet": {
+    "filename": "Accessions data from November 2016",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201610_v3.parquet": {
+    "filename": "Accessions data from October 2016",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201609_v3.parquet": {
+    "filename": "Accessions data from September 2016",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201608_v3.parquet": {
+    "filename": "Accessions data from August 2016",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201607_v3.parquet": {
+    "filename": "Accessions data from July 2016",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201606_v3.parquet": {
+    "filename": "Accessions data from June 2016",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201605_v3.parquet": {
+    "filename": "Accessions data from May 2016",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201604_v3.parquet": {
+    "filename": "Accessions data from April 2016",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201603_v3.parquet": {
+    "filename": "Accessions data from March 2016",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201602_v3.parquet": {
+    "filename": "Accessions data from February 2016",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201601_v3.parquet": {
+    "filename": "Accessions data from January 2016",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201512_v3.parquet": {
+    "filename": "Accessions data from December 2015",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201511_v3.parquet": {
+    "filename": "Accessions data from November 2015",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201510_v3.parquet": {
+    "filename": "Accessions data from October 2015",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201509_v3.parquet": {
+    "filename": "Accessions data from September 2015",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201508_v3.parquet": {
+    "filename": "Accessions data from August 2015",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201507_v3.parquet": {
+    "filename": "Accessions data from July 2015",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201506_v3.parquet": {
+    "filename": "Accessions data from June 2015",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201505_v3.parquet": {
+    "filename": "Accessions data from May 2015",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201504_v3.parquet": {
+    "filename": "Accessions data from April 2015",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201503_v3.parquet": {
+    "filename": "Accessions data from March 2015",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201502_v3.parquet": {
+    "filename": "Accessions data from February 2015",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201501_v3.parquet": {
+    "filename": "Accessions data from January 2015",
+    "version": 3,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201412_v2.parquet": {
+    "filename": "Accessions data from December 2014",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201411_v2.parquet": {
+    "filename": "Accessions data from November 2014",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201410_v2.parquet": {
+    "filename": "Accessions data from October 2014",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201409_v2.parquet": {
+    "filename": "Accessions data from September 2014",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201408_v2.parquet": {
+    "filename": "Accessions data from August 2014",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201407_v2.parquet": {
+    "filename": "Accessions data from July 2014",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201406_v2.parquet": {
+    "filename": "Accessions data from June 2014",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201405_v2.parquet": {
+    "filename": "Accessions data from May 2014",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201404_v2.parquet": {
+    "filename": "Accessions data from April 2014",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201403_v2.parquet": {
+    "filename": "Accessions data from March 2014",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201402_v2.parquet": {
+    "filename": "Accessions data from February 2014",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201401_v2.parquet": {
+    "filename": "Accessions data from January 2014",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201312_v2.parquet": {
+    "filename": "Accessions data from December 2013",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201311_v2.parquet": {
+    "filename": "Accessions data from November 2013",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201310_v2.parquet": {
+    "filename": "Accessions data from October 2013",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201309_v2.parquet": {
+    "filename": "Accessions data from September 2013",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201308_v2.parquet": {
+    "filename": "Accessions data from August 2013",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201307_v2.parquet": {
+    "filename": "Accessions data from July 2013",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201306_v2.parquet": {
+    "filename": "Accessions data from June 2013",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201305_v2.parquet": {
+    "filename": "Accessions data from May 2013",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201304_v2.parquet": {
+    "filename": "Accessions data from April 2013",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201303_v2.parquet": {
+    "filename": "Accessions data from March 2013",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201302_v2.parquet": {
+    "filename": "Accessions data from February 2013",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201301_v2.parquet": {
+    "filename": "Accessions data from January 2013",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201212_v2.parquet": {
+    "filename": "Accessions data from December 2012",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201211_v2.parquet": {
+    "filename": "Accessions data from November 2012",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201210_v2.parquet": {
+    "filename": "Accessions data from October 2012",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201209_v2.parquet": {
+    "filename": "Accessions data from September 2012",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201208_v2.parquet": {
+    "filename": "Accessions data from August 2012",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201207_v2.parquet": {
+    "filename": "Accessions data from July 2012",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201206_v2.parquet": {
+    "filename": "Accessions data from June 2012",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201205_v2.parquet": {
+    "filename": "Accessions data from May 2012",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201204_v2.parquet": {
+    "filename": "Accessions data from April 2012",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201203_v2.parquet": {
+    "filename": "Accessions data from March 2012",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201202_v2.parquet": {
+    "filename": "Accessions data from February 2012",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201201_v2.parquet": {
+    "filename": "Accessions data from January 2012",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201112_v2.parquet": {
+    "filename": "Accessions data from December 2011",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201111_v2.parquet": {
+    "filename": "Accessions data from November 2011",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201110_v2.parquet": {
+    "filename": "Accessions data from October 2011",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201109_v2.parquet": {
+    "filename": "Accessions data from September 2011",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201108_v2.parquet": {
+    "filename": "Accessions data from August 2011",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201107_v2.parquet": {
+    "filename": "Accessions data from July 2011",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201106_v2.parquet": {
+    "filename": "Accessions data from June 2011",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201105_v2.parquet": {
+    "filename": "Accessions data from May 2011",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201104_v2.parquet": {
+    "filename": "Accessions data from April 2011",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201103_v2.parquet": {
+    "filename": "Accessions data from March 2011",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201102_v2.parquet": {
+    "filename": "Accessions data from February 2011",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201101_v2.parquet": {
+    "filename": "Accessions data from January 2011",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201012_v2.parquet": {
+    "filename": "Accessions data from December 2010",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201011_v2.parquet": {
+    "filename": "Accessions data from November 2010",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201010_v2.parquet": {
+    "filename": "Accessions data from October 2010",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201009_v2.parquet": {
+    "filename": "Accessions data from September 2010",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201008_v2.parquet": {
+    "filename": "Accessions data from August 2010",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201007_v2.parquet": {
+    "filename": "Accessions data from July 2010",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201006_v2.parquet": {
+    "filename": "Accessions data from June 2010",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201005_v2.parquet": {
+    "filename": "Accessions data from May 2010",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201004_v2.parquet": {
+    "filename": "Accessions data from April 2010",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201003_v2.parquet": {
+    "filename": "Accessions data from March 2010",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201002_v2.parquet": {
+    "filename": "Accessions data from February 2010",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_201001_v2.parquet": {
+    "filename": "Accessions data from January 2010",
+    "version": 2,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200912_v1.parquet": {
+    "filename": "Accessions data from December 2009",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200911_v1.parquet": {
+    "filename": "Accessions data from November 2009",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200910_v1.parquet": {
+    "filename": "Accessions data from October 2009",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200909_v1.parquet": {
+    "filename": "Accessions data from September 2009",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200908_v1.parquet": {
+    "filename": "Accessions data from August 2009",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200907_v1.parquet": {
+    "filename": "Accessions data from July 2009",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200906_v1.parquet": {
+    "filename": "Accessions data from June 2009",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200905_v1.parquet": {
+    "filename": "Accessions data from May 2009",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200904_v1.parquet": {
+    "filename": "Accessions data from April 2009",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200903_v1.parquet": {
+    "filename": "Accessions data from March 2009",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200902_v1.parquet": {
+    "filename": "Accessions data from February 2009",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200901_v1.parquet": {
+    "filename": "Accessions data from January 2009",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200812_v1.parquet": {
+    "filename": "Accessions data from December 2008",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200811_v1.parquet": {
+    "filename": "Accessions data from November 2008",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200810_v1.parquet": {
+    "filename": "Accessions data from October 2008",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200809_v1.parquet": {
+    "filename": "Accessions data from September 2008",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200808_v1.parquet": {
+    "filename": "Accessions data from August 2008",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200807_v1.parquet": {
+    "filename": "Accessions data from July 2008",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200806_v1.parquet": {
+    "filename": "Accessions data from June 2008",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200805_v1.parquet": {
+    "filename": "Accessions data from May 2008",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200804_v1.parquet": {
+    "filename": "Accessions data from April 2008",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200803_v1.parquet": {
+    "filename": "Accessions data from March 2008",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200802_v1.parquet": {
+    "filename": "Accessions data from February 2008",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200801_v1.parquet": {
+    "filename": "Accessions data from January 2008",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200712_v1.parquet": {
+    "filename": "Accessions data from December 2007",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200711_v1.parquet": {
+    "filename": "Accessions data from November 2007",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200710_v1.parquet": {
+    "filename": "Accessions data from October 2007",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200709_v1.parquet": {
+    "filename": "Accessions data from September 2007",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200708_v1.parquet": {
+    "filename": "Accessions data from August 2007",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200707_v1.parquet": {
+    "filename": "Accessions data from July 2007",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200706_v1.parquet": {
+    "filename": "Accessions data from June 2007",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200705_v1.parquet": {
+    "filename": "Accessions data from May 2007",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200704_v1.parquet": {
+    "filename": "Accessions data from April 2007",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200703_v1.parquet": {
+    "filename": "Accessions data from March 2007",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200702_v1.parquet": {
+    "filename": "Accessions data from February 2007",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200701_v1.parquet": {
+    "filename": "Accessions data from January 2007",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200612_v1.parquet": {
+    "filename": "Accessions data from December 2006",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200611_v1.parquet": {
+    "filename": "Accessions data from November 2006",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200610_v1.parquet": {
+    "filename": "Accessions data from October 2006",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200609_v1.parquet": {
+    "filename": "Accessions data from September 2006",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200608_v1.parquet": {
+    "filename": "Accessions data from August 2006",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200607_v1.parquet": {
+    "filename": "Accessions data from July 2006",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200606_v1.parquet": {
+    "filename": "Accessions data from June 2006",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200605_v1.parquet": {
+    "filename": "Accessions data from May 2006",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200604_v1.parquet": {
+    "filename": "Accessions data from April 2006",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200603_v1.parquet": {
+    "filename": "Accessions data from March 2006",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200602_v1.parquet": {
+    "filename": "Accessions data from February 2006",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200601_v1.parquet": {
+    "filename": "Accessions data from January 2006",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200512_v1.parquet": {
+    "filename": "Accessions data from December 2005",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200511_v1.parquet": {
+    "filename": "Accessions data from November 2005",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200510_v1.parquet": {
+    "filename": "Accessions data from October 2005",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200509_v1.parquet": {
+    "filename": "Accessions data from September 2005",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200508_v1.parquet": {
+    "filename": "Accessions data from August 2005",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200507_v1.parquet": {
+    "filename": "Accessions data from July 2005",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200506_v1.parquet": {
+    "filename": "Accessions data from June 2005",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200505_v1.parquet": {
+    "filename": "Accessions data from May 2005",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200504_v1.parquet": {
+    "filename": "Accessions data from April 2005",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200503_v1.parquet": {
+    "filename": "Accessions data from March 2005",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200502_v1.parquet": {
+    "filename": "Accessions data from February 2005",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "accessions/accessions_200501_v1.parquet": {
+    "filename": "Accessions data from January 2005",
+    "version": 1,
+    "data_type": "accessions"
+  },
+  "separations/separations_202603_v1.parquet": {
+    "filename": "Separations data from March 2026",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_202602_v2.parquet": {
+    "filename": "Separations data from February 2026",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_202601_v2.parquet": {
+    "filename": "Separations data from January 2026",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_202512_v3.parquet": {
+    "filename": "Separations data from December 2025",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202511_v4.parquet": {
+    "filename": "Separations data from November 2025",
+    "version": 4,
+    "data_type": "separations"
+  },
+  "separations/separations_202510_v4.parquet": {
+    "filename": "Separations data from October 2025",
+    "version": 4,
+    "data_type": "separations"
+  },
+  "separations/separations_202509_v4.parquet": {
+    "filename": "Separations data from September 2025",
+    "version": 4,
+    "data_type": "separations"
+  },
+  "separations/separations_202508_v4.parquet": {
+    "filename": "Separations data from August 2025",
+    "version": 4,
+    "data_type": "separations"
+  },
+  "separations/separations_202507_v4.parquet": {
+    "filename": "Separations data from July 2025",
+    "version": 4,
+    "data_type": "separations"
+  },
+  "separations/separations_202506_v4.parquet": {
+    "filename": "Separations data from June 2025",
+    "version": 4,
+    "data_type": "separations"
+  },
+  "separations/separations_202505_v4.parquet": {
+    "filename": "Separations data from May 2025",
+    "version": 4,
+    "data_type": "separations"
+  },
+  "separations/separations_202504_v4.parquet": {
+    "filename": "Separations data from April 2025",
+    "version": 4,
+    "data_type": "separations"
+  },
+  "separations/separations_202503_v4.parquet": {
+    "filename": "Separations data from March 2025",
+    "version": 4,
+    "data_type": "separations"
+  },
+  "separations/separations_202502_v4.parquet": {
+    "filename": "Separations data from February 2025",
+    "version": 4,
+    "data_type": "separations"
+  },
+  "separations/separations_202501_v3.parquet": {
+    "filename": "Separations data from January 2025",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202412_v3.parquet": {
+    "filename": "Separations data from December 2024",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202411_v3.parquet": {
+    "filename": "Separations data from November 2024",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202410_v3.parquet": {
+    "filename": "Separations data from October 2024",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202409_v3.parquet": {
+    "filename": "Separations data from September 2024",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202408_v3.parquet": {
+    "filename": "Separations data from August 2024",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202407_v3.parquet": {
+    "filename": "Separations data from July 2024",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202406_v3.parquet": {
+    "filename": "Separations data from June 2024",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202405_v3.parquet": {
+    "filename": "Separations data from May 2024",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202404_v3.parquet": {
+    "filename": "Separations data from April 2024",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202403_v3.parquet": {
+    "filename": "Separations data from March 2024",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202402_v3.parquet": {
+    "filename": "Separations data from February 2024",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202401_v3.parquet": {
+    "filename": "Separations data from January 2024",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202312_v3.parquet": {
+    "filename": "Separations data from December 2023",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202311_v3.parquet": {
+    "filename": "Separations data from November 2023",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202310_v3.parquet": {
+    "filename": "Separations data from October 2023",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202309_v3.parquet": {
+    "filename": "Separations data from September 2023",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202308_v3.parquet": {
+    "filename": "Separations data from August 2023",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202307_v3.parquet": {
+    "filename": "Separations data from July 2023",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202306_v3.parquet": {
+    "filename": "Separations data from June 2023",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202305_v3.parquet": {
+    "filename": "Separations data from May 2023",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202304_v3.parquet": {
+    "filename": "Separations data from April 2023",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202303_v3.parquet": {
+    "filename": "Separations data from March 2023",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202302_v3.parquet": {
+    "filename": "Separations data from February 2023",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202301_v3.parquet": {
+    "filename": "Separations data from January 2023",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202212_v3.parquet": {
+    "filename": "Separations data from December 2022",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202211_v3.parquet": {
+    "filename": "Separations data from November 2022",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202210_v3.parquet": {
+    "filename": "Separations data from October 2022",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202209_v3.parquet": {
+    "filename": "Separations data from September 2022",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202208_v3.parquet": {
+    "filename": "Separations data from August 2022",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202207_v3.parquet": {
+    "filename": "Separations data from July 2022",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202206_v3.parquet": {
+    "filename": "Separations data from June 2022",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202205_v3.parquet": {
+    "filename": "Separations data from May 2022",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202204_v3.parquet": {
+    "filename": "Separations data from April 2022",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202203_v3.parquet": {
+    "filename": "Separations data from March 2022",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202202_v3.parquet": {
+    "filename": "Separations data from February 2022",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202201_v3.parquet": {
+    "filename": "Separations data from January 2022",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202112_v3.parquet": {
+    "filename": "Separations data from December 2021",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202111_v3.parquet": {
+    "filename": "Separations data from November 2021",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202110_v3.parquet": {
+    "filename": "Separations data from October 2021",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202109_v3.parquet": {
+    "filename": "Separations data from September 2021",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202108_v3.parquet": {
+    "filename": "Separations data from August 2021",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202107_v3.parquet": {
+    "filename": "Separations data from July 2021",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202106_v3.parquet": {
+    "filename": "Separations data from June 2021",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202105_v3.parquet": {
+    "filename": "Separations data from May 2021",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202104_v3.parquet": {
+    "filename": "Separations data from April 2021",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202103_v3.parquet": {
+    "filename": "Separations data from March 2021",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202102_v3.parquet": {
+    "filename": "Separations data from February 2021",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202101_v3.parquet": {
+    "filename": "Separations data from January 2021",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202012_v3.parquet": {
+    "filename": "Separations data from December 2020",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202011_v3.parquet": {
+    "filename": "Separations data from November 2020",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202010_v3.parquet": {
+    "filename": "Separations data from October 2020",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202009_v3.parquet": {
+    "filename": "Separations data from September 2020",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202008_v3.parquet": {
+    "filename": "Separations data from August 2020",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202007_v3.parquet": {
+    "filename": "Separations data from July 2020",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202006_v3.parquet": {
+    "filename": "Separations data from June 2020",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202005_v3.parquet": {
+    "filename": "Separations data from May 2020",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202004_v3.parquet": {
+    "filename": "Separations data from April 2020",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202003_v3.parquet": {
+    "filename": "Separations data from March 2020",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202002_v3.parquet": {
+    "filename": "Separations data from February 2020",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_202001_v3.parquet": {
+    "filename": "Separations data from January 2020",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201912_v3.parquet": {
+    "filename": "Separations data from December 2019",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201911_v3.parquet": {
+    "filename": "Separations data from November 2019",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201910_v3.parquet": {
+    "filename": "Separations data from October 2019",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201909_v3.parquet": {
+    "filename": "Separations data from September 2019",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201908_v3.parquet": {
+    "filename": "Separations data from August 2019",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201907_v3.parquet": {
+    "filename": "Separations data from July 2019",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201906_v3.parquet": {
+    "filename": "Separations data from June 2019",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201905_v3.parquet": {
+    "filename": "Separations data from May 2019",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201904_v3.parquet": {
+    "filename": "Separations data from April 2019",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201903_v3.parquet": {
+    "filename": "Separations data from March 2019",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201902_v3.parquet": {
+    "filename": "Separations data from February 2019",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201901_v3.parquet": {
+    "filename": "Separations data from January 2019",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201812_v3.parquet": {
+    "filename": "Separations data from December 2018",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201811_v3.parquet": {
+    "filename": "Separations data from November 2018",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201810_v3.parquet": {
+    "filename": "Separations data from October 2018",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201809_v3.parquet": {
+    "filename": "Separations data from September 2018",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201808_v3.parquet": {
+    "filename": "Separations data from August 2018",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201807_v3.parquet": {
+    "filename": "Separations data from July 2018",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201806_v3.parquet": {
+    "filename": "Separations data from June 2018",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201805_v3.parquet": {
+    "filename": "Separations data from May 2018",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201804_v3.parquet": {
+    "filename": "Separations data from April 2018",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201803_v3.parquet": {
+    "filename": "Separations data from March 2018",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201802_v3.parquet": {
+    "filename": "Separations data from February 2018",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201801_v3.parquet": {
+    "filename": "Separations data from January 2018",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201712_v3.parquet": {
+    "filename": "Separations data from December 2017",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201711_v3.parquet": {
+    "filename": "Separations data from November 2017",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201710_v3.parquet": {
+    "filename": "Separations data from October 2017",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201709_v3.parquet": {
+    "filename": "Separations data from September 2017",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201708_v3.parquet": {
+    "filename": "Separations data from August 2017",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201707_v3.parquet": {
+    "filename": "Separations data from July 2017",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201706_v3.parquet": {
+    "filename": "Separations data from June 2017",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201705_v3.parquet": {
+    "filename": "Separations data from May 2017",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201704_v3.parquet": {
+    "filename": "Separations data from April 2017",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201703_v3.parquet": {
+    "filename": "Separations data from March 2017",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201702_v3.parquet": {
+    "filename": "Separations data from February 2017",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201701_v3.parquet": {
+    "filename": "Separations data from January 2017",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201612_v3.parquet": {
+    "filename": "Separations data from December 2016",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201611_v3.parquet": {
+    "filename": "Separations data from November 2016",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201610_v3.parquet": {
+    "filename": "Separations data from October 2016",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201609_v3.parquet": {
+    "filename": "Separations data from September 2016",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201608_v3.parquet": {
+    "filename": "Separations data from August 2016",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201607_v3.parquet": {
+    "filename": "Separations data from July 2016",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201606_v3.parquet": {
+    "filename": "Separations data from June 2016",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201605_v3.parquet": {
+    "filename": "Separations data from May 2016",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201604_v3.parquet": {
+    "filename": "Separations data from April 2016",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201603_v3.parquet": {
+    "filename": "Separations data from March 2016",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201602_v3.parquet": {
+    "filename": "Separations data from February 2016",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201601_v3.parquet": {
+    "filename": "Separations data from January 2016",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201512_v3.parquet": {
+    "filename": "Separations data from December 2015",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201511_v3.parquet": {
+    "filename": "Separations data from November 2015",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201510_v3.parquet": {
+    "filename": "Separations data from October 2015",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201509_v3.parquet": {
+    "filename": "Separations data from September 2015",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201508_v3.parquet": {
+    "filename": "Separations data from August 2015",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201507_v3.parquet": {
+    "filename": "Separations data from July 2015",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201506_v3.parquet": {
+    "filename": "Separations data from June 2015",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201505_v3.parquet": {
+    "filename": "Separations data from May 2015",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201504_v3.parquet": {
+    "filename": "Separations data from April 2015",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201503_v3.parquet": {
+    "filename": "Separations data from March 2015",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201502_v3.parquet": {
+    "filename": "Separations data from February 2015",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201501_v3.parquet": {
+    "filename": "Separations data from January 2015",
+    "version": 3,
+    "data_type": "separations"
+  },
+  "separations/separations_201412_v2.parquet": {
+    "filename": "Separations data from December 2014",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201411_v2.parquet": {
+    "filename": "Separations data from November 2014",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201410_v2.parquet": {
+    "filename": "Separations data from October 2014",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201409_v2.parquet": {
+    "filename": "Separations data from September 2014",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201408_v2.parquet": {
+    "filename": "Separations data from August 2014",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201407_v2.parquet": {
+    "filename": "Separations data from July 2014",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201406_v2.parquet": {
+    "filename": "Separations data from June 2014",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201405_v2.parquet": {
+    "filename": "Separations data from May 2014",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201404_v2.parquet": {
+    "filename": "Separations data from April 2014",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201403_v2.parquet": {
+    "filename": "Separations data from March 2014",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201402_v2.parquet": {
+    "filename": "Separations data from February 2014",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201401_v2.parquet": {
+    "filename": "Separations data from January 2014",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201312_v2.parquet": {
+    "filename": "Separations data from December 2013",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201311_v2.parquet": {
+    "filename": "Separations data from November 2013",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201310_v2.parquet": {
+    "filename": "Separations data from October 2013",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201309_v2.parquet": {
+    "filename": "Separations data from September 2013",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201308_v2.parquet": {
+    "filename": "Separations data from August 2013",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201307_v2.parquet": {
+    "filename": "Separations data from July 2013",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201306_v2.parquet": {
+    "filename": "Separations data from June 2013",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201305_v2.parquet": {
+    "filename": "Separations data from May 2013",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201304_v2.parquet": {
+    "filename": "Separations data from April 2013",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201303_v2.parquet": {
+    "filename": "Separations data from March 2013",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201302_v2.parquet": {
+    "filename": "Separations data from February 2013",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201301_v2.parquet": {
+    "filename": "Separations data from January 2013",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201212_v2.parquet": {
+    "filename": "Separations data from December 2012",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201211_v2.parquet": {
+    "filename": "Separations data from November 2012",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201210_v2.parquet": {
+    "filename": "Separations data from October 2012",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201209_v2.parquet": {
+    "filename": "Separations data from September 2012",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201208_v2.parquet": {
+    "filename": "Separations data from August 2012",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201207_v2.parquet": {
+    "filename": "Separations data from July 2012",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201206_v2.parquet": {
+    "filename": "Separations data from June 2012",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201205_v2.parquet": {
+    "filename": "Separations data from May 2012",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201204_v2.parquet": {
+    "filename": "Separations data from April 2012",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201203_v2.parquet": {
+    "filename": "Separations data from March 2012",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201202_v2.parquet": {
+    "filename": "Separations data from February 2012",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201201_v2.parquet": {
+    "filename": "Separations data from January 2012",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201112_v2.parquet": {
+    "filename": "Separations data from December 2011",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201111_v2.parquet": {
+    "filename": "Separations data from November 2011",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201110_v2.parquet": {
+    "filename": "Separations data from October 2011",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201109_v2.parquet": {
+    "filename": "Separations data from September 2011",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201108_v2.parquet": {
+    "filename": "Separations data from August 2011",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201107_v2.parquet": {
+    "filename": "Separations data from July 2011",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201106_v2.parquet": {
+    "filename": "Separations data from June 2011",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201105_v2.parquet": {
+    "filename": "Separations data from May 2011",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201104_v2.parquet": {
+    "filename": "Separations data from April 2011",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201103_v2.parquet": {
+    "filename": "Separations data from March 2011",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201102_v2.parquet": {
+    "filename": "Separations data from February 2011",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201101_v2.parquet": {
+    "filename": "Separations data from January 2011",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201012_v2.parquet": {
+    "filename": "Separations data from December 2010",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201011_v2.parquet": {
+    "filename": "Separations data from November 2010",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201010_v2.parquet": {
+    "filename": "Separations data from October 2010",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201009_v2.parquet": {
+    "filename": "Separations data from September 2010",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201008_v2.parquet": {
+    "filename": "Separations data from August 2010",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201007_v2.parquet": {
+    "filename": "Separations data from July 2010",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201006_v2.parquet": {
+    "filename": "Separations data from June 2010",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201005_v2.parquet": {
+    "filename": "Separations data from May 2010",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201004_v2.parquet": {
+    "filename": "Separations data from April 2010",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201003_v2.parquet": {
+    "filename": "Separations data from March 2010",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201002_v2.parquet": {
+    "filename": "Separations data from February 2010",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_201001_v2.parquet": {
+    "filename": "Separations data from January 2010",
+    "version": 2,
+    "data_type": "separations"
+  },
+  "separations/separations_200912_v1.parquet": {
+    "filename": "Separations data from December 2009",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200911_v1.parquet": {
+    "filename": "Separations data from November 2009",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200910_v1.parquet": {
+    "filename": "Separations data from October 2009",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200909_v1.parquet": {
+    "filename": "Separations data from September 2009",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200908_v1.parquet": {
+    "filename": "Separations data from August 2009",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200907_v1.parquet": {
+    "filename": "Separations data from July 2009",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200906_v1.parquet": {
+    "filename": "Separations data from June 2009",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200905_v1.parquet": {
+    "filename": "Separations data from May 2009",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200904_v1.parquet": {
+    "filename": "Separations data from April 2009",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200903_v1.parquet": {
+    "filename": "Separations data from March 2009",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200902_v1.parquet": {
+    "filename": "Separations data from February 2009",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200901_v1.parquet": {
+    "filename": "Separations data from January 2009",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200812_v1.parquet": {
+    "filename": "Separations data from December 2008",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200811_v1.parquet": {
+    "filename": "Separations data from November 2008",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200810_v1.parquet": {
+    "filename": "Separations data from October 2008",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200809_v1.parquet": {
+    "filename": "Separations data from September 2008",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200808_v1.parquet": {
+    "filename": "Separations data from August 2008",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200807_v1.parquet": {
+    "filename": "Separations data from July 2008",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200806_v1.parquet": {
+    "filename": "Separations data from June 2008",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200805_v1.parquet": {
+    "filename": "Separations data from May 2008",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200804_v1.parquet": {
+    "filename": "Separations data from April 2008",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200803_v1.parquet": {
+    "filename": "Separations data from March 2008",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200802_v1.parquet": {
+    "filename": "Separations data from February 2008",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200801_v1.parquet": {
+    "filename": "Separations data from January 2008",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200712_v1.parquet": {
+    "filename": "Separations data from December 2007",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200711_v1.parquet": {
+    "filename": "Separations data from November 2007",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200710_v1.parquet": {
+    "filename": "Separations data from October 2007",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200709_v1.parquet": {
+    "filename": "Separations data from September 2007",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200708_v1.parquet": {
+    "filename": "Separations data from August 2007",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200707_v1.parquet": {
+    "filename": "Separations data from July 2007",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200706_v1.parquet": {
+    "filename": "Separations data from June 2007",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200705_v1.parquet": {
+    "filename": "Separations data from May 2007",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200704_v1.parquet": {
+    "filename": "Separations data from April 2007",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200703_v1.parquet": {
+    "filename": "Separations data from March 2007",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200702_v1.parquet": {
+    "filename": "Separations data from February 2007",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200701_v1.parquet": {
+    "filename": "Separations data from January 2007",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200612_v1.parquet": {
+    "filename": "Separations data from December 2006",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200611_v1.parquet": {
+    "filename": "Separations data from November 2006",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200610_v1.parquet": {
+    "filename": "Separations data from October 2006",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200609_v1.parquet": {
+    "filename": "Separations data from September 2006",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200608_v1.parquet": {
+    "filename": "Separations data from August 2006",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200607_v1.parquet": {
+    "filename": "Separations data from July 2006",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200606_v1.parquet": {
+    "filename": "Separations data from June 2006",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200605_v1.parquet": {
+    "filename": "Separations data from May 2006",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200604_v1.parquet": {
+    "filename": "Separations data from April 2006",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200603_v1.parquet": {
+    "filename": "Separations data from March 2006",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200602_v1.parquet": {
+    "filename": "Separations data from February 2006",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200601_v1.parquet": {
+    "filename": "Separations data from January 2006",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200512_v1.parquet": {
+    "filename": "Separations data from December 2005",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200511_v1.parquet": {
+    "filename": "Separations data from November 2005",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200510_v1.parquet": {
+    "filename": "Separations data from October 2005",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200509_v1.parquet": {
+    "filename": "Separations data from September 2005",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200508_v1.parquet": {
+    "filename": "Separations data from August 2005",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200507_v1.parquet": {
+    "filename": "Separations data from July 2005",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200506_v1.parquet": {
+    "filename": "Separations data from June 2005",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200505_v1.parquet": {
+    "filename": "Separations data from May 2005",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200504_v1.parquet": {
+    "filename": "Separations data from April 2005",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200503_v1.parquet": {
+    "filename": "Separations data from March 2005",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200502_v1.parquet": {
+    "filename": "Separations data from February 2005",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "separations/separations_200501_v1.parquet": {
+    "filename": "Separations data from January 2005",
+    "version": 1,
+    "data_type": "separations"
+  },
+  "employment/employment_202603_v1.parquet": {
+    "filename": "Employment data from March 2026",
+    "version": 1,
+    "data_type": "employment"
+  },
+  "employment/employment_202602_v2.parquet": {
+    "filename": "Employment data from February 2026",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_202601_v2.parquet": {
+    "filename": "Employment data from January 2026",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_202512_v3.parquet": {
+    "filename": "Employment data from December 2025",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202511_v3.parquet": {
+    "filename": "Employment data from November 2025",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202510_v3.parquet": {
+    "filename": "Employment data from October 2025",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202509_v3.parquet": {
+    "filename": "Employment data from September 2025",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202508_v3.parquet": {
+    "filename": "Employment data from August 2025",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202507_v3.parquet": {
+    "filename": "Employment data from July 2025",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202506_v3.parquet": {
+    "filename": "Employment data from June 2025",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202505_v3.parquet": {
+    "filename": "Employment data from May 2025",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202504_v3.parquet": {
+    "filename": "Employment data from April 2025",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202503_v3.parquet": {
+    "filename": "Employment data from March 2025",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202502_v3.parquet": {
+    "filename": "Employment data from February 2025",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202501_v3.parquet": {
+    "filename": "Employment data from January 2025",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202412_v3.parquet": {
+    "filename": "Employment data from December 2024",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202411_v3.parquet": {
+    "filename": "Employment data from November 2024",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202410_v3.parquet": {
+    "filename": "Employment data from October 2024",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202409_v3.parquet": {
+    "filename": "Employment data from September 2024",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202408_v3.parquet": {
+    "filename": "Employment data from August 2024",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202407_v3.parquet": {
+    "filename": "Employment data from July 2024",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202406_v3.parquet": {
+    "filename": "Employment data from June 2024",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202405_v3.parquet": {
+    "filename": "Employment data from May 2024",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202404_v3.parquet": {
+    "filename": "Employment data from April 2024",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202403_v3.parquet": {
+    "filename": "Employment data from March 2024",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202402_v3.parquet": {
+    "filename": "Employment data from February 2024",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202401_v3.parquet": {
+    "filename": "Employment data from January 2024",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202312_v3.parquet": {
+    "filename": "Employment data from December 2023",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202311_v3.parquet": {
+    "filename": "Employment data from November 2023",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202310_v3.parquet": {
+    "filename": "Employment data from October 2023",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202309_v3.parquet": {
+    "filename": "Employment data from September 2023",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202308_v3.parquet": {
+    "filename": "Employment data from August 2023",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202307_v3.parquet": {
+    "filename": "Employment data from July 2023",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202306_v3.parquet": {
+    "filename": "Employment data from June 2023",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202305_v3.parquet": {
+    "filename": "Employment data from May 2023",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202304_v3.parquet": {
+    "filename": "Employment data from April 2023",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202303_v3.parquet": {
+    "filename": "Employment data from March 2023",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202302_v3.parquet": {
+    "filename": "Employment data from February 2023",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202301_v3.parquet": {
+    "filename": "Employment data from January 2023",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202212_v3.parquet": {
+    "filename": "Employment data from December 2022",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202211_v3.parquet": {
+    "filename": "Employment data from November 2022",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202210_v3.parquet": {
+    "filename": "Employment data from October 2022",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202209_v3.parquet": {
+    "filename": "Employment data from September 2022",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202208_v3.parquet": {
+    "filename": "Employment data from August 2022",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202207_v3.parquet": {
+    "filename": "Employment data from July 2022",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202206_v3.parquet": {
+    "filename": "Employment data from June 2022",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202205_v3.parquet": {
+    "filename": "Employment data from May 2022",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202204_v3.parquet": {
+    "filename": "Employment data from April 2022",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202203_v3.parquet": {
+    "filename": "Employment data from March 2022",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202202_v3.parquet": {
+    "filename": "Employment data from February 2022",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202201_v3.parquet": {
+    "filename": "Employment data from January 2022",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202112_v3.parquet": {
+    "filename": "Employment data from December 2021",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202111_v3.parquet": {
+    "filename": "Employment data from November 2021",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202110_v3.parquet": {
+    "filename": "Employment data from October 2021",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202109_v3.parquet": {
+    "filename": "Employment data from September 2021",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202108_v3.parquet": {
+    "filename": "Employment data from August 2021",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202107_v3.parquet": {
+    "filename": "Employment data from July 2021",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202106_v3.parquet": {
+    "filename": "Employment data from June 2021",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202105_v3.parquet": {
+    "filename": "Employment data from May 2021",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202104_v3.parquet": {
+    "filename": "Employment data from April 2021",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202103_v3.parquet": {
+    "filename": "Employment data from March 2021",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202102_v3.parquet": {
+    "filename": "Employment data from February 2021",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202101_v3.parquet": {
+    "filename": "Employment data from January 2021",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202012_v3.parquet": {
+    "filename": "Employment data from December 2020",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202011_v3.parquet": {
+    "filename": "Employment data from November 2020",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202010_v3.parquet": {
+    "filename": "Employment data from October 2020",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202009_v3.parquet": {
+    "filename": "Employment data from September 2020",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202008_v3.parquet": {
+    "filename": "Employment data from August 2020",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202007_v3.parquet": {
+    "filename": "Employment data from July 2020",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202006_v3.parquet": {
+    "filename": "Employment data from June 2020",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202005_v3.parquet": {
+    "filename": "Employment data from May 2020",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202004_v3.parquet": {
+    "filename": "Employment data from April 2020",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202003_v3.parquet": {
+    "filename": "Employment data from March 2020",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202002_v3.parquet": {
+    "filename": "Employment data from February 2020",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_202001_v3.parquet": {
+    "filename": "Employment data from January 2020",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201912_v3.parquet": {
+    "filename": "Employment data from December 2019",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201911_v3.parquet": {
+    "filename": "Employment data from November 2019",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201910_v3.parquet": {
+    "filename": "Employment data from October 2019",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201909_v3.parquet": {
+    "filename": "Employment data from September 2019",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201908_v3.parquet": {
+    "filename": "Employment data from August 2019",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201907_v3.parquet": {
+    "filename": "Employment data from July 2019",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201906_v3.parquet": {
+    "filename": "Employment data from June 2019",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201905_v3.parquet": {
+    "filename": "Employment data from May 2019",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201904_v3.parquet": {
+    "filename": "Employment data from April 2019",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201903_v3.parquet": {
+    "filename": "Employment data from March 2019",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201902_v3.parquet": {
+    "filename": "Employment data from February 2019",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201901_v3.parquet": {
+    "filename": "Employment data from January 2019",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201812_v3.parquet": {
+    "filename": "Employment data from December 2018",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201811_v3.parquet": {
+    "filename": "Employment data from November 2018",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201810_v3.parquet": {
+    "filename": "Employment data from October 2018",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201809_v3.parquet": {
+    "filename": "Employment data from September 2018",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201808_v3.parquet": {
+    "filename": "Employment data from August 2018",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201807_v3.parquet": {
+    "filename": "Employment data from July 2018",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201806_v3.parquet": {
+    "filename": "Employment data from June 2018",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201805_v3.parquet": {
+    "filename": "Employment data from May 2018",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201804_v3.parquet": {
+    "filename": "Employment data from April 2018",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201803_v3.parquet": {
+    "filename": "Employment data from March 2018",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201802_v3.parquet": {
+    "filename": "Employment data from February 2018",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201801_v3.parquet": {
+    "filename": "Employment data from January 2018",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201712_v3.parquet": {
+    "filename": "Employment data from December 2017",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201711_v3.parquet": {
+    "filename": "Employment data from November 2017",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201710_v3.parquet": {
+    "filename": "Employment data from October 2017",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201709_v3.parquet": {
+    "filename": "Employment data from September 2017",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201708_v3.parquet": {
+    "filename": "Employment data from August 2017",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201707_v3.parquet": {
+    "filename": "Employment data from July 2017",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201706_v3.parquet": {
+    "filename": "Employment data from June 2017",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201705_v3.parquet": {
+    "filename": "Employment data from May 2017",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201704_v3.parquet": {
+    "filename": "Employment data from April 2017",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201703_v3.parquet": {
+    "filename": "Employment data from March 2017",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201702_v3.parquet": {
+    "filename": "Employment data from February 2017",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201701_v3.parquet": {
+    "filename": "Employment data from January 2017",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201612_v3.parquet": {
+    "filename": "Employment data from December 2016",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201611_v3.parquet": {
+    "filename": "Employment data from November 2016",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201610_v3.parquet": {
+    "filename": "Employment data from October 2016",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201609_v3.parquet": {
+    "filename": "Employment data from September 2016",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201608_v3.parquet": {
+    "filename": "Employment data from August 2016",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201607_v3.parquet": {
+    "filename": "Employment data from July 2016",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201606_v3.parquet": {
+    "filename": "Employment data from June 2016",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201605_v3.parquet": {
+    "filename": "Employment data from May 2016",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201604_v3.parquet": {
+    "filename": "Employment data from April 2016",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201603_v3.parquet": {
+    "filename": "Employment data from March 2016",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201602_v3.parquet": {
+    "filename": "Employment data from February 2016",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201601_v3.parquet": {
+    "filename": "Employment data from January 2016",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201512_v3.parquet": {
+    "filename": "Employment data from December 2015",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201511_v3.parquet": {
+    "filename": "Employment data from November 2015",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201510_v3.parquet": {
+    "filename": "Employment data from October 2015",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201509_v3.parquet": {
+    "filename": "Employment data from September 2015",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201508_v3.parquet": {
+    "filename": "Employment data from August 2015",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201507_v3.parquet": {
+    "filename": "Employment data from July 2015",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201506_v3.parquet": {
+    "filename": "Employment data from June 2015",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201505_v3.parquet": {
+    "filename": "Employment data from May 2015",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201504_v3.parquet": {
+    "filename": "Employment data from April 2015",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201503_v3.parquet": {
+    "filename": "Employment data from March 2015",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201502_v3.parquet": {
+    "filename": "Employment data from February 2015",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201501_v3.parquet": {
+    "filename": "Employment data from January 2015",
+    "version": 3,
+    "data_type": "employment"
+  },
+  "employment/employment_201412_v2.parquet": {
+    "filename": "Employment data from December 2014",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201411_v2.parquet": {
+    "filename": "Employment data from November 2014",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201410_v2.parquet": {
+    "filename": "Employment data from October 2014",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201409_v2.parquet": {
+    "filename": "Employment data from September 2014",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201408_v2.parquet": {
+    "filename": "Employment data from August 2014",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201407_v2.parquet": {
+    "filename": "Employment data from July 2014",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201406_v2.parquet": {
+    "filename": "Employment data from June 2014",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201405_v2.parquet": {
+    "filename": "Employment data from May 2014",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201404_v2.parquet": {
+    "filename": "Employment data from April 2014",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201403_v2.parquet": {
+    "filename": "Employment data from March 2014",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201402_v2.parquet": {
+    "filename": "Employment data from February 2014",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201401_v2.parquet": {
+    "filename": "Employment data from January 2014",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201312_v2.parquet": {
+    "filename": "Employment data from December 2013",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201311_v2.parquet": {
+    "filename": "Employment data from November 2013",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201310_v2.parquet": {
+    "filename": "Employment data from October 2013",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201309_v2.parquet": {
+    "filename": "Employment data from September 2013",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201308_v2.parquet": {
+    "filename": "Employment data from August 2013",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201307_v2.parquet": {
+    "filename": "Employment data from July 2013",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201306_v2.parquet": {
+    "filename": "Employment data from June 2013",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201305_v2.parquet": {
+    "filename": "Employment data from May 2013",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201304_v2.parquet": {
+    "filename": "Employment data from April 2013",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201303_v2.parquet": {
+    "filename": "Employment data from March 2013",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201302_v2.parquet": {
+    "filename": "Employment data from February 2013",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201301_v2.parquet": {
+    "filename": "Employment data from January 2013",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201212_v2.parquet": {
+    "filename": "Employment data from December 2012",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201211_v2.parquet": {
+    "filename": "Employment data from November 2012",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201210_v2.parquet": {
+    "filename": "Employment data from October 2012",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201209_v2.parquet": {
+    "filename": "Employment data from September 2012",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201208_v2.parquet": {
+    "filename": "Employment data from August 2012",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201207_v2.parquet": {
+    "filename": "Employment data from July 2012",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201206_v2.parquet": {
+    "filename": "Employment data from June 2012",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201205_v2.parquet": {
+    "filename": "Employment data from May 2012",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201204_v2.parquet": {
+    "filename": "Employment data from April 2012",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201203_v2.parquet": {
+    "filename": "Employment data from March 2012",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201202_v2.parquet": {
+    "filename": "Employment data from February 2012",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201201_v2.parquet": {
+    "filename": "Employment data from January 2012",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201112_v2.parquet": {
+    "filename": "Employment data from December 2011",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201111_v2.parquet": {
+    "filename": "Employment data from November 2011",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201110_v2.parquet": {
+    "filename": "Employment data from October 2011",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201109_v2.parquet": {
+    "filename": "Employment data from September 2011",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201108_v2.parquet": {
+    "filename": "Employment data from August 2011",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201107_v2.parquet": {
+    "filename": "Employment data from July 2011",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201106_v2.parquet": {
+    "filename": "Employment data from June 2011",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201103_v2.parquet": {
+    "filename": "Employment data from March 2011",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201012_v2.parquet": {
+    "filename": "Employment data from December 2010",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201009_v2.parquet": {
+    "filename": "Employment data from September 2010",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201006_v2.parquet": {
+    "filename": "Employment data from June 2010",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_201003_v2.parquet": {
+    "filename": "Employment data from March 2010",
+    "version": 2,
+    "data_type": "employment"
+  },
+  "employment/employment_200912_v1.parquet": {
+    "filename": "Employment data from December 2009",
+    "version": 1,
+    "data_type": "employment"
+  },
+  "employment/employment_200909_v1.parquet": {
+    "filename": "Employment data from September 2009",
+    "version": 1,
+    "data_type": "employment"
+  },
+  "employment/employment_200906_v1.parquet": {
+    "filename": "Employment data from June 2009",
+    "version": 1,
+    "data_type": "employment"
+  },
+  "employment/employment_200903_v1.parquet": {
+    "filename": "Employment data from March 2009",
+    "version": 1,
+    "data_type": "employment"
+  },
+  "employment/employment_200812_v1.parquet": {
+    "filename": "Employment data from December 2008",
+    "version": 1,
+    "data_type": "employment"
+  },
+  "employment/employment_200809_v1.parquet": {
+    "filename": "Employment data from September 2008",
+    "version": 1,
+    "data_type": "employment"
+  },
+  "employment/employment_200806_v1.parquet": {
+    "filename": "Employment data from June 2008",
+    "version": 1,
+    "data_type": "employment"
+  },
+  "employment/employment_200803_v1.parquet": {
+    "filename": "Employment data from March 2008",
+    "version": 1,
+    "data_type": "employment"
+  },
+  "employment/employment_200712_v1.parquet": {
+    "filename": "Employment data from December 2007",
+    "version": 1,
+    "data_type": "employment"
+  },
+  "employment/employment_200709_v1.parquet": {
+    "filename": "Employment data from September 2007",
+    "version": 1,
+    "data_type": "employment"
+  },
+  "employment/employment_200706_v1.parquet": {
+    "filename": "Employment data from June 2007",
+    "version": 1,
+    "data_type": "employment"
+  },
+  "employment/employment_200703_v1.parquet": {
+    "filename": "Employment data from March 2007",
+    "version": 1,
+    "data_type": "employment"
+  },
+  "employment/employment_200612_v1.parquet": {
+    "filename": "Employment data from December 2006",
+    "version": 1,
+    "data_type": "employment"
+  },
+  "employment/employment_200609_v1.parquet": {
+    "filename": "Employment data from September 2006",
+    "version": 1,
+    "data_type": "employment"
+  },
+  "employment/employment_200606_v1.parquet": {
+    "filename": "Employment data from June 2006",
+    "version": 1,
+    "data_type": "employment"
+  },
+  "employment/employment_200603_v1.parquet": {
+    "filename": "Employment data from March 2006",
+    "version": 1,
+    "data_type": "employment"
+  },
+  "employment/employment_200512_v1.parquet": {
+    "filename": "Employment data from December 2005",
+    "version": 1,
+    "data_type": "employment"
+  },
+  "employment/employment_200509_v1.parquet": {
+    "filename": "Employment data from September 2005",
+    "version": 1,
+    "data_type": "employment"
+  },
+  "employment/employment_200506_v1.parquet": {
+    "filename": "Employment data from June 2005",
+    "version": 1,
+    "data_type": "employment"
+  },
+  "employment/employment_200503_v1.parquet": {
+    "filename": "Employment data from March 2005",
+    "version": 1,
+    "data_type": "employment"
+  }
+}
