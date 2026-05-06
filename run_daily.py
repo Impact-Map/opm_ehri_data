@@ -151,17 +151,19 @@ def _find_prior_file(data_type: str, current_hf_path: str) -> str | None:
         return None
 
 
-def _flush_upload_batch(buffer, stored_manifest, token, dry_run, test, failed_files):
+def _flush_upload_batch(buffer, stored_manifest, token, dry_run, test, failed_files) -> int:
     """Commit all buffered files to HF in a single commit, then update the manifest.
 
     Buffer entries are dicts: {parquet_path, hf_path, key, site_entry, metadata}.
     On success: updates manifest, saves to disk, deletes local parquet files.
     On failure: marks every file in the batch as failed (caller can decide what to do).
 
-    Buffer is cleared in either case.
+    Buffer is cleared in either case. Returns the number of files actually uploaded
+    (0 if the batch commit failed) so the caller can decide whether the run made
+    enough progress to be worth chaining.
     """
     if not buffer:
-        return
+        return 0
 
     from huggingface_hub import HfApi, CommitOperationAdd
     from opm_pipeline.manifest import save_manifest, update_manifest_entry
@@ -192,6 +194,7 @@ def _flush_upload_batch(buffer, stored_manifest, token, dry_run, test, failed_fi
                 failed_files.append((entry["key"], _sanitize(str(exc))[:200]))
             committed = False
 
+    n_uploaded = 0
     if committed:
         for entry in buffer:
             update_manifest_entry(stored_manifest, entry["key"], entry["site_entry"], entry["metadata"])
@@ -202,8 +205,10 @@ def _flush_upload_batch(buffer, stored_manifest, token, dry_run, test, failed_fi
                 entry["parquet_path"].unlink()
             except Exception:
                 pass
+        n_uploaded = len(buffer)
 
     buffer.clear()
+    return n_uploaded
 
 
 async def run_daily(token: str, data_types: list[str], start_date: str, end_date: str,
@@ -244,45 +249,13 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
         stored_manifest = {}  # pretend manifest is empty so all files appear new
         recovered_from_hf = []  # not meaningful in test mode
 
-    # Step 2: Scrape OPM site for current file listing — but only if we don't
-    # already have a cached site_manifest from an earlier run in this chain.
-    # The OPM scan is the only part of the pipeline that's expensive in
-    # network calls without producing data; if a previous run got blocked
-    # mid-way we don't want to spend our IP budget re-scanning before we
-    # even get to downloads.
-    import json as _json
-    PENDING_SITE_MANIFEST_PATH = Path("metadata/pending_site_manifest.json")
-
-    cached_site_manifest = None
-    if not test and PENDING_SITE_MANIFEST_PATH.exists():
-        try:
-            cached_site_manifest = _json.loads(PENDING_SITE_MANIFEST_PATH.read_text())
-            print(
-                f"Using cached site manifest with {len(cached_site_manifest)} entries "
-                f"from {PENDING_SITE_MANIFEST_PATH} (chained run)"
-            )
-        except Exception as e:
-            print(f"Could not read cached site manifest: {e} — re-scanning")
-            cached_site_manifest = None
-
+    # Step 2: Scrape OPM site for current file listing.
+    print("Scanning OPM site...")
     async with async_playwright() as playwright:
         browser, context, page = await setup_page(playwright)
 
         try:
-            if cached_site_manifest is not None:
-                site_manifest = cached_site_manifest
-            else:
-                print("Scanning OPM site...")
-                site_manifest = await get_site_manifest(page, data_types, start_date, end_date)
-                if not test:
-                    PENDING_SITE_MANIFEST_PATH.parent.mkdir(parents=True, exist_ok=True)
-                    PENDING_SITE_MANIFEST_PATH.write_text(
-                        _json.dumps(site_manifest, indent=2)
-                    )
-                    print(
-                        f"Saved site manifest to {PENDING_SITE_MANIFEST_PATH} for "
-                        f"any future chained runs"
-                    )
+            site_manifest = await get_site_manifest(page, data_types, start_date, end_date)
 
             if len(site_manifest) == 0:
                 raise PipelineError(
@@ -338,12 +311,6 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
 
             if not changes["new"] and not changes["updated"] and not recovered_from_hf:
                 print("No changes detected. Exiting.")
-                # Nothing left to do — the cached site manifest (if any) is
-                # stale because every entry now matches the manifest. Delete
-                # it so the next scheduled run scans fresh.
-                if PENDING_SITE_MANIFEST_PATH.exists():
-                    PENDING_SITE_MANIFEST_PATH.unlink()
-                    print(f"Deleted {PENDING_SITE_MANIFEST_PATH}")
                 return
 
             # Step 4: Process changed files
@@ -520,7 +487,8 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
                         print(
                             f"  Aborting: {DOWNLOAD_BLOCK_THRESHOLD} consecutive "
                             f"download failures — OPM is likely throttling this "
-                            f"runner's IP. Workflow will chain a fresh run."
+                            f"runner's IP. Stopping early; tomorrow's scheduled "
+                            f"run will retry on a fresh IP."
                         )
                         blocked_by_ip_throttle = True
                         break
@@ -554,24 +522,18 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
         save_manifest(stored_manifest)
         print(f"\nManifest saved with {len(stored_manifest)} entries")
 
-    # Emit the final pipeline_status for the workflow's chaining step. "blocked"
-    # means we hit the IP-throttle abort and there's likely more work to do on
-    # a fresh runner; "done" means we either processed everything or hit a
-    # different kind of failure that re-running won't fix.
+    # Emit the final pipeline_status as a step output for visibility in the
+    # workflow logs. We don't act on it anymore (the chain step is gone — IP
+    # rotation across same-pool GitHub runners didn't actually escape OPM's
+    # throttle, so we just take what we got each day and let tomorrow's cron
+    # try again with whatever IP it lands on).
     final_status = "blocked" if blocked_by_ip_throttle else "done"
     github_output = os.environ.get("GITHUB_OUTPUT")
     if github_output:
         with open(github_output, "a") as _gho:
             _gho.write(f"pipeline_status={final_status}\n")
     if blocked_by_ip_throttle:
-        print(f"\nPipeline status: BLOCKED — workflow will chain a fresh run.")
-        print(f"Leaving {PENDING_SITE_MANIFEST_PATH} in place so the chained run skips the OPM scan.")
-    else:
-        # Run is done (success or non-IP failure). Cached site manifest is
-        # no longer useful — the next scheduled run should scan fresh.
-        if PENDING_SITE_MANIFEST_PATH.exists():
-            PENDING_SITE_MANIFEST_PATH.unlink()
-            print(f"Deleted {PENDING_SITE_MANIFEST_PATH}")
+        print(f"\nPipeline status: BLOCKED — uploaded what we got, waiting for tomorrow's cron.")
 
     # Step 6: Generate report and create issue
     report = generate_report(changes, diffs, new_summaries)
@@ -594,9 +556,9 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
         report += "\n\n## Aborted: IP throttle suspected\n\n"
         report += (
             f"Hit {DOWNLOAD_BLOCK_THRESHOLD} consecutive download failures, which usually "
-            f"means OPM is throttling this runner's IP. The workflow will chain a fresh "
-            f"run on a new GitHub-hosted runner (different IP). The next run's "
-            f"`sync_manifest_with_hf` will pick up wherever this one left off.\n"
+            f"means OPM is throttling this runner's IP. We uploaded whatever made it "
+            f"through and exited early. Tomorrow's scheduled run will pick up wherever "
+            f"this one left off via `sync_manifest_with_hf`.\n"
         )
 
     if failed_files:

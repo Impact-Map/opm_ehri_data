@@ -10,15 +10,10 @@ on:
         required: false
         default: 'false'
         type: boolean
-      chain_depth:
-        description: 'Internal: incremented when one blocked run chains another. Leave alone for normal manual runs.'
-        required: false
-        default: '0'
 
 permissions:
   contents: write
   issues: write
-  actions: write  # needed for the chain-on-block step (gh workflow run)
 
 concurrency:
   group: opm-daily
@@ -50,12 +45,6 @@ jobs:
           playwright install chromium
 
       - name: Smoke test - verify OPM download and data quality
-        # Skip on chained runs (chain_depth > 0). The smoke test downloads
-        # one file from OPM, which costs an IP-budget request before the
-        # real work even starts. On the first run of a chain that's fine;
-        # on subsequent chained runs we already proved connectivity and
-        # don't want to waste a request just to re-prove it.
-        if: github.event.inputs.chain_depth == '' || github.event.inputs.chain_depth == '0'
         run: python smoke_test.py
 
       - name: Run daily pipeline
@@ -84,9 +73,7 @@ jobs:
           fi
 
       - name: Run anomaly detection
-        # Skip on blocked runs — there's no point running anomaly detection on
-        # a partial batch since the chained run will produce the complete one.
-        if: success() && steps.pipeline.outputs.has_changes == 'true' && steps.pipeline.outputs.pipeline_status != 'blocked'
+        if: success() && steps.pipeline.outputs.has_changes == 'true'
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: python run_anomaly.py --changed "${{ steps.pipeline.outputs.changed_keys }}" --baseline 202412
@@ -104,39 +91,11 @@ jobs:
           fi
 
       - name: Send Buttondown email notification
-        if: always() && steps.pipeline.outcome == 'success' && steps.pipeline.outputs.has_changes == 'true' && steps.pipeline.outputs.pipeline_status != 'blocked'
+        if: always() && steps.pipeline.outcome == 'success' && steps.pipeline.outputs.has_changes == 'true'
         env:
           BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
           EMAIL_SUBJECT: ${{ steps.pipeline.outputs.email_subject }}
         run: python3 send_email.py
-
-      - name: Chain a fresh run if IP throttled
-        # Pattern lifted from pull_usaspending: when downloads consistently
-        # fail in a row, the python step sets pipeline_status=blocked and
-        # exits 0. We trigger another workflow run, which lands on a different
-        # GitHub-hosted runner (different IP) and picks up where this one
-        # stopped via sync_manifest_with_hf at startup. Email is suppressed
-        # above on blocked runs so subscribers don't get a partial summary —
-        # the chained run will send the full one when everything's done.
-        # chain_depth is a safety: if 10 chained runs in a row all blocked,
-        # something other than IP rotation is wrong — stop and surface it.
-        # Use always() rather than success() because we want to chain even if
-        # an unrelated downstream step (e.g. anomaly detection on partial data)
-        # failed — the only thing that matters is the pipeline reported blocked.
-        if: always() && steps.pipeline.outputs.pipeline_status == 'blocked'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          DEPTH="${{ github.event.inputs.chain_depth || '0' }}"
-          NEXT=$((DEPTH + 1))
-          if [ "$NEXT" -gt 10 ]; then
-            echo "Reached max chain depth (10) — refusing to chain further. Investigate manually."
-            exit 1
-          fi
-          echo "Pipeline reported pipeline_status=blocked — triggering a fresh run on a new runner IP (chain depth $NEXT)"
-          gh workflow run daily_check.yml \
-            --repo ${{ github.repository }} \
-            -f chain_depth=$NEXT
 
       - name: Create failure issue with full output
         if: failure()
