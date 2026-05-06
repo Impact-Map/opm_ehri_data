@@ -22,7 +22,9 @@ concurrency:
 jobs:
   check-and-update:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    # 6h is the GitHub-hosted runner cap. Normal daily runs finish in ~2 minutes,
+    # but a full OPM v2->v3 refresh (~700 files) needs the headroom.
+    timeout-minutes: 360
 
     steps:
       - name: Checkout
