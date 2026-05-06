@@ -118,7 +118,16 @@ async def get_card_version(page, card_index: int) -> int:
 
 
 async def download_file_from_card(page, card_index: int, download_dir: Path) -> Path:
-    """Download a single file by clicking its download button."""
+    """Download a single file by clicking its download button.
+
+    We let Chromium initiate the download just long enough to capture the
+    real URL, then cancel its in-progress save and fetch the file with httpx
+    using the browser session's cookies. Chromium's download manager kept
+    hitting "Download.save_as: canceled" on the large (~780 MB) Employment
+    files, even with browser restarts; httpx streaming sidesteps that.
+    """
+    import httpx
+
     buttons = page.locator('button[aria-label^="Download options for"]')
     button = buttons.nth(card_index)
 
@@ -129,15 +138,37 @@ async def download_file_from_card(page, card_index: int, download_dir: Path) -> 
     txt_option = page.locator('[aria-label*="TXT"]').first
     await txt_option.wait_for(state="visible", timeout=10000)
 
-    async with page.expect_download(timeout=600000) as download_info:
+    async with page.expect_download(timeout=60000) as download_info:
         await txt_option.click(force=True)
 
     download = await download_info.value
-    dest_path = download_dir / download.suggested_filename
-    await download.save_as(dest_path)
+    download_url = download.url
+    suggested_filename = download.suggested_filename
+
+    # We have the URL; cancel the Playwright download so it doesn't keep
+    # streaming into a temp file we won't use.
+    try:
+        await download.cancel()
+    except Exception:
+        pass
 
     await page.keyboard.press('Escape')
     await asyncio.sleep(0.3)
+
+    # Stream the file via httpx, using the same cookies the browser has so
+    # that whatever signed/session-scoped URL OPM hands us still works.
+    cookies = {c["name"]: c["value"] for c in await page.context.cookies()}
+    headers = {
+        "User-Agent": (await page.evaluate("navigator.userAgent")),
+    }
+    dest_path = download_dir / suggested_filename
+    async with httpx.AsyncClient(cookies=cookies, headers=headers,
+                                  follow_redirects=True, timeout=600.0) as client:
+        async with client.stream("GET", download_url) as response:
+            response.raise_for_status()
+            with open(dest_path, "wb") as f:
+                async for chunk in response.aiter_bytes(chunk_size=1024 * 64):
+                    f.write(chunk)
 
     return dest_path
 
