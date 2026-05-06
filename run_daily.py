@@ -449,9 +449,18 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
                     continue
 
                 # Flush a batch when it gets full so progress is preserved if
-                # the run dies later.
+                # the run dies later. Then restart the browser — long-running
+                # Playwright sessions develop fatigue (cancelled downloads,
+                # session timeouts) especially after lots of large Employment
+                # downloads, so a fresh context fixes that without losing state.
                 if len(upload_buffer) >= UPLOAD_BATCH_SIZE:
                     _flush_upload_batch(upload_buffer, stored_manifest, token, dry_run, test, failed_files)
+                    print("  Restarting browser to reset session state...")
+                    try:
+                        await browser.close()
+                    except Exception:
+                        pass
+                    browser, context, page = await setup_page(playwright)
 
             # Final flush for whatever's left in the buffer.
             _flush_upload_batch(upload_buffer, stored_manifest, token, dry_run, test, failed_files)
