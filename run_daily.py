@@ -28,6 +28,11 @@ from opm_pipeline.reporter import create_github_issue
 # the limit — while still checkpointing progress every 50 files.
 UPLOAD_BATCH_SIZE = 50
 
+# After this many consecutive download failures, assume OPM is throttling our
+# IP and stop processing. The workflow then chains a fresh run on a new
+# GitHub-hosted runner (different IP). Pattern lifted from pull_usaspending.
+DOWNLOAD_BLOCK_THRESHOLD = 5
+
 
 class PipelineError(Exception):
     """Error with a human-readable diagnosis and fix instructions."""
@@ -312,6 +317,12 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
             changed_keys = changes["new"] + changes["updated"]
             # Buffer of files awaiting batched upload — see _flush_upload_batch.
             upload_buffer = []
+            # Tracks consecutive download/network errors. If this hits
+            # DOWNLOAD_BLOCK_THRESHOLD we assume OPM is throttling the runner's
+            # IP and break out of the loop so the workflow can chain a fresh
+            # run on a new runner. Reset to 0 on every successful file.
+            consecutive_dl_failures = 0
+            blocked_by_ip_throttle = False
 
             for key in changed_keys:
                 site_entry = site_manifest[key]
@@ -424,6 +435,7 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
                                 "site_entry": site_entry,
                                 "metadata": metadata,
                             })
+                            consecutive_dl_failures = 0  # success — reset abort counter
 
                             downloaded = True
                             break
@@ -441,6 +453,17 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
                 except Exception as e:
                     failed_files.append((key, str(e)))
                     print(f"  ERROR processing {key}: {e}")
+
+                    # Heuristic: download/network/timeout errors look like IP
+                    # throttling. Other errors (e.g. parse, schema) shouldn't
+                    # count toward the abort threshold.
+                    err_lc = str(e).lower()
+                    if any(s in err_lc for s in ("download", "canceled", "cancelled",
+                                                  "timeout", "connection", "httpx", "ssl")):
+                        consecutive_dl_failures += 1
+                    else:
+                        consecutive_dl_failures = 0
+
                     # Restart the browser instead of trying to recover the
                     # current session. A failure here usually means the page
                     # is in a bad state (e.g. cancelled download leaves the
@@ -453,6 +476,16 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
                     except Exception:
                         pass
                     browser, context, page = await setup_page(playwright)
+
+                    if consecutive_dl_failures >= DOWNLOAD_BLOCK_THRESHOLD:
+                        print(
+                            f"  Aborting: {DOWNLOAD_BLOCK_THRESHOLD} consecutive "
+                            f"download failures — OPM is likely throttling this "
+                            f"runner's IP. Workflow will chain a fresh run."
+                        )
+                        blocked_by_ip_throttle = True
+                        break
+
                     continue
 
                 # Flush a batch when it gets full so progress is preserved if
@@ -482,6 +515,18 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
         save_manifest(stored_manifest)
         print(f"\nManifest saved with {len(stored_manifest)} entries")
 
+    # Emit the final pipeline_status for the workflow's chaining step. "blocked"
+    # means we hit the IP-throttle abort and there's likely more work to do on
+    # a fresh runner; "done" means we either processed everything or hit a
+    # different kind of failure that re-running won't fix.
+    final_status = "blocked" if blocked_by_ip_throttle else "done"
+    github_output = os.environ.get("GITHUB_OUTPUT")
+    if github_output:
+        with open(github_output, "a") as _gho:
+            _gho.write(f"pipeline_status={final_status}\n")
+    if blocked_by_ip_throttle:
+        print(f"\nPipeline status: BLOCKED — workflow will chain a fresh run.")
+
     # Step 6: Generate report and create issue
     report = generate_report(changes, diffs, new_summaries)
 
@@ -498,6 +543,15 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
         )
         for key in sorted(recovered_from_hf):
             report += f"- `{key}`\n"
+
+    if blocked_by_ip_throttle:
+        report += "\n\n## Aborted: IP throttle suspected\n\n"
+        report += (
+            f"Hit {DOWNLOAD_BLOCK_THRESHOLD} consecutive download failures, which usually "
+            f"means OPM is throttling this runner's IP. The workflow will chain a fresh "
+            f"run on a new GitHub-hosted runner (different IP). The next run's "
+            f"`sync_manifest_with_hf` will pick up wherever this one left off.\n"
+        )
 
     if failed_files:
         report += "\n\n## Errors\n\n"
@@ -548,8 +602,11 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
     with open("email_body.txt", "w") as f:
         f.write(email_html)
 
-    # Fail the run if any files failed, so the Action shows red
-    if failed_files:
+    # Fail the run if files failed for some reason OTHER than IP throttling.
+    # If we aborted due to IP throttling, exit cleanly so the workflow's
+    # chain-on-blocked step can run (it gates on success() + pipeline_status).
+    # The chained run will retry the leftover work on a fresh runner IP.
+    if failed_files and not blocked_by_ip_throttle:
         print(f"\n{len(failed_files)} files failed to process.")
         sys.exit(1)
 
