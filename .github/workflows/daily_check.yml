@@ -17,7 +17,11 @@ permissions:
 
 concurrency:
   group: opm-daily
-  cancel-in-progress: true
+  # Queue overlapping runs instead of killing one to start another. Previously
+  # a delayed scheduled cron killed a long-running manual catch-up; with this
+  # set to false the scheduled run waits politely until any in-flight run
+  # finishes (worst case: scheduled run starts a bit late).
+  cancel-in-progress: false
 
 jobs:
   check-and-update:
