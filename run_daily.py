@@ -243,13 +243,45 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
         stored_manifest = {}  # pretend manifest is empty so all files appear new
         recovered_from_hf = []  # not meaningful in test mode
 
-    # Step 2: Scrape OPM site for current file listing
-    print("Scanning OPM site...")
+    # Step 2: Scrape OPM site for current file listing — but only if we don't
+    # already have a cached site_manifest from an earlier run in this chain.
+    # The OPM scan is the only part of the pipeline that's expensive in
+    # network calls without producing data; if a previous run got blocked
+    # mid-way we don't want to spend our IP budget re-scanning before we
+    # even get to downloads.
+    import json as _json
+    PENDING_SITE_MANIFEST_PATH = Path("metadata/pending_site_manifest.json")
+
+    cached_site_manifest = None
+    if not test and PENDING_SITE_MANIFEST_PATH.exists():
+        try:
+            cached_site_manifest = _json.loads(PENDING_SITE_MANIFEST_PATH.read_text())
+            print(
+                f"Using cached site manifest with {len(cached_site_manifest)} entries "
+                f"from {PENDING_SITE_MANIFEST_PATH} (chained run)"
+            )
+        except Exception as e:
+            print(f"Could not read cached site manifest: {e} — re-scanning")
+            cached_site_manifest = None
+
     async with async_playwright() as playwright:
         browser, context, page = await setup_page(playwright)
 
         try:
-            site_manifest = await get_site_manifest(page, data_types, start_date, end_date)
+            if cached_site_manifest is not None:
+                site_manifest = cached_site_manifest
+            else:
+                print("Scanning OPM site...")
+                site_manifest = await get_site_manifest(page, data_types, start_date, end_date)
+                if not test:
+                    PENDING_SITE_MANIFEST_PATH.parent.mkdir(parents=True, exist_ok=True)
+                    PENDING_SITE_MANIFEST_PATH.write_text(
+                        _json.dumps(site_manifest, indent=2)
+                    )
+                    print(
+                        f"Saved site manifest to {PENDING_SITE_MANIFEST_PATH} for "
+                        f"any future chained runs"
+                    )
 
             if len(site_manifest) == 0:
                 raise PipelineError(
@@ -305,6 +337,12 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
 
             if not changes["new"] and not changes["updated"] and not recovered_from_hf:
                 print("No changes detected. Exiting.")
+                # Nothing left to do — the cached site manifest (if any) is
+                # stale because every entry now matches the manifest. Delete
+                # it so the next scheduled run scans fresh.
+                if PENDING_SITE_MANIFEST_PATH.exists():
+                    PENDING_SITE_MANIFEST_PATH.unlink()
+                    print(f"Deleted {PENDING_SITE_MANIFEST_PATH}")
                 return
 
             # Step 4: Process changed files
@@ -526,6 +564,13 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
             _gho.write(f"pipeline_status={final_status}\n")
     if blocked_by_ip_throttle:
         print(f"\nPipeline status: BLOCKED — workflow will chain a fresh run.")
+        print(f"Leaving {PENDING_SITE_MANIFEST_PATH} in place so the chained run skips the OPM scan.")
+    else:
+        # Run is done (success or non-IP failure). Cached site manifest is
+        # no longer useful — the next scheduled run should scan fresh.
+        if PENDING_SITE_MANIFEST_PATH.exists():
+            PENDING_SITE_MANIFEST_PATH.unlink()
+            print(f"Deleted {PENDING_SITE_MANIFEST_PATH}")
 
     # Step 6: Generate report and create issue
     report = generate_report(changes, diffs, new_summaries)
