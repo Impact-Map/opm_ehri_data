@@ -13,6 +13,7 @@ import os
 import sys
 import traceback
 from datetime import date
+from pathlib import Path
 
 from opm_pipeline.config import (
     HF_TOKEN, HF_REPO, DATA_TYPES, START_DATE, END_DATE,
