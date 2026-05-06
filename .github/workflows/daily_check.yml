@@ -50,6 +50,12 @@ jobs:
           playwright install chromium
 
       - name: Smoke test - verify OPM download and data quality
+        # Skip on chained runs (chain_depth > 0). The smoke test downloads
+        # one file from OPM, which costs an IP-budget request before the
+        # real work even starts. On the first run of a chain that's fine;
+        # on subsequent chained runs we already proved connectivity and
+        # don't want to waste a request just to re-prove it.
+        if: github.event.inputs.chain_depth == '' || github.event.inputs.chain_depth == '0'
         run: python smoke_test.py
 
       - name: Run daily pipeline
