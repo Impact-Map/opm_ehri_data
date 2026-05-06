@@ -110,7 +110,11 @@ def _render_new_summary(key: str, summary: dict, lines: list):
         lines.append("")
         return
 
-    lines.append(f"*First file of this type — no prior data to compare against.*")
+    # This path only fires when _find_prior_file returned None — i.e. literally
+    # no prior parquet exists for this data_type in HF. For ongoing data types
+    # (accessions/separations/employment) that should never be true; if you see
+    # this on one of those, the diff lookup probably failed silently — investigate.
+    lines.append(f"*No prior file found in the dataset to diff against — showing a standalone summary.*")
     lines.append("")
     lines.append(f"**{_fmt(summary.get('row_count', 0))} rows** across **{len(summary.get('columns', []))} columns**")
     lines.append("")
@@ -161,9 +165,17 @@ def generate_report(changes: dict, diffs: dict, new_summaries: dict, run_date: d
     lines.append(f"## EHRI Data Pipeline Report - {run_date.isoformat()}")
     lines.append("")
 
+    # Count distinct calendar months, not files — "March 2026 across all 3 data
+    # types" is one new month, not three. Matches the title-builder in run_daily.py.
+    from .config import hf_path_to_date as _hfdate
+    distinct_new_months = len({_hfdate(k) for k in new_months if _hfdate(k)})
+
     parts = []
     if new_months:
-        parts.append(f"**{len(new_months)} new month{'s' if len(new_months) > 1 else ''}**")
+        parts.append(
+            f"**{distinct_new_months} new month{'s' if distinct_new_months > 1 else ''}** "
+            f"({len(new_months)} file{'s' if len(new_months) > 1 else ''})"
+        )
     if new_versions:
         parts.append(f"**{len(new_versions)} updated version{'s' if len(new_versions) > 1 else ''}**")
     if changes["updated"]:
