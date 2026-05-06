@@ -144,7 +144,7 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
     from opm_pipeline.scraper import setup_page, get_site_manifest, download_file_from_card, set_filters, get_card_filename
     from opm_pipeline.converter import convert_to_parquet, get_parquet_metadata
     from opm_pipeline.uploader import upload_to_huggingface, download_existing_parquet
-    from opm_pipeline.manifest import load_manifest, save_manifest, compare_manifests, update_manifest_entry
+    from opm_pipeline.manifest import load_manifest, save_manifest, compare_manifests, update_manifest_entry, sync_manifest_with_hf
     from opm_pipeline.differ import generate_diff_summary, summarize_new_file
     from opm_pipeline.reporter import generate_report, generate_email_html
 
@@ -159,6 +159,14 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
     else:
         stored_manifest = load_manifest()
         print(f"Loaded manifest with {len(stored_manifest)} entries")
+
+        # Sync from HF before diffing OPM. If a previous run uploaded files but
+        # was killed (e.g. 6h timeout) before save_manifest, those uploads aren't
+        # in the manifest and we'd reprocess them. This catches that.
+        stored_manifest, n_added = sync_manifest_with_hf(stored_manifest, token)
+        if n_added:
+            print(f"Synced {n_added} HF entries into manifest (likely from a prior interrupted run)")
+            save_manifest(stored_manifest)
 
     if test:
         print("TEST MODE: narrowing to January 2026, treating all found files as new")
@@ -336,8 +344,13 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
                                 upload_to_huggingface(parquet_path, hf_path, token)
                                 print(f"  Uploaded {hf_path} to {HF_REPO}")
 
-                            # Update manifest
+                            # Update manifest and persist after every file so partial
+                            # progress survives a graceful exit (e.g. mid-loop error).
+                            # A hard timeout-kill still loses in-memory state, but the
+                            # start-of-run sync_manifest_with_hf catches that case.
                             update_manifest_entry(stored_manifest, key, site_entry, metadata)
+                            if not test:
+                                save_manifest(stored_manifest)
 
                             # Cleanup
                             csv_path.unlink()

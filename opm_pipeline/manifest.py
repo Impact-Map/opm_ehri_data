@@ -22,6 +22,60 @@ def save_manifest(manifest: dict, path: Path = MANIFEST_PATH):
         json.dump(manifest, f, indent=2)
 
 
+def sync_manifest_with_hf(stored: dict, token: str) -> tuple[dict, int]:
+    """Patch the stored manifest to match what's actually in the HF repo.
+
+    Run at the start of each daily pipeline so that uploads from a previously
+    killed run (e.g. one that hit the 6h GitHub Actions timeout mid-loop and
+    never got to save_manifest) aren't redone on the next run.
+
+    Lightweight: lists HF files, parses versions out of the filenames, and
+    adds any HF entries the manifest is missing. Does NOT read parquet
+    footers (build_manifest_from_hf does that — it's much slower for 700+
+    files). Does NOT remove manifest entries that aren't in HF.
+
+    Returns (manifest, n_added).
+    """
+    from huggingface_hub import list_repo_files, repo_exists
+    import re
+
+    from .config import HF_REPO, hf_path_to_card_stem
+
+    HF_PATH_RE = re.compile(
+        r'^(accessions|separations|employment)/\1_(\d{6})(?:_v(\d+))?\.parquet$'
+    )
+
+    if not repo_exists(HF_REPO, repo_type="dataset", token=token):
+        return stored, 0
+
+    files = list_repo_files(HF_REPO, repo_type="dataset", token=token)
+    n_added = 0
+    for filename in files:
+        m = HF_PATH_RE.match(filename)
+        if not m:
+            continue
+        if filename in stored:
+            continue
+        # Manifest doesn't know about this HF file — likely uploaded by a prior
+        # run that didn't get to save_manifest. Add a minimal entry so the OPM
+        # diff treats it as already-known. Columns/row_count stay empty; if/when
+        # this file is re-processed they'll be populated then.
+        data_type = m.group(1)
+        version = int(m.group(3)) if m.group(3) else 0
+        stored[filename] = {
+            "filename": hf_path_to_card_stem(filename) or filename,
+            "version": version,
+            "opm_date": "",
+            "data_type": data_type,
+            "columns": [],
+            "row_count": 0,
+            "last_updated": datetime.now(timezone.utc).isoformat(),
+        }
+        n_added += 1
+
+    return stored, n_added
+
+
 def compare_manifests(stored: dict, site: dict) -> dict:
     """Compare stored manifest against what's on OPM site.
 
