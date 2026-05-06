@@ -21,31 +21,101 @@ async def setup_page(playwright):
     return browser, context, page
 
 
+class LayoutChangedError(RuntimeError):
+    """Raised when an OPM site selector no longer matches expected DOM.
+
+    Surfaced as a hard pipeline failure so layout drifts cannot silently
+    cause "0 new files" runs (as happened ~2026-04-30 when the date input
+    aria-labels changed from "Select start date" -> "From date selector").
+    """
+
+
 async def set_filters(page, data_type: str, start_date: str, end_date: str) -> int:
-    """Set the date range and data type filters. Returns total file count."""
-    start_input = page.locator('input[aria-label="Select start date"]')
+    """Set the date range and data type filters. Returns total file count.
+
+    Raises LayoutChangedError if any selector fails to match or the filter
+    doesn't actually take effect — better to fail the whole run than silently
+    report no changes.
+    """
+    # OPM has used multiple aria-label conventions; try each. If you see this
+    # raise, inspect data.opm.gov/explore-data/data/data-downloads and add
+    # the new label to the lists below.
+    start_selector = (
+        'input[aria-label="From date selector"], '
+        'input[aria-label="Select start date"]'
+    )
+    end_selector = (
+        'input[aria-label="To date selector"], '
+        'input[aria-label="Select end date"]'
+    )
+
+    start_input = page.locator(start_selector).first
+    end_input = page.locator(end_selector).first
+
+    try:
+        await start_input.wait_for(state="visible", timeout=15000)
+        await end_input.wait_for(state="visible", timeout=15000)
+    except Exception as e:
+        raise LayoutChangedError(
+            f"Could not find date input fields on OPM site. The aria-labels "
+            f"may have changed again. Update the selectors in "
+            f"opm_pipeline/scraper.py:set_filters. Underlying error: {e}"
+        )
+
     await start_input.fill(start_date)
     await start_input.press('Enter')
     await asyncio.sleep(1)
 
-    end_input = page.locator('input[aria-label="Select end date"]')
     await end_input.fill(end_date)
     await end_input.press('Enter')
     await asyncio.sleep(1)
 
+    # Verify the date filter was actually applied. If the inputs are still
+    # empty, the fill silently dropped (e.g. wrong element type) and we'd
+    # otherwise scrape unfiltered results that look identical to the manifest.
+    actual_start = await start_input.input_value()
+    actual_end = await end_input.input_value()
+    if not actual_start or not actual_end:
+        raise LayoutChangedError(
+            f"Date filter did not stick. start={actual_start!r}, end={actual_end!r}. "
+            f"OPM site layout has likely changed."
+        )
+
     dropdown = page.locator('#data-sources')
+    try:
+        await dropdown.wait_for(state="visible", timeout=15000)
+    except Exception as e:
+        raise LayoutChangedError(
+            f"Could not find #data-sources dropdown. OPM site layout has likely changed. "
+            f"Underlying error: {e}"
+        )
     await dropdown.select_option(data_type)
     await asyncio.sleep(2)
 
-    try:
-        count_locator = page.locator('p').filter(has_text=re.compile(r'\d+-\d+ of \d+'))
-        count_text = await count_locator.first.text_content()
-        match = re.search(r'of (\d+)', count_text)
-        total = int(match.group(1)) if match else 0
-    except Exception:
-        total = 0
+    actual_dropdown = await dropdown.input_value()
+    if actual_dropdown != data_type:
+        raise LayoutChangedError(
+            f"Data source filter did not stick. Expected {data_type!r}, "
+            f"got {actual_dropdown!r}."
+        )
 
-    return total
+    count_locator = page.locator('p').filter(has_text=re.compile(r'\d+-\d+ of \d+'))
+    try:
+        await count_locator.first.wait_for(state="visible", timeout=15000)
+        count_text = await count_locator.first.text_content()
+    except Exception as e:
+        raise LayoutChangedError(
+            f"Could not find result count text (e.g. '1-100 of 254') on OPM page. "
+            f"Layout has likely changed. Underlying error: {e}"
+        )
+
+    match = re.search(r'of (\d+)', count_text or "")
+    if not match:
+        raise LayoutChangedError(
+            f"Could not parse result count from {count_text!r}."
+        )
+
+    return int(match.group(1))
 
 
 async def get_card_filename(page, card_index: int) -> str:
@@ -142,7 +212,14 @@ async def get_site_manifest(page, data_types: list[str], start_date: str, end_da
     for data_type in data_types:
         total = await set_filters(page, data_type, start_date, end_date)
         if total == 0:
-            continue
+            # set_filters succeeded — page genuinely shows zero results for this
+            # data type in this date range. That's surprising enough to fail loudly
+            # instead of silently skipping (which previously masked layout breakage).
+            raise LayoutChangedError(
+                f"OPM returned 0 files for data_type={data_type!r} in "
+                f"{start_date}..{end_date}. Either the date range is wrong or "
+                f"the site is broken."
+            )
 
         # Set to 100 items per page
         try:
