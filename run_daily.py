@@ -21,6 +21,14 @@ from opm_pipeline.config import (
 from opm_pipeline.reporter import create_github_issue
 
 
+# How many file uploads to bundle into a single HuggingFace commit.
+# HF rate-limits commits at 128/hour per repo, so per-file commits explode
+# (and 429) on big refreshes (e.g. when OPM bumps every month from v2 to v3).
+# Batching ~50 files/commit means ~14 commits for a full refresh — well under
+# the limit — while still checkpointing progress every 50 files.
+UPLOAD_BATCH_SIZE = 50
+
+
 class PipelineError(Exception):
     """Error with a human-readable diagnosis and fix instructions."""
     def __init__(self, message: str, diagnosis: str, fix: str):
@@ -137,6 +145,61 @@ def _find_prior_file(data_type: str, current_hf_path: str) -> str | None:
         return None
 
 
+def _flush_upload_batch(buffer, stored_manifest, token, dry_run, test, failed_files):
+    """Commit all buffered files to HF in a single commit, then update the manifest.
+
+    Buffer entries are dicts: {parquet_path, hf_path, key, site_entry, metadata}.
+    On success: updates manifest, saves to disk, deletes local parquet files.
+    On failure: marks every file in the batch as failed (caller can decide what to do).
+
+    Buffer is cleared in either case.
+    """
+    if not buffer:
+        return
+
+    from huggingface_hub import HfApi, CommitOperationAdd
+    from opm_pipeline.manifest import save_manifest, update_manifest_entry
+
+    print(f"\n  Flushing batch of {len(buffer)} files to HF as one commit...")
+
+    if dry_run:
+        print(f"  [DRY RUN] Would batch-commit {len(buffer)} files")
+        committed = True
+    else:
+        try:
+            ops = [
+                CommitOperationAdd(path_in_repo=e["hf_path"], path_or_fileobj=str(e["parquet_path"]))
+                for e in buffer
+            ]
+            HfApi().create_commit(
+                repo_id=HF_REPO,
+                repo_type="dataset",
+                token=token,
+                operations=ops,
+                commit_message=f"Add/update {len(ops)} files",
+            )
+            print(f"  Committed batch of {len(buffer)} files to {HF_REPO}")
+            committed = True
+        except Exception as exc:
+            print(f"  ERROR committing batch: {exc}")
+            for entry in buffer:
+                failed_files.append((entry["key"], _sanitize(str(exc))[:200]))
+            committed = False
+
+    if committed:
+        for entry in buffer:
+            update_manifest_entry(stored_manifest, entry["key"], entry["site_entry"], entry["metadata"])
+        if not test:
+            save_manifest(stored_manifest)
+        for entry in buffer:
+            try:
+                entry["parquet_path"].unlink()
+            except Exception:
+                pass
+
+    buffer.clear()
+
+
 async def run_daily(token: str, data_types: list[str], start_date: str, end_date: str,
                     rebuild_manifest: bool = False, dry_run: bool = False, test: bool = False):
     """Main daily pipeline orchestration."""
@@ -163,9 +226,9 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
         # Sync from HF before diffing OPM. If a previous run uploaded files but
         # was killed (e.g. 6h timeout) before save_manifest, those uploads aren't
         # in the manifest and we'd reprocess them. This catches that.
-        stored_manifest, n_added = sync_manifest_with_hf(stored_manifest, token)
-        if n_added:
-            print(f"Synced {n_added} HF entries into manifest (likely from a prior interrupted run)")
+        stored_manifest, recovered_from_hf = sync_manifest_with_hf(stored_manifest, token)
+        if recovered_from_hf:
+            print(f"Synced {len(recovered_from_hf)} HF entries into manifest (likely from a prior interrupted run)")
             save_manifest(stored_manifest)
 
     if test:
@@ -173,6 +236,7 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
         start_date = "2026-01-01"
         end_date = "2026-01-31"
         stored_manifest = {}  # pretend manifest is empty so all files appear new
+        recovered_from_hf = []  # not meaningful in test mode
 
     # Step 2: Scrape OPM site for current file listing
     print("Scanning OPM site...")
@@ -206,26 +270,35 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
                 for f in changes["updated"]:
                     print(f"    - {f}")
 
-            # Emit step outputs for downstream workflow steps (e.g. email notification)
+            # Emit step outputs for downstream workflow steps (e.g. email notification).
+            # recovered_from_hf entries also count as "changes worth telling subscribers
+            # about" since they reflect an OPM data refresh whose ingestion got split
+            # across multiple runs.
             github_output = os.environ.get("GITHUB_OUTPUT")
             if github_output:
-                has_changes = "true" if (changes["new"] or changes["updated"]) else "false"
+                has_changes = (
+                    "true" if (changes["new"] or changes["updated"] or recovered_from_hf)
+                    else "false"
+                )
                 parts = []
                 if changes["new"]:
                     parts.append(f"{len(changes['new'])} new files")
                 if changes["updated"]:
                     parts.append(f"{len(changes['updated'])} updated files")
+                if recovered_from_hf:
+                    parts.append(f"{len(recovered_from_hf)} recovered from prior run")
                 email_subject = f"New EHRI data available on OPM: {', '.join(parts)}"
                 email_subject = email_subject[:150]  # Buttondown subject line limit
                 changed_keys = changes["new"] + changes["updated"]
                 with open(github_output, "a") as _gho:
                     _gho.write(f"new_count={len(changes['new'])}\n")
                     _gho.write(f"updated_count={len(changes['updated'])}\n")
+                    _gho.write(f"recovered_count={len(recovered_from_hf)}\n")
                     _gho.write(f"has_changes={has_changes}\n")
                     _gho.write(f"changed_keys={','.join(changed_keys)}\n")
                     _gho.write(f"email_subject={email_subject}\n")
 
-            if not changes["new"] and not changes["updated"]:
+            if not changes["new"] and not changes["updated"] and not recovered_from_hf:
                 print("No changes detected. Exiting.")
                 return
 
@@ -237,6 +310,8 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
             new_summaries = {}
             failed_files = []
             changed_keys = changes["new"] + changes["updated"]
+            # Buffer of files awaiting batched upload — see _flush_upload_batch.
+            upload_buffer = []
 
             for key in changed_keys:
                 site_entry = site_manifest[key]
@@ -337,24 +412,18 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
                                 # No prior file at all — first ever upload of this type
                                 new_summaries[key] = summarize_new_file(parquet_path)
 
-                            # Upload to HuggingFace
-                            if dry_run:
-                                print(f"  [DRY RUN] Would upload {hf_path} to {HF_REPO}")
-                            else:
-                                upload_to_huggingface(parquet_path, hf_path, token)
-                                print(f"  Uploaded {hf_path} to {HF_REPO}")
-
-                            # Update manifest and persist after every file so partial
-                            # progress survives a graceful exit (e.g. mid-loop error).
-                            # A hard timeout-kill still loses in-memory state, but the
-                            # start-of-run sync_manifest_with_hf catches that case.
-                            update_manifest_entry(stored_manifest, key, site_entry, metadata)
-                            if not test:
-                                save_manifest(stored_manifest)
-
-                            # Cleanup
+                            # Buffer the file for batched HF commit; the actual upload
+                            # and manifest update happen in _flush_upload_batch (every
+                            # UPLOAD_BATCH_SIZE files + once at the end). This keeps us
+                            # under HF's 128 commits/hour rate limit on big refreshes.
                             csv_path.unlink()
-                            parquet_path.unlink()
+                            upload_buffer.append({
+                                "parquet_path": parquet_path,
+                                "hf_path": hf_path,
+                                "key": key,
+                                "site_entry": site_entry,
+                                "metadata": metadata,
+                            })
 
                             downloaded = True
                             break
@@ -379,6 +448,14 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
                         pass
                     continue
 
+                # Flush a batch when it gets full so progress is preserved if
+                # the run dies later.
+                if len(upload_buffer) >= UPLOAD_BATCH_SIZE:
+                    _flush_upload_batch(upload_buffer, stored_manifest, token, dry_run, test, failed_files)
+
+            # Final flush for whatever's left in the buffer.
+            _flush_upload_batch(upload_buffer, stored_manifest, token, dry_run, test, failed_files)
+
         finally:
             await browser.close()
 
@@ -391,6 +468,20 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
 
     # Step 6: Generate report and create issue
     report = generate_report(changes, diffs, new_summaries)
+
+    if recovered_from_hf:
+        # Files that a prior interrupted run uploaded to HF without saving the
+        # manifest. They wouldn't otherwise appear in this run's report because
+        # the manifest sync at startup already absorbed them. List them here so
+        # nothing falls off the radar.
+        report += "\n\n## Recovered from a prior interrupted run\n\n"
+        report += (
+            f"{len(recovered_from_hf)} file(s) were already on HuggingFace from a previous "
+            f"run that didn't finish, so they're now in the manifest but skipped here "
+            f"(no diff available — the upload happened in the earlier run):\n\n"
+        )
+        for key in sorted(recovered_from_hf):
+            report += f"- `{key}`\n"
 
     if failed_files:
         report += "\n\n## Errors\n\n"
@@ -416,6 +507,8 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
         title_parts.append(f"{len(new_versions)} updated version{'s' if len(new_versions) > 1 else ''}")
     if changes["updated"]:
         title_parts.append(f"{len(changes['updated'])} updated")
+    if recovered_from_hf:
+        title_parts.append(f"{len(recovered_from_hf)} recovered")
     title = f"EHRI Data Update - {today.isoformat()} ({', '.join(title_parts)}"
     if failed_files:
         title += f", {len(failed_files)} failed"
@@ -427,6 +520,13 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
 
     # Write HTML email body
     email_html = generate_email_html(changes, diffs, new_summaries, today)
+    if recovered_from_hf:
+        email_html += (
+            f"\n<p><strong>Plus {len(recovered_from_hf)} file(s) recovered "
+            f"from a previous interrupted run</strong> "
+            f"(already on HuggingFace, not re-processed in this run — "
+            f"see issue for the list).</p>"
+        )
     if issue_url:
         email_html += f"\n<p><a href='{issue_url}'>Full diff report</a></p>"
     with open("email_body.txt", "w") as f:

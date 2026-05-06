@@ -22,7 +22,7 @@ def save_manifest(manifest: dict, path: Path = MANIFEST_PATH):
         json.dump(manifest, f, indent=2)
 
 
-def sync_manifest_with_hf(stored: dict, token: str) -> tuple[dict, int]:
+def sync_manifest_with_hf(stored: dict, token: str) -> tuple[dict, list]:
     """Patch the stored manifest to match what's actually in the HF repo.
 
     Run at the start of each daily pipeline so that uploads from a previously
@@ -34,7 +34,10 @@ def sync_manifest_with_hf(stored: dict, token: str) -> tuple[dict, int]:
     footers (build_manifest_from_hf does that — it's much slower for 700+
     files). Does NOT remove manifest entries that aren't in HF.
 
-    Returns (manifest, n_added).
+    Returns (manifest, added_keys) — the list of HF paths that were missing
+    from the manifest and got added. Caller can surface these in the run
+    report so nothing falls off the radar (they won't appear in the OPM diff
+    because they're now in the manifest at the right version).
     """
     from huggingface_hub import list_repo_files, repo_exists
     import re
@@ -46,10 +49,10 @@ def sync_manifest_with_hf(stored: dict, token: str) -> tuple[dict, int]:
     )
 
     if not repo_exists(HF_REPO, repo_type="dataset", token=token):
-        return stored, 0
+        return stored, []
 
     files = list_repo_files(HF_REPO, repo_type="dataset", token=token)
-    n_added = 0
+    added_keys = []
     for filename in files:
         m = HF_PATH_RE.match(filename)
         if not m:
@@ -71,9 +74,9 @@ def sync_manifest_with_hf(stored: dict, token: str) -> tuple[dict, int]:
             "row_count": 0,
             "last_updated": datetime.now(timezone.utc).isoformat(),
         }
-        n_added += 1
+        added_keys.append(filename)
 
-    return stored, n_added
+    return stored, added_keys
 
 
 def compare_manifests(stored: dict, site: dict) -> dict:
