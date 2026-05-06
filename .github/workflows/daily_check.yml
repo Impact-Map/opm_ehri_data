@@ -77,7 +77,9 @@ jobs:
           fi
 
       - name: Run anomaly detection
-        if: success() && steps.pipeline.outputs.has_changes == 'true'
+        # Skip on blocked runs — there's no point running anomaly detection on
+        # a partial batch since the chained run will produce the complete one.
+        if: success() && steps.pipeline.outputs.has_changes == 'true' && steps.pipeline.outputs.pipeline_status != 'blocked'
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: python run_anomaly.py --changed "${{ steps.pipeline.outputs.changed_keys }}" --baseline 202412
@@ -111,7 +113,10 @@ jobs:
         # the chained run will send the full one when everything's done.
         # chain_depth is a safety: if 10 chained runs in a row all blocked,
         # something other than IP rotation is wrong — stop and surface it.
-        if: success() && steps.pipeline.outputs.pipeline_status == 'blocked'
+        # Use always() rather than success() because we want to chain even if
+        # an unrelated downstream step (e.g. anomaly detection on partial data)
+        # failed — the only thing that matters is the pipeline reported blocked.
+        if: always() && steps.pipeline.outputs.pipeline_status == 'blocked'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
