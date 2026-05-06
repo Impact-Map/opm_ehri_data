@@ -441,11 +441,18 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
                 except Exception as e:
                     failed_files.append((key, str(e)))
                     print(f"  ERROR processing {key}: {e}")
-                    # Try to dismiss any open popups
+                    # Restart the browser instead of trying to recover the
+                    # current session. A failure here usually means the page
+                    # is in a bad state (e.g. cancelled download leaves the
+                    # download dialog open, or session has timed out), and
+                    # repeated failures snowball through subsequent files.
+                    # Fresh browser = clean slate for the next file.
+                    print("  Restarting browser after error...")
                     try:
-                        await page.keyboard.press('Escape')
+                        await browser.close()
                     except Exception:
                         pass
+                    browser, context, page = await setup_page(playwright)
                     continue
 
                 # Flush a batch when it gets full so progress is preserved if
