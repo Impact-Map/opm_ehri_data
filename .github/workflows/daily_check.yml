@@ -1,8 +1,12 @@
 name: Daily OPM Data Check
 
 on:
-  schedule:
-    - cron: '0 14 * * *'  # 10 AM ET
+  # Scheduled cron temporarily disabled — OPM throttle on GitHub-hosted runner
+  # IPs is persistent (every cron run is hitting 5 instant 403s and aborting,
+  # 0 files added). Doing the catch-up locally for now. Re-enable when the
+  # backlog is drained and OPM's penalty window has expired.
+  # schedule:
+  #   - cron: '0 14 * * *'  # 10 AM ET
   workflow_dispatch:
     inputs:
       test_mode:

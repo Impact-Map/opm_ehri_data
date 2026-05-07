@@ -26,8 +26,11 @@ from opm_pipeline.reporter import create_github_issue
 # HF rate-limits commits at 128/hour per repo, so per-file commits explode
 # (and 429) on big refreshes (e.g. when OPM bumps every month from v2 to v3).
 # Batching ~50 files/commit means ~14 commits for a full refresh — well under
-# the limit — while still checkpointing progress every 50 files.
-UPLOAD_BATCH_SIZE = 50
+# the limit — while still checkpointing progress every 50 files. Override
+# with $UPLOAD_BATCH_SIZE for one-off local runs that need smaller batches
+# (e.g. to keep peak local disk small while processing the big Employment
+# files one bite at a time).
+UPLOAD_BATCH_SIZE = int(os.environ.get("UPLOAD_BATCH_SIZE", "50"))
 
 # After this many consecutive download failures, assume OPM is throttling our
 # IP and stop processing. The workflow then chains a fresh run on a new
