@@ -333,7 +333,17 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
             consecutive_dl_failures = 0
             blocked_by_ip_throttle = False
 
-            for key in changed_keys:
+            for i, key in enumerate(changed_keys):
+                # Space out OPM downloads — back-to-back hits trigger their
+                # rolling-window IP throttle (immediate 403s after the first
+                # successful download). Override with $OPM_REQUEST_SPACING_SEC
+                # for local runs where you don't care about throttling.
+                if i > 0:
+                    spacing = int(os.environ.get("OPM_REQUEST_SPACING_SEC", "60"))
+                    if spacing > 0:
+                        print(f"  Sleeping {spacing}s before next request...")
+                        await asyncio.sleep(spacing)
+
                 site_entry = site_manifest[key]
                 data_type = site_entry["data_type"].capitalize()
                 card_filename = site_entry["filename"]
@@ -531,10 +541,24 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
     # throttle, so we just take what we got each day and let tomorrow's cron
     # try again with whatever IP it lands on).
     final_status = "blocked" if blocked_by_ip_throttle else "done"
+    success_count = len(changed_keys) - len(failed_files)
+    uploaded_keys = [k for k in changed_keys if k not in {fk for fk, _ in failed_files}]
+    failed_keys = [fk for fk, _ in failed_files]
     github_output = os.environ.get("GITHUB_OUTPUT")
     if github_output:
         with open(github_output, "a") as _gho:
             _gho.write(f"pipeline_status={final_status}\n")
+            _gho.write(f"success_count={success_count}\n")
+            _gho.write(f"failed_count={len(failed_files)}\n")
+            # Multiline outputs use the heredoc form; lists can grow long.
+            _gho.write("uploaded_keys<<EOF\n")
+            for k in uploaded_keys:
+                _gho.write(f"{k}\n")
+            _gho.write("EOF\n")
+            _gho.write("failed_keys<<EOF\n")
+            for k in failed_keys:
+                _gho.write(f"{k}\n")
+            _gho.write("EOF\n")
     if blocked_by_ip_throttle:
         print(f"\nPipeline status: BLOCKED — uploaded what we got, waiting for tomorrow's cron.")
 

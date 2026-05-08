@@ -2,7 +2,17 @@ name: Daily OPM Data Check
 
 on:
   schedule:
-    - cron: '0 14 * * *'  # 10 AM ET
+    # Drift +1h per day-of-week so most run-to-run gaps are 25h instead of 24h.
+    # OPM appears to throttle on a rolling 24h window per IP, and locking the
+    # cron to a fixed wall-clock time meant we hit the wall every day. Anchored
+    # at Fri 14:00 UTC (the original slot); the Thu->Fri wrap is 18h short.
+    - cron: '0 14 * * 5'  # Fri
+    - cron: '0 15 * * 6'  # Sat
+    - cron: '0 16 * * 0'  # Sun
+    - cron: '0 17 * * 1'  # Mon
+    - cron: '0 18 * * 2'  # Tue
+    - cron: '0 19 * * 3'  # Wed
+    - cron: '0 20 * * 4'  # Thu
   workflow_dispatch:
     inputs:
       test_mode:
@@ -96,6 +106,61 @@ jobs:
           BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
           EMAIL_SUBJECT: ${{ steps.pipeline.outputs.email_subject }}
         run: python3 send_email.py
+
+      # Renders on the Actions run page directly (no log digging). Always runs.
+      - name: Write run summary
+        if: always()
+        env:
+          PIPELINE_STATUS: ${{ steps.pipeline.outputs.pipeline_status }}
+          NEW_COUNT: ${{ steps.pipeline.outputs.new_count }}
+          UPDATED_COUNT: ${{ steps.pipeline.outputs.updated_count }}
+          RECOVERED_COUNT: ${{ steps.pipeline.outputs.recovered_count }}
+          SUCCESS_COUNT: ${{ steps.pipeline.outputs.success_count }}
+          FAILED_COUNT: ${{ steps.pipeline.outputs.failed_count }}
+          UPLOADED_KEYS: ${{ steps.pipeline.outputs.uploaded_keys }}
+          FAILED_KEYS: ${{ steps.pipeline.outputs.failed_keys }}
+          PIPELINE_OUTCOME: ${{ steps.pipeline.outcome }}
+        run: |
+          {
+            echo "# OPM Daily Run — $(date -u +%Y-%m-%d)"
+            echo ""
+            if [ "$PIPELINE_OUTCOME" != "success" ]; then
+              echo "**Pipeline failed** before it could produce results. See \"Run daily pipeline\" step for the error."
+              exit 0
+            fi
+            STATUS_LABEL="$PIPELINE_STATUS"
+            if [ "$STATUS_LABEL" = "blocked" ]; then
+              STATUS_LABEL="blocked (OPM IP throttle — exited early, tomorrow's run continues)"
+            fi
+            echo "**Status:** ${STATUS_LABEL:-(no run)}"
+            echo "**Uploaded to HuggingFace:** ${SUCCESS_COUNT:-0}"
+            echo "**Failed:** ${FAILED_COUNT:-0}"
+            echo "**New (calendar months):** ${NEW_COUNT:-0}"
+            echo "**Updated (revised versions):** ${UPDATED_COUNT:-0}"
+            if [ -n "$RECOVERED_COUNT" ] && [ "$RECOVERED_COUNT" != "0" ]; then
+              echo "**Recovered from prior interrupted run:** $RECOVERED_COUNT"
+            fi
+            echo ""
+            if [ -n "$UPLOADED_KEYS" ]; then
+              echo "## Uploaded"
+              echo ""
+              echo "$UPLOADED_KEYS" | sed 's/^/- /'
+              echo ""
+            fi
+            if [ -n "$FAILED_KEYS" ]; then
+              echo "## Failed"
+              echo ""
+              echo "$FAILED_KEYS" | sed 's/^/- /'
+              echo ""
+            fi
+            echo "## Anomaly detection"
+            echo ""
+            if [ "${{ steps.pipeline.outputs.has_changes }}" = "true" ]; then
+              echo "Ran (compares latest employment month vs prior month + vs Dec 2024 baseline). Findings are committed to \`docs/data/\` and rendered on the Federal Workforce Watch page."
+            else
+              echo "Skipped — no new data this run."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Create failure issue with full output
         if: failure()
