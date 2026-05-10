@@ -36,7 +36,11 @@ concurrency:
 
 jobs:
   check-and-update:
-    runs-on: ubuntu-latest
+    # macos-latest as of 2026-05-10 — Ubuntu runners (Azure IP range) are
+    # being 403'd by OPM's chunked download endpoint; macOS runners are on
+    # Apple-hosted infra with a different IP pool. Revisit if OPM whitelists
+    # the Azure range (or if we move to a self-hosted runner / VPS).
+    runs-on: macos-latest
     # 6h is the GitHub-hosted runner cap. Normal daily runs finish in ~2 minutes,
     # but a full OPM v2->v3 refresh (~700 files) needs the headroom.
     timeout-minutes: 360
