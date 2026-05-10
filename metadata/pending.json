@@ -1,0 +1,856 @@
+[
+  {
+    "key": "employment/employment_202503_v3.parquet",
+    "filename": "Employment data from March 2025",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202501_v3.parquet",
+    "filename": "Employment data from January 2025",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202412_v3.parquet",
+    "filename": "Employment data from December 2024",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202411_v3.parquet",
+    "filename": "Employment data from November 2024",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202410_v3.parquet",
+    "filename": "Employment data from October 2024",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202409_v3.parquet",
+    "filename": "Employment data from September 2024",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202408_v3.parquet",
+    "filename": "Employment data from August 2024",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202407_v3.parquet",
+    "filename": "Employment data from July 2024",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202406_v3.parquet",
+    "filename": "Employment data from June 2024",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202405_v3.parquet",
+    "filename": "Employment data from May 2024",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202404_v3.parquet",
+    "filename": "Employment data from April 2024",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202403_v3.parquet",
+    "filename": "Employment data from March 2024",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202402_v3.parquet",
+    "filename": "Employment data from February 2024",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202401_v3.parquet",
+    "filename": "Employment data from January 2024",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202312_v3.parquet",
+    "filename": "Employment data from December 2023",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202311_v3.parquet",
+    "filename": "Employment data from November 2023",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202310_v3.parquet",
+    "filename": "Employment data from October 2023",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202309_v3.parquet",
+    "filename": "Employment data from September 2023",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202308_v3.parquet",
+    "filename": "Employment data from August 2023",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202307_v3.parquet",
+    "filename": "Employment data from July 2023",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202306_v3.parquet",
+    "filename": "Employment data from June 2023",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202305_v3.parquet",
+    "filename": "Employment data from May 2023",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202304_v3.parquet",
+    "filename": "Employment data from April 2023",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202303_v3.parquet",
+    "filename": "Employment data from March 2023",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202302_v3.parquet",
+    "filename": "Employment data from February 2023",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202301_v3.parquet",
+    "filename": "Employment data from January 2023",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202212_v3.parquet",
+    "filename": "Employment data from December 2022",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202211_v3.parquet",
+    "filename": "Employment data from November 2022",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202210_v3.parquet",
+    "filename": "Employment data from October 2022",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202209_v3.parquet",
+    "filename": "Employment data from September 2022",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202208_v3.parquet",
+    "filename": "Employment data from August 2022",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202207_v3.parquet",
+    "filename": "Employment data from July 2022",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202206_v3.parquet",
+    "filename": "Employment data from June 2022",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202205_v3.parquet",
+    "filename": "Employment data from May 2022",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202204_v3.parquet",
+    "filename": "Employment data from April 2022",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202203_v3.parquet",
+    "filename": "Employment data from March 2022",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202202_v3.parquet",
+    "filename": "Employment data from February 2022",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202201_v3.parquet",
+    "filename": "Employment data from January 2022",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202112_v3.parquet",
+    "filename": "Employment data from December 2021",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202111_v3.parquet",
+    "filename": "Employment data from November 2021",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202110_v3.parquet",
+    "filename": "Employment data from October 2021",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202109_v3.parquet",
+    "filename": "Employment data from September 2021",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202108_v3.parquet",
+    "filename": "Employment data from August 2021",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202107_v3.parquet",
+    "filename": "Employment data from July 2021",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202106_v3.parquet",
+    "filename": "Employment data from June 2021",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202105_v3.parquet",
+    "filename": "Employment data from May 2021",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202104_v3.parquet",
+    "filename": "Employment data from April 2021",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202103_v3.parquet",
+    "filename": "Employment data from March 2021",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202102_v3.parquet",
+    "filename": "Employment data from February 2021",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202101_v3.parquet",
+    "filename": "Employment data from January 2021",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202012_v3.parquet",
+    "filename": "Employment data from December 2020",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202011_v3.parquet",
+    "filename": "Employment data from November 2020",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202010_v3.parquet",
+    "filename": "Employment data from October 2020",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202009_v3.parquet",
+    "filename": "Employment data from September 2020",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202008_v3.parquet",
+    "filename": "Employment data from August 2020",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202007_v3.parquet",
+    "filename": "Employment data from July 2020",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202006_v3.parquet",
+    "filename": "Employment data from June 2020",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202005_v3.parquet",
+    "filename": "Employment data from May 2020",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202004_v3.parquet",
+    "filename": "Employment data from April 2020",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202003_v3.parquet",
+    "filename": "Employment data from March 2020",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202002_v3.parquet",
+    "filename": "Employment data from February 2020",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_202001_v3.parquet",
+    "filename": "Employment data from January 2020",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201912_v3.parquet",
+    "filename": "Employment data from December 2019",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201911_v3.parquet",
+    "filename": "Employment data from November 2019",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201910_v3.parquet",
+    "filename": "Employment data from October 2019",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201909_v3.parquet",
+    "filename": "Employment data from September 2019",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201908_v3.parquet",
+    "filename": "Employment data from August 2019",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201907_v3.parquet",
+    "filename": "Employment data from July 2019",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201906_v3.parquet",
+    "filename": "Employment data from June 2019",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201905_v3.parquet",
+    "filename": "Employment data from May 2019",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201904_v3.parquet",
+    "filename": "Employment data from April 2019",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201903_v3.parquet",
+    "filename": "Employment data from March 2019",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201902_v3.parquet",
+    "filename": "Employment data from February 2019",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201901_v3.parquet",
+    "filename": "Employment data from January 2019",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201812_v3.parquet",
+    "filename": "Employment data from December 2018",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201811_v3.parquet",
+    "filename": "Employment data from November 2018",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201810_v3.parquet",
+    "filename": "Employment data from October 2018",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201809_v3.parquet",
+    "filename": "Employment data from September 2018",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201808_v3.parquet",
+    "filename": "Employment data from August 2018",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201807_v3.parquet",
+    "filename": "Employment data from July 2018",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201806_v3.parquet",
+    "filename": "Employment data from June 2018",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201805_v3.parquet",
+    "filename": "Employment data from May 2018",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201804_v3.parquet",
+    "filename": "Employment data from April 2018",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201803_v3.parquet",
+    "filename": "Employment data from March 2018",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201802_v3.parquet",
+    "filename": "Employment data from February 2018",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201801_v3.parquet",
+    "filename": "Employment data from January 2018",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201712_v3.parquet",
+    "filename": "Employment data from December 2017",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201711_v3.parquet",
+    "filename": "Employment data from November 2017",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201710_v3.parquet",
+    "filename": "Employment data from October 2017",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201709_v3.parquet",
+    "filename": "Employment data from September 2017",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201708_v3.parquet",
+    "filename": "Employment data from August 2017",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201707_v3.parquet",
+    "filename": "Employment data from July 2017",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201706_v3.parquet",
+    "filename": "Employment data from June 2017",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201705_v3.parquet",
+    "filename": "Employment data from May 2017",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201704_v3.parquet",
+    "filename": "Employment data from April 2017",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201703_v3.parquet",
+    "filename": "Employment data from March 2017",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201702_v3.parquet",
+    "filename": "Employment data from February 2017",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201701_v3.parquet",
+    "filename": "Employment data from January 2017",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201612_v3.parquet",
+    "filename": "Employment data from December 2016",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201611_v3.parquet",
+    "filename": "Employment data from November 2016",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201610_v3.parquet",
+    "filename": "Employment data from October 2016",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201609_v3.parquet",
+    "filename": "Employment data from September 2016",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201608_v3.parquet",
+    "filename": "Employment data from August 2016",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201607_v3.parquet",
+    "filename": "Employment data from July 2016",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201606_v3.parquet",
+    "filename": "Employment data from June 2016",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201605_v3.parquet",
+    "filename": "Employment data from May 2016",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201604_v3.parquet",
+    "filename": "Employment data from April 2016",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201603_v3.parquet",
+    "filename": "Employment data from March 2016",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201602_v3.parquet",
+    "filename": "Employment data from February 2016",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201601_v3.parquet",
+    "filename": "Employment data from January 2016",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201512_v3.parquet",
+    "filename": "Employment data from December 2015",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201511_v3.parquet",
+    "filename": "Employment data from November 2015",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201510_v3.parquet",
+    "filename": "Employment data from October 2015",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201509_v3.parquet",
+    "filename": "Employment data from September 2015",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201508_v3.parquet",
+    "filename": "Employment data from August 2015",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201507_v3.parquet",
+    "filename": "Employment data from July 2015",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201506_v3.parquet",
+    "filename": "Employment data from June 2015",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201505_v3.parquet",
+    "filename": "Employment data from May 2015",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201504_v3.parquet",
+    "filename": "Employment data from April 2015",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201503_v3.parquet",
+    "filename": "Employment data from March 2015",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201502_v3.parquet",
+    "filename": "Employment data from February 2015",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  },
+  {
+    "key": "employment/employment_201501_v3.parquet",
+    "filename": "Employment data from January 2015",
+    "version": 3,
+    "data_type": "employment",
+    "kind": "new"
+  }
+]
