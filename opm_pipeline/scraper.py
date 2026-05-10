@@ -1,6 +1,7 @@
 """Playwright automation for the OPM data downloads site."""
 
 import asyncio
+import os
 import re
 from pathlib import Path
 
@@ -8,8 +9,17 @@ from .config import OPM_URL
 
 
 async def setup_page(playwright):
-    """Launch browser and navigate to OPM data downloads page."""
-    browser = await playwright.chromium.launch(headless=True)
+    """Launch browser and navigate to OPM data downloads page.
+
+    Set OPM_HEADED=1 to launch a visible Chrome window instead of the headless
+    binary. OPM is fronted by Akamai Bot Manager (cookies _abck, ak_bmsc, bm_sv)
+    which 403s automated downloads from cloud IPs even with stealth headers.
+    A headed Chrome on a residential IP passes Akamai's JS challenge — useful
+    for one-off catch-up runs from a laptop while we wait for OPM to whitelist
+    the CI runners.
+    """
+    headless = os.environ.get("OPM_HEADED") != "1"
+    browser = await playwright.chromium.launch(headless=headless)
     # Look like a real Linux Chrome instead of chrome-headless-shell. OPM
     # started 403'ing our download endpoint requests around 2026-05-07, and
     # since the page interactions kept working it's probably bot-detection
