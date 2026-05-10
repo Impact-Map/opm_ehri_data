@@ -55,8 +55,11 @@ jobs:
           pip install -r requirements.txt
           playwright install chromium
 
-      - name: Smoke test - verify OPM download and data quality
-        run: python smoke_test.py
+      # Smoke test disabled — it burns one of our limited OPM calls per run
+      # before the pipeline even starts. The pipeline itself is the smoke test;
+      # if the site layout breaks, it'll fail fast on the first download.
+      # - name: Smoke test - verify OPM download and data quality
+      #   run: python smoke_test.py
 
       - name: Run daily pipeline
         id: pipeline
@@ -109,7 +112,7 @@ jobs:
       #     fi
 
       - name: Send Buttondown email notification
-        if: always() && steps.pipeline.outcome == 'success' && steps.pipeline.outputs.has_changes == 'true'
+        if: always() && steps.pipeline.outcome == 'success' && steps.pipeline.outputs.success_count != '0' && steps.pipeline.outputs.success_count != ''
         env:
           BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
           EMAIL_SUBJECT: ${{ steps.pipeline.outputs.email_subject }}

@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import asyncio
 import argparse
+import json
 import os
 import sys
 import traceback
@@ -31,6 +32,30 @@ from opm_pipeline.reporter import create_github_issue
 # (e.g. to keep peak local disk small while processing the big Employment
 # files one bite at a time).
 UPLOAD_BATCH_SIZE = int(os.environ.get("UPLOAD_BATCH_SIZE", "50"))
+
+# Cached list of files we know are pending download. Populated after a fresh
+# OPM site scrape; consumed (and pruned of successful uploads) by subsequent
+# runs so we don't burn OPM requests rescanning while there's still a backlog.
+# When empty/missing, the pipeline falls back to a full scrape. Set
+# OPM_FORCE_RESCAN=1 to force a fresh scrape regardless.
+PENDING_PATH = Path("metadata/pending.json")
+
+
+def load_pending_cache() -> list[dict]:
+    if not PENDING_PATH.exists():
+        return []
+    try:
+        with open(PENDING_PATH) as f:
+            data = json.load(f)
+            return data if isinstance(data, list) else []
+    except Exception:
+        return []
+
+
+def save_pending_cache(entries: list[dict]) -> None:
+    PENDING_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with open(PENDING_PATH, "w") as f:
+        json.dump(entries, f, indent=2)
 
 # After this many consecutive download failures, assume OPM is throttling our
 # IP and stop processing. The workflow then chains a fresh run on a new
@@ -252,28 +277,67 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
         stored_manifest = {}  # pretend manifest is empty so all files appear new
         recovered_from_hf = []  # not meaningful in test mode
 
-    # Step 2: Scrape OPM site for current file listing.
-    print("Scanning OPM site...")
+    # Step 2: Get the work list. Prefer the cached pending list (saved from a
+    # prior fresh scrape) over rescanning OPM, since the OPM site is throttling
+    # our IP pool aggressively and we don't want to burn requests rediscovering
+    # files we already know about. A full scrape only happens when the cache is
+    # empty (backlog cleared) or OPM_FORCE_RESCAN=1 is set.
+    pending_cache = [] if test else load_pending_cache()
+    force_rescan = os.environ.get("OPM_FORCE_RESCAN") == "1"
+    use_cache = bool(pending_cache) and not force_rescan and not test
+
     async with async_playwright() as playwright:
         browser, context, page = await setup_page(playwright)
 
         try:
-            site_manifest = await get_site_manifest(page, data_types, start_date, end_date)
+            if use_cache:
+                print(f"Using cached pending list ({len(pending_cache)} files); skipping OPM site scan")
+                site_manifest = {
+                    p["key"]: {
+                        "filename": p["filename"],
+                        "version": p["version"],
+                        "data_type": p["data_type"],
+                    }
+                    for p in pending_cache
+                }
+                changes = {
+                    "new": [p["key"] for p in pending_cache if p.get("kind", "new") == "new"],
+                    "updated": [p["key"] for p in pending_cache if p.get("kind") == "updated"],
+                    "unchanged": [],
+                }
+            else:
+                print("Scanning OPM site...")
+                site_manifest = await get_site_manifest(page, data_types, start_date, end_date)
 
-            if len(site_manifest) == 0:
-                raise PipelineError(
-                    "OPM site returned zero files",
-                    "The scraper connected to data.opm.gov but found no downloadable files. "
-                    "This usually means OPM changed their page layout or the site is temporarily broken.",
-                    "1. Visit https://data.opm.gov/explore-data/data/data-downloads in a browser and check if it looks normal.\n"
-                    "2. If the site looks different, the Playwright selectors in opm_pipeline/scraper.py need updating.\n"
-                    "3. If the site looks fine, this may be a temporary issue — wait and try again tomorrow."
-                )
+                if len(site_manifest) == 0:
+                    raise PipelineError(
+                        "OPM site returned zero files",
+                        "The scraper connected to data.opm.gov but found no downloadable files. "
+                        "This usually means OPM changed their page layout or the site is temporarily broken.",
+                        "1. Visit https://data.opm.gov/explore-data/data/data-downloads in a browser and check if it looks normal.\n"
+                        "2. If the site looks different, the Playwright selectors in opm_pipeline/scraper.py need updating.\n"
+                        "3. If the site looks fine, this may be a temporary issue — wait and try again tomorrow."
+                    )
 
-            print(f"Found {len(site_manifest)} files on OPM site")
+                print(f"Found {len(site_manifest)} files on OPM site")
 
-            # Step 3: Compare manifests
-            changes = compare_manifests(stored_manifest, site_manifest)
+                # Step 3: Compare manifests
+                changes = compare_manifests(stored_manifest, site_manifest)
+                # Save the discovered backlog so subsequent runs can skip the scan.
+                if not test:
+                    new_pending = [
+                        {
+                            "key": k,
+                            "filename": site_manifest[k]["filename"],
+                            "version": site_manifest[k]["version"],
+                            "data_type": site_manifest[k]["data_type"],
+                            "kind": "updated" if k in changes["updated"] else "new",
+                        }
+                        for k in changes["new"] + changes["updated"]
+                    ]
+                    save_pending_cache(new_pending)
+                    pending_cache = new_pending
+
             print(f"New: {len(changes['new'])}, Updated: {len(changes['updated'])}, Unchanged: {len(changes['unchanged'])}")
             if changes["new"]:
                 print("  New files to download:")
@@ -342,6 +406,10 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
             new_summaries = {}
             failed_files = []
             changed_keys = changes["new"] + changes["updated"]
+            # Files we actually started processing (excludes ones skipped because
+            # the IP-throttle abort broke the loop early). Used downstream to
+            # compute success_count without overcounting untried files.
+            attempted_keys = []
             # Buffer of files awaiting batched upload — see _flush_upload_batch.
             upload_buffer = []
             # Tracks consecutive download/network errors. If this hits
@@ -362,6 +430,7 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
                         print(f"  Sleeping {spacing}s before next request...")
                         await asyncio.sleep(spacing)
 
+                attempted_keys.append(key)
                 site_entry = site_manifest[key]
                 data_type = site_entry["data_type"].capitalize()
                 card_filename = site_entry["filename"]
@@ -562,21 +631,50 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
         save_manifest(stored_manifest)
         print(f"\nManifest saved with {len(stored_manifest)} entries")
 
+        # Prune successfully-uploaded keys from the pending cache. Failures
+        # and unattempted files stay so the next run retries them. When the
+        # cache empties, the next run does a fresh scrape to pick up anything
+        # OPM published in the meantime.
+        upload_set = {k for k in attempted_keys if k not in {fk for fk, _ in failed_files}}
+        if pending_cache and upload_set:
+            remaining_cache = [p for p in pending_cache if p["key"] not in upload_set]
+            save_pending_cache(remaining_cache)
+            print(f"Pending cache: {len(remaining_cache)} files still queued (was {len(pending_cache)})")
+
     # Emit the final pipeline_status as a step output for visibility in the
     # workflow logs. We don't act on it anymore (the chain step is gone — IP
     # rotation across same-pool GitHub runners didn't actually escape OPM's
     # throttle, so we just take what we got each day and let tomorrow's cron
     # try again with whatever IP it lands on).
     final_status = "blocked" if blocked_by_ip_throttle else "done"
-    success_count = len(changed_keys) - len(failed_files)
-    uploaded_keys = [k for k in changed_keys if k not in {fk for fk, _ in failed_files}]
+    failed_keys_set = {fk for fk, _ in failed_files}
+    # Only count files we actually attempted (not ones the abort broke past).
+    uploaded_keys = [k for k in attempted_keys if k not in failed_keys_set]
+    success_count = len(uploaded_keys)
     failed_keys = [fk for fk, _ in failed_files]
     github_output = os.environ.get("GITHUB_OUTPUT")
     if github_output:
+        # Recompute email subject + has_changes from actual upload outcomes so
+        # downstream notifications don't claim files that failed/were skipped.
+        # Last-write-wins for repeated keys in $GITHUB_OUTPUT, so this overrides
+        # the placeholders set earlier (before the loop ran).
+        actual_has_changes = "true" if (uploaded_keys or recovered_from_hf) else "false"
+        subject_parts = []
+        if uploaded_keys:
+            subject_parts.append(f"{len(uploaded_keys)} file{'s' if len(uploaded_keys) != 1 else ''} uploaded")
+        if recovered_from_hf:
+            subject_parts.append(f"{len(recovered_from_hf)} recovered from prior run")
+        actual_email_subject = (
+            f"New EHRI data available on OPM: {', '.join(subject_parts)}"[:150]
+            if subject_parts else ""
+        )
         with open(github_output, "a") as _gho:
             _gho.write(f"pipeline_status={final_status}\n")
             _gho.write(f"success_count={success_count}\n")
             _gho.write(f"failed_count={len(failed_files)}\n")
+            _gho.write(f"has_changes={actual_has_changes}\n")
+            if actual_email_subject:
+                _gho.write(f"email_subject={actual_email_subject}\n")
             # Multiline outputs use the heredoc form; lists can grow long.
             _gho.write("uploaded_keys<<EOF\n")
             for k in uploaded_keys:
@@ -625,22 +723,26 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
     print("\n" + report)
 
     today = date.today()
-    n_success = len(changed_keys) - len(failed_files)
     from opm_pipeline.reporter import _is_version_update
     from opm_pipeline.config import hf_path_to_date
-    new_months = [k for k in changes["new"] if not _is_version_update(k)]
-    new_versions = [k for k in changes["new"] if _is_version_update(k)]
-    # Count distinct calendar months, not files
-    distinct_new_months = len({hf_path_to_date(k) for k in new_months if hf_path_to_date(k)})
+    # Title reflects what actually uploaded — not what was queued. A 0/5
+    # outcome is a 0-upload run, not a "5 updated, 5 failed" run.
+    uploaded_set = set(uploaded_keys)
+    new_months_up = [k for k in changes["new"] if k in uploaded_set and not _is_version_update(k)]
+    new_versions_up = [k for k in changes["new"] if k in uploaded_set and _is_version_update(k)]
+    updated_up = [k for k in changes["updated"] if k in uploaded_set]
+    distinct_new_months = len({hf_path_to_date(k) for k in new_months_up if hf_path_to_date(k)})
     title_parts = []
-    if new_months:
+    if new_months_up:
         title_parts.append(f"{distinct_new_months} new month{'s' if distinct_new_months > 1 else ''}")
-    if new_versions:
-        title_parts.append(f"{len(new_versions)} updated version{'s' if len(new_versions) > 1 else ''}")
-    if changes["updated"]:
-        title_parts.append(f"{len(changes['updated'])} updated")
+    if new_versions_up:
+        title_parts.append(f"{len(new_versions_up)} updated version{'s' if len(new_versions_up) > 1 else ''}")
+    if updated_up:
+        title_parts.append(f"{len(updated_up)} updated")
     if recovered_from_hf:
         title_parts.append(f"{len(recovered_from_hf)} recovered")
+    if not title_parts:
+        title_parts.append("no uploads")
     title = f"EHRI Data Update - {today.isoformat()} ({', '.join(title_parts)}"
     if failed_files:
         title += f", {len(failed_files)} failed"
