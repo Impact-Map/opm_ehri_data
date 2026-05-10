@@ -284,6 +284,23 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
                 for f in changes["updated"]:
                     print(f"    - {f}")
 
+            # Cap this run to OPM_MAX_FILES_PER_RUN. With 10-min request spacing
+            # the 6h GH Actions cap can't fit a big backlog in one shot, so we
+            # process a slice and let the workflow chain another run if this one
+            # had no failures (chain logic lives in the workflow).
+            full_changed_keys = changes["new"] + changes["updated"]
+            max_files = int(os.environ.get("OPM_MAX_FILES_PER_RUN", "0") or "0")
+            files_remaining = 0
+            if max_files > 0 and len(full_changed_keys) > max_files:
+                selected = set(full_changed_keys[:max_files])
+                files_remaining = len(full_changed_keys) - max_files
+                print(
+                    f"  Capping run at {max_files} files "
+                    f"({files_remaining} will retry in the next run)"
+                )
+                changes["new"] = [k for k in changes["new"] if k in selected]
+                changes["updated"] = [k for k in changes["updated"] if k in selected]
+
             # Emit step outputs for downstream workflow steps (e.g. email notification).
             # recovered_from_hf entries also count as "changes worth telling subscribers
             # about" since they reflect an OPM data refresh whose ingestion got split
@@ -311,6 +328,7 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
                     _gho.write(f"has_changes={has_changes}\n")
                     _gho.write(f"changed_keys={','.join(changed_keys)}\n")
                     _gho.write(f"email_subject={email_subject}\n")
+                    _gho.write(f"files_remaining={files_remaining}\n")
 
             if not changes["new"] and not changes["updated"] and not recovered_from_hf:
                 print("No changes detected. Exiting.")
@@ -339,7 +357,7 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
                 # successful download). Override with $OPM_REQUEST_SPACING_SEC
                 # for local runs where you don't care about throttling.
                 if i > 0:
-                    spacing = int(os.environ.get("OPM_REQUEST_SPACING_SEC", "60"))
+                    spacing = int(os.environ.get("OPM_REQUEST_SPACING_SEC", "600"))
                     if spacing > 0:
                         print(f"  Sleeping {spacing}s before next request...")
                         await asyncio.sleep(spacing)
@@ -472,6 +490,15 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
                 except Exception as e:
                     failed_files.append((key, str(e)))
                     print(f"  ERROR processing {key}: {e}")
+
+                    # Fail-fast for local debugging: bail on first download error
+                    # instead of pressing on through retries.
+                    if os.environ.get("OPM_FAIL_FAST"):
+                        try:
+                            await browser.close()
+                        except Exception:
+                            pass
+                        raise
 
                     # Heuristic: download/network/timeout errors look like IP
                     # throttling. Other errors (e.g. parse, schema) shouldn't

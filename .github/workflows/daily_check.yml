@@ -24,6 +24,7 @@ on:
 permissions:
   contents: write
   issues: write
+  actions: write  # for the "Chain next run if more files remain" step (gh workflow run)
 
 concurrency:
   group: opm-daily
@@ -62,6 +63,10 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Cap each run; chain another run via the step below if all succeeded
+          # and more files remain. 10 files * 10 min spacing ~= 100 min, fits
+          # comfortably under the 6h Actions cap with download/parse/upload time.
+          OPM_MAX_FILES_PER_RUN: '10'
         run: |
           set -o pipefail
           TEST_FLAG=""
@@ -82,23 +87,26 @@ jobs:
             git push
           fi
 
-      - name: Run anomaly detection
-        if: success() && steps.pipeline.outputs.has_changes == 'true'
-        env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: python run_anomaly.py --changed "${{ steps.pipeline.outputs.changed_keys }}" --baseline 202412
-
-      - name: Commit anomaly findings
-        if: success()
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/data/
-          if ! git diff --staged --quiet; then
-            git commit -m "Update anomaly findings [automated]"
-            git pull --rebase origin main
-            git push
-          fi
+      # Anomaly detection disabled — was adding ~40 min per run. Federal
+      # Workforce Watch page (docs/index.html) still reads existing
+      # docs/data/*.json but won't get new months until this is re-enabled.
+      # - name: Run anomaly detection
+      #   if: success() && steps.pipeline.outputs.has_changes == 'true'
+      #   env:
+      #     HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      #   run: python run_anomaly.py --changed "${{ steps.pipeline.outputs.changed_keys }}" --baseline 202412
+      #
+      # - name: Commit anomaly findings
+      #   if: success()
+      #   run: |
+      #     git config user.name "github-actions[bot]"
+      #     git config user.email "github-actions[bot]@users.noreply.github.com"
+      #     git add docs/data/
+      #     if ! git diff --staged --quiet; then
+      #       git commit -m "Update anomaly findings [automated]"
+      #       git pull --rebase origin main
+      #       git push
+      #     fi
 
       - name: Send Buttondown email notification
         if: always() && steps.pipeline.outcome == 'success' && steps.pipeline.outputs.has_changes == 'true'
@@ -106,6 +114,19 @@ jobs:
           BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
           EMAIL_SUBJECT: ${{ steps.pipeline.outputs.email_subject }}
         run: python3 send_email.py
+
+      # Chain another run only when this one had zero failures AND more files
+      # are still pending. On any failure we stop and let the next scheduled
+      # cron retry (avoids hammering OPM while throttled). The opm-daily
+      # concurrency group with cancel-in-progress=false makes the chained run
+      # queue politely until this one finishes.
+      - name: Chain next run if more files remain
+        if: success() && steps.pipeline.outputs.failed_count == '0' && steps.pipeline.outputs.files_remaining != '0' && steps.pipeline.outputs.files_remaining != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Triggering follow-up run (${{ steps.pipeline.outputs.files_remaining }} files still pending)"
+          gh workflow run daily_check.yml --ref ${{ github.ref_name }}
 
       # Renders on the Actions run page directly (no log digging). Always runs.
       - name: Write run summary
@@ -117,6 +138,7 @@ jobs:
           RECOVERED_COUNT: ${{ steps.pipeline.outputs.recovered_count }}
           SUCCESS_COUNT: ${{ steps.pipeline.outputs.success_count }}
           FAILED_COUNT: ${{ steps.pipeline.outputs.failed_count }}
+          FILES_REMAINING: ${{ steps.pipeline.outputs.files_remaining }}
           UPLOADED_KEYS: ${{ steps.pipeline.outputs.uploaded_keys }}
           FAILED_KEYS: ${{ steps.pipeline.outputs.failed_keys }}
           PIPELINE_OUTCOME: ${{ steps.pipeline.outcome }}
@@ -140,6 +162,13 @@ jobs:
             if [ -n "$RECOVERED_COUNT" ] && [ "$RECOVERED_COUNT" != "0" ]; then
               echo "**Recovered from prior interrupted run:** $RECOVERED_COUNT"
             fi
+            if [ -n "$FILES_REMAINING" ] && [ "$FILES_REMAINING" != "0" ]; then
+              if [ "${FAILED_COUNT:-0}" = "0" ]; then
+                echo "**Files still pending:** $FILES_REMAINING (chained another run)"
+              else
+                echo "**Files still pending:** $FILES_REMAINING (NOT chained — this run had failures; tomorrow's cron will retry)"
+              fi
+            fi
             echo ""
             if [ -n "$UPLOADED_KEYS" ]; then
               echo "## Uploaded"
@@ -155,11 +184,7 @@ jobs:
             fi
             echo "## Anomaly detection"
             echo ""
-            if [ "${{ steps.pipeline.outputs.has_changes }}" = "true" ]; then
-              echo "Ran (compares latest employment month vs prior month + vs Dec 2024 baseline). Findings are committed to \`docs/data/\` and rendered on the Federal Workforce Watch page."
-            else
-              echo "Skipped — no new data this run."
-            fi
+            echo "Disabled (was adding ~40 min per run). Federal Workforce Watch page is frozen at last committed \`docs/data/\` snapshot."
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Create failure issue with full output
