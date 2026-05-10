@@ -57,10 +57,13 @@ def save_pending_cache(entries: list[dict]) -> None:
     with open(PENDING_PATH, "w") as f:
         json.dump(entries, f, indent=2)
 
-# After this many consecutive download failures, assume OPM is throttling our
-# IP and stop processing. The workflow then chains a fresh run on a new
-# GitHub-hosted runner (different IP). Pattern lifted from pull_usaspending.
-DOWNLOAD_BLOCK_THRESHOLD = 5
+# After this many consecutive download failures, give up on the run. With
+# 10-min request spacing each retry takes ~10 minutes of wall time, so a high
+# threshold means a doomed run (e.g. OPM blocking the GH Actions IP range)
+# burns most of an hour failing. 2 keeps the pipeline responsive: one failure
+# might be transient, two in a row is a pattern. Override with
+# $OPM_BLOCK_THRESHOLD if you want to be more or less aggressive.
+DOWNLOAD_BLOCK_THRESHOLD = int(os.environ.get("OPM_BLOCK_THRESHOLD", "2"))
 
 
 class PipelineError(Exception):
