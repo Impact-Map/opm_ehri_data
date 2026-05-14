@@ -108,6 +108,19 @@ The token must belong to a HuggingFace account with **write access** to the `imp
 
 **How to fix:** This requires a developer. The file `opm_pipeline/scraper.py` contains the browser automation code. Tell the developer: "The OPM website at data.opm.gov/explore-data/data/data-downloads changed its layout. The Playwright selectors in `opm_pipeline/scraper.py` need to be updated to match the new HTML."
 
+### "Pipeline FAILED" — 403 on downloads from CI but works locally
+
+**What the issue will say:** HTTP 403 from `/api/blob/download/chunked/...`, often after the list step succeeded — so the run knows what to fetch but every fetch gets blocked.
+
+**What's happening:** OPM's download endpoint is fronted by Akamai Bot Manager and is gated by *source ASN*, not browser fingerprint. From a residential connection plain `httpx.get(url)` returns 200 with no cookies, no UA, no TLS tricks. From a datacenter ASN (GitHub-hosted runners, AWS, Azure, GCP, most VPN exits) the same call gets 403. The page itself (`/explore-data/...`) is not gated, which is why the Playwright list step keeps working from CI even when downloads fail.
+
+**How to fix:** Source the daily run's egress from a residential IP. Three options, easiest first:
+1. **Self-hosted runner.** Register any always-on box at home as a GH self-hosted runner and point the workflow at it. Zero ongoing cost.
+2. **Residential proxy.** Cheapest residential plans (~$5/mo class) cover the monthly volume (the employment file dominates at ~780 MB; everything else is small). One-line change: pass `proxy=` to the download call. See `opm_pipeline/direct_download.py`.
+3. **Tailscale/WireGuard tunnel** from the Action to a home node. Free if you already have that setup.
+
+`opm_pipeline/direct_download.py` is a minimal no-cookies, no-browser downloader that uses plain httpx. The cookie-laundering path in `fetch_with_cookies.py` is preserved as a fallback in case OPM ever tightens the gate further (per-cookie/JS challenge for everyone, not just datacenter ASNs).
+
 ### "Pipeline FAILED" — network/temporary error
 
 **What the issue will say:** Connection errors, timeouts
