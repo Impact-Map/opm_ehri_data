@@ -27,6 +27,24 @@ SIZE_ESTIMATES = {
     "Employment": 780,
 }
 
+# OPM's listing page advertises Version: 3 for these months, but the underlying
+# chunked download endpoint returns 403 "Not found" — the v3 blob never landed
+# in OPM's storage. Other 100+ v3 months work fine. Probed 2026-05-15; OPM has
+# been emailed. Remove entries here once OPM publishes the missing blobs (or
+# pulls the v3 advertisement from their listing).
+PHANTOM_V3_EMPLOYMENT_KEYS = frozenset({
+    "employment/employment_202503_v3.parquet",
+    "employment/employment_202501_v3.parquet",
+    "employment/employment_202412_v3.parquet",
+    "employment/employment_202411_v3.parquet",
+    "employment/employment_202410_v3.parquet",
+    "employment/employment_202409_v3.parquet",
+    "employment/employment_202408_v3.parquet",
+    "employment/employment_202407_v3.parquet",
+    "employment/employment_202406_v3.parquet",
+    "employment/employment_202405_v3.parquet",
+})
+
 # Month name -> number mapping for filename conversion
 _MONTH_NUM = {
     "January": "01", "February": "02", "March": "03", "April": "04",

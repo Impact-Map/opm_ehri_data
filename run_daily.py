@@ -19,6 +19,7 @@ from pathlib import Path
 from opm_pipeline.config import (
     HF_TOKEN, HF_REPO, DATA_TYPES, START_DATE, END_DATE,
     DOWNLOAD_DIR, PARQUET_DIR, card_name_to_hf_path,
+    PHANTOM_V3_EMPLOYMENT_KEYS,
 )
 from opm_pipeline.reporter import create_github_issue
 
@@ -58,12 +59,10 @@ def save_pending_cache(entries: list[dict]) -> None:
         json.dump(entries, f, indent=2)
 
 # After this many consecutive download failures, give up on the run. With
-# 10-min request spacing each retry takes ~10 minutes of wall time, so a high
-# threshold means a doomed run (e.g. OPM blocking the GH Actions IP range)
-# burns most of an hour failing. 2 keeps the pipeline responsive: one failure
-# might be transient, two in a row is a pattern. Override with
+# 10-min request spacing each retry takes ~10 minutes of wall time, so the
+# total worst-case wait is ~50 minutes before we bail. Override with
 # $OPM_BLOCK_THRESHOLD if you want to be more or less aggressive.
-DOWNLOAD_BLOCK_THRESHOLD = int(os.environ.get("OPM_BLOCK_THRESHOLD", "2"))
+DOWNLOAD_BLOCK_THRESHOLD = int(os.environ.get("OPM_BLOCK_THRESHOLD", "5"))
 
 
 class PipelineError(Exception):
@@ -246,7 +245,8 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
                     rebuild_manifest: bool = False, dry_run: bool = False, test: bool = False):
     """Main daily pipeline orchestration."""
     from playwright.async_api import async_playwright
-    from opm_pipeline.scraper import setup_page, get_site_manifest, download_file_from_card, set_filters, get_card_filename
+    from opm_pipeline.scraper import setup_page, get_site_manifest
+    from opm_pipeline.direct_download import download as direct_download, stem_from_hf_path
     from opm_pipeline.converter import convert_to_parquet, get_parquet_metadata
     from opm_pipeline.uploader import upload_to_huggingface, download_existing_parquet
     from opm_pipeline.manifest import load_manifest, save_manifest, compare_manifests, update_manifest_entry, sync_manifest_with_hf
@@ -287,7 +287,11 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
     # empty (backlog cleared) or OPM_FORCE_RESCAN=1 is set.
     pending_cache = [] if test else load_pending_cache()
     force_rescan = os.environ.get("OPM_FORCE_RESCAN") == "1"
-    use_cache = bool(pending_cache) and not force_rescan and not test
+    # If the only entries left in pending are known phantoms, treat the cache
+    # as empty so we fall through to a fresh OPM scan. Otherwise we'd skip the
+    # same 10 phantoms every day and never detect new OPM releases.
+    has_real_pending = any(p["key"] not in PHANTOM_V3_EMPLOYMENT_KEYS for p in pending_cache)
+    use_cache = has_real_pending and not force_rescan and not test
 
     async with async_playwright() as playwright:
         browser, context, page = await setup_page(playwright)
@@ -341,6 +345,18 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
                     save_pending_cache(new_pending)
                     pending_cache = new_pending
 
+            # Filter out known phantom v3 employment URLs — OPM advertises them
+            # on the listing but the chunked download endpoint 403s. Leaving
+            # them in the queue burns the abort-on-failures budget and gates
+            # all the real files behind them. See config.PHANTOM_V3_EMPLOYMENT_KEYS.
+            phantom_hits = [k for k in changes["new"] + changes["updated"] if k in PHANTOM_V3_EMPLOYMENT_KEYS]
+            if phantom_hits:
+                print(f"Skipping {len(phantom_hits)} known-phantom v3 employment URLs (OPM listing advertises, blob returns 403):")
+                for k in phantom_hits:
+                    print(f"    - {k}")
+                changes["new"] = [k for k in changes["new"] if k not in PHANTOM_V3_EMPLOYMENT_KEYS]
+                changes["updated"] = [k for k in changes["updated"] if k not in PHANTOM_V3_EMPLOYMENT_KEYS]
+
             print(f"New: {len(changes['new'])}, Updated: {len(changes['updated'])}, Unchanged: {len(changes['unchanged'])}")
             if changes["new"]:
                 print("  New files to download:")
@@ -351,10 +367,9 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
                 for f in changes["updated"]:
                     print(f"    - {f}")
 
-            # Cap this run to OPM_MAX_FILES_PER_RUN. With 10-min request spacing
-            # the 6h GH Actions cap can't fit a big backlog in one shot, so we
-            # process a slice and let the workflow chain another run if this one
-            # had no failures (chain logic lives in the workflow).
+            # Optional cap via OPM_MAX_FILES_PER_RUN (default 0 = no cap).
+            # Used to slice big backlogs across multiple runs when desired;
+            # the workflow chains another run if this one had no failures.
             full_changed_keys = changes["new"] + changes["updated"]
             max_files = int(os.environ.get("OPM_MAX_FILES_PER_RUN", "0") or "0")
             files_remaining = 0
@@ -409,155 +424,119 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
             new_summaries = {}
             failed_files = []
             changed_keys = changes["new"] + changes["updated"]
-            # Files we actually started processing (excludes ones skipped because
-            # the IP-throttle abort broke the loop early). Used downstream to
+            # Files we actually started processing (excludes ones skipped
+            # because the abort broke the loop early). Used downstream to
             # compute success_count without overcounting untried files.
             attempted_keys = []
             # Buffer of files awaiting batched upload — see _flush_upload_batch.
             upload_buffer = []
             # Tracks consecutive download/network errors. If this hits
-            # DOWNLOAD_BLOCK_THRESHOLD we assume OPM is throttling the runner's
-            # IP and break out of the loop so the workflow can chain a fresh
-            # run on a new runner. Reset to 0 on every successful file.
+            # DOWNLOAD_BLOCK_THRESHOLD we assume OPM is having a wider
+            # problem (down, mass-403, network) and bail so we don't keep
+            # hammering. Reset to 0 on every successful file.
             consecutive_dl_failures = 0
-            blocked_by_ip_throttle = False
+            aborted_after_failures = False
 
             for i, key in enumerate(changed_keys):
-                # Space out OPM downloads — back-to-back hits trigger their
-                # rolling-window IP throttle (immediate 403s after the first
-                # successful download). Override with $OPM_REQUEST_SPACING_SEC
-                # for local runs where you don't care about throttling.
+                # Optional inter-request spacing if OPM_REQUEST_SPACING_SEC is set.
+                # No default delay — OPM's chunked endpoint hasn't shown any
+                # rate-limiting behavior in testing.
                 if i > 0:
-                    spacing = int(os.environ.get("OPM_REQUEST_SPACING_SEC", "600"))
+                    spacing = int(os.environ.get("OPM_REQUEST_SPACING_SEC", "0"))
                     if spacing > 0:
                         print(f"  Sleeping {spacing}s before next request...")
                         await asyncio.sleep(spacing)
 
                 attempted_keys.append(key)
                 site_entry = site_manifest[key]
-                data_type = site_entry["data_type"].capitalize()
-                card_filename = site_entry["filename"]
                 hf_path = key  # key is the versioned HF path (e.g. accessions/accessions_202511_v3.parquet)
 
                 print(f"\nProcessing: {hf_path}")
 
                 try:
-                    # Navigate to the right data type page
-                    total = await set_filters(page, data_type, start_date, end_date)
-                    if total == 0:
-                        failed_files.append((key, "No files found after setting filters"))
-                        continue
+                    # Find comparison file for diffing (HF lookup, no browser needed).
+                    old_parquet_path = None
+                    compare_label = None
+                    if key in changes["updated"]:
+                        old_parquet_path = download_existing_parquet(hf_path, token)
+                        compare_label = f"previous version of {hf_path}"
+                    elif key in changes["new"]:
+                        prior_file = _find_prior_file(site_entry["data_type"], hf_path)
+                        if prior_file:
+                            old_parquet_path = download_existing_parquet(prior_file, token)
+                            compare_label = prior_file
 
-                    # Set to 100 items per page
-                    try:
-                        rows_dropdown = page.get_by_label("rows per page")
-                        await rows_dropdown.select_option('100')
-                        await asyncio.sleep(2)
-                    except Exception:
-                        pass
+                    if old_parquet_path and compare_label:
+                        print(f"  Comparing against: {compare_label}")
 
-                    # Find the right card and download
-                    downloaded = False
-                    while True:
-                        buttons = page.locator('button[aria-label^="Download options for"]')
-                        count = await buttons.count()
+                    # Download the file via plain HTTP. OPM's chunked download
+                    # endpoint serves files to unauthenticated GET — no cookies,
+                    # no user-agent gating, no Playwright/browser needed.
+                    stem = stem_from_hf_path(key)
+                    csv_path = DOWNLOAD_DIR / f"{stem}.txt"
+                    await asyncio.to_thread(direct_download, stem, csv_path)
 
-                        for i in range(count):
-                            current_filename = await get_card_filename(page, i)
-                            if current_filename != card_filename:
-                                continue
+                    parquet_path = convert_to_parquet(csv_path, PARQUET_DIR)
+                    metadata = get_parquet_metadata(parquet_path)
 
-                            # Find comparison file for diffing
-                            old_parquet_path = None
-                            compare_label = None
-                            if key in changes["updated"]:
-                                old_parquet_path = download_existing_parquet(hf_path, token)
-                                compare_label = f"previous version of {hf_path}"
-                            elif key in changes["new"]:
-                                prior_file = _find_prior_file(site_entry["data_type"], hf_path)
-                                if prior_file:
-                                    old_parquet_path = download_existing_parquet(prior_file, token)
-                                    compare_label = prior_file
+                    # Always diff if we have a comparison file
+                    if old_parquet_path:
+                        diff = generate_diff_summary(old_parquet_path, parquet_path)
+                        diff["compared_to"] = compare_label
 
-                            if old_parquet_path and compare_label:
-                                print(f"  Comparing against: {compare_label}")
+                        # Detect globally-new columns: in new file but not in
+                        # stored manifest for the comparison file. Catches the case
+                        # where OPM adds a column to ALL files at once so both old
+                        # and new parquets have it and schema diff shows nothing.
+                        # For updated files, the manifest key IS the current key.
+                        # For new files, compare_label is the actual prior HF path.
+                        if key in changes["updated"]:
+                            prior_key = key if key in stored_manifest else None
+                        else:
+                            prior_key = compare_label if compare_label in stored_manifest else None
+                        if prior_key:
+                            stored_cols = set(stored_manifest[prior_key].get("columns", []))
+                            if stored_cols:  # Skip if no column data (e.g. manifest rebuilt without downloading)
+                                import pandas as _pd
+                                new_cols = set(_pd.read_parquet(parquet_path).columns)
+                                already_flagged = set(diff["schema"].get("added", []))
+                                globally_new = sorted(new_cols - stored_cols - already_flagged)
+                                if globally_new:
+                                    diff["globally_new_columns"] = globally_new
+                                    # Find which prior months of this data type also lack these columns
+                                    from opm_pipeline.config import hf_path_to_date as _hfdate
+                                    dtype = site_entry["data_type"]
+                                    affected_dates = {
+                                        _hfdate(mk)
+                                        for mk, mv in stored_manifest.items()
+                                        if mv.get("data_type") == dtype
+                                        and mk != key
+                                        and mv.get("columns")
+                                        and any(c not in mv["columns"] for c in globally_new)
+                                        and _hfdate(mk)
+                                    }
+                                    affected = [d.strftime("%B %Y") for d in sorted(affected_dates)]
+                                    diff["globally_new_affected_months"] = affected
+                                    print(f"  Globally new columns detected: {globally_new} (affects {len(affected)} prior months)")
 
-                            # Download new file
-                            csv_path = await download_file_from_card(page, i, DOWNLOAD_DIR)
-                            parquet_path = convert_to_parquet(csv_path, PARQUET_DIR)
-                            metadata = get_parquet_metadata(parquet_path)
+                        diffs[key] = diff
+                    else:
+                        # No prior file at all — first ever upload of this type
+                        new_summaries[key] = summarize_new_file(parquet_path)
 
-                            # Always diff if we have a comparison file
-                            if old_parquet_path:
-                                diff = generate_diff_summary(old_parquet_path, parquet_path)
-                                diff["compared_to"] = compare_label
-
-                                # Detect globally-new columns: in new file but not in
-                                # stored manifest for the comparison file. Catches the case
-                                # where OPM adds a column to ALL files at once so both old
-                                # and new parquets have it and schema diff shows nothing.
-                                # For updated files, the manifest key IS the current key.
-                                # For new files, compare_label is the actual prior HF path.
-                                if key in changes["updated"]:
-                                    prior_key = key if key in stored_manifest else None
-                                else:
-                                    prior_key = compare_label if compare_label in stored_manifest else None
-                                if prior_key:
-                                    stored_cols = set(stored_manifest[prior_key].get("columns", []))
-                                    if stored_cols:  # Skip if no column data (e.g. manifest rebuilt without downloading)
-                                        import pandas as _pd
-                                        new_cols = set(_pd.read_parquet(parquet_path).columns)
-                                        already_flagged = set(diff["schema"].get("added", []))
-                                        globally_new = sorted(new_cols - stored_cols - already_flagged)
-                                        if globally_new:
-                                            diff["globally_new_columns"] = globally_new
-                                            # Find which prior months of this data type also lack these columns
-                                            from opm_pipeline.config import hf_path_to_date as _hfdate
-                                            dtype = site_entry["data_type"]
-                                            affected_dates = {
-                                                _hfdate(mk)
-                                                for mk, mv in stored_manifest.items()
-                                                if mv.get("data_type") == dtype
-                                                and mk != key
-                                                and mv.get("columns")
-                                                and any(c not in mv["columns"] for c in globally_new)
-                                                and _hfdate(mk)
-                                            }
-                                            affected = [d.strftime("%B %Y") for d in sorted(affected_dates)]
-                                            diff["globally_new_affected_months"] = affected
-                                            print(f"  Globally new columns detected: {globally_new} (affects {len(affected)} prior months)")
-
-                                diffs[key] = diff
-                            else:
-                                # No prior file at all — first ever upload of this type
-                                new_summaries[key] = summarize_new_file(parquet_path)
-
-                            # Buffer the file for batched HF commit; the actual upload
-                            # and manifest update happen in _flush_upload_batch (every
-                            # UPLOAD_BATCH_SIZE files + once at the end). This keeps us
-                            # under HF's 128 commits/hour rate limit on big refreshes.
-                            csv_path.unlink()
-                            upload_buffer.append({
-                                "parquet_path": parquet_path,
-                                "hf_path": hf_path,
-                                "key": key,
-                                "site_entry": site_entry,
-                                "metadata": metadata,
-                            })
-                            consecutive_dl_failures = 0  # success — reset abort counter
-
-                            downloaded = True
-                            break
-
-                        if downloaded:
-                            break
-
-                        next_button = page.locator('button[aria-label="Go to next page"]')
-                        if await next_button.is_disabled():
-                            failed_files.append((key, "Card not found on any page"))
-                            break
-                        await next_button.click()
-                        await asyncio.sleep(2)
+                    # Buffer the file for batched HF commit; the actual upload
+                    # and manifest update happen in _flush_upload_batch (every
+                    # UPLOAD_BATCH_SIZE files + once at the end). This keeps us
+                    # under HF's 128 commits/hour rate limit on big refreshes.
+                    csv_path.unlink()
+                    upload_buffer.append({
+                        "parquet_path": parquet_path,
+                        "hf_path": hf_path,
+                        "key": key,
+                        "site_entry": site_entry,
+                        "metadata": metadata,
+                    })
+                    consecutive_dl_failures = 0  # success — reset abort counter
 
                 except Exception as e:
                     failed_files.append((key, str(e)))
@@ -566,60 +545,33 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
                     # Fail-fast for local debugging: bail on first download error
                     # instead of pressing on through retries.
                     if os.environ.get("OPM_FAIL_FAST"):
-                        try:
-                            await browser.close()
-                        except Exception:
-                            pass
                         raise
 
-                    # Heuristic: download/network/timeout errors look like IP
-                    # throttling. Other errors (e.g. parse, schema) shouldn't
-                    # count toward the abort threshold.
+                    # Heuristic: network/timeout errors might mean OPM is
+                    # transiently unavailable. Other errors (e.g. parse,
+                    # schema) shouldn't count toward the abort threshold.
                     err_lc = str(e).lower()
-                    if any(s in err_lc for s in ("download", "canceled", "cancelled",
-                                                  "timeout", "connection", "httpx", "ssl")):
+                    if any(s in err_lc for s in ("download", "timeout", "connection", "httpx", "ssl")):
                         consecutive_dl_failures += 1
                     else:
                         consecutive_dl_failures = 0
 
-                    # Restart the browser instead of trying to recover the
-                    # current session. A failure here usually means the page
-                    # is in a bad state (e.g. cancelled download leaves the
-                    # download dialog open, or session has timed out), and
-                    # repeated failures snowball through subsequent files.
-                    # Fresh browser = clean slate for the next file.
-                    print("  Restarting browser after error...")
-                    try:
-                        await browser.close()
-                    except Exception:
-                        pass
-                    browser, context, page = await setup_page(playwright)
-
                     if consecutive_dl_failures >= DOWNLOAD_BLOCK_THRESHOLD:
                         print(
                             f"  Aborting: {DOWNLOAD_BLOCK_THRESHOLD} consecutive "
-                            f"download failures — OPM is likely throttling this "
-                            f"runner's IP. Stopping early; tomorrow's scheduled "
-                            f"run will retry on a fresh IP."
+                            f"download failures — OPM may be temporarily "
+                            f"unavailable. Stopping early; tomorrow's scheduled "
+                            f"run will retry."
                         )
-                        blocked_by_ip_throttle = True
+                        aborted_after_failures = True
                         break
 
                     continue
 
-                # Flush a batch when it gets full so progress is preserved if
-                # the run dies later. Then restart the browser — long-running
-                # Playwright sessions develop fatigue (cancelled downloads,
-                # session timeouts) especially after lots of large Employment
-                # downloads, so a fresh context fixes that without losing state.
+                # Flush a batch when it gets full so progress is preserved
+                # if the run dies later.
                 if len(upload_buffer) >= UPLOAD_BATCH_SIZE:
                     _flush_upload_batch(upload_buffer, stored_manifest, token, dry_run, test, failed_files)
-                    print("  Restarting browser to reset session state...")
-                    try:
-                        await browser.close()
-                    except Exception:
-                        pass
-                    browser, context, page = await setup_page(playwright)
 
             # Final flush for whatever's left in the buffer.
             _flush_upload_batch(upload_buffer, stored_manifest, token, dry_run, test, failed_files)
@@ -645,11 +597,8 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
             print(f"Pending cache: {len(remaining_cache)} files still queued (was {len(pending_cache)})")
 
     # Emit the final pipeline_status as a step output for visibility in the
-    # workflow logs. We don't act on it anymore (the chain step is gone — IP
-    # rotation across same-pool GitHub runners didn't actually escape OPM's
-    # throttle, so we just take what we got each day and let tomorrow's cron
-    # try again with whatever IP it lands on).
-    final_status = "blocked" if blocked_by_ip_throttle else "done"
+    # workflow logs.
+    final_status = "aborted" if aborted_after_failures else "done"
     failed_keys_set = {fk for fk, _ in failed_files}
     # Only count files we actually attempted (not ones the abort broke past).
     uploaded_keys = [k for k in attempted_keys if k not in failed_keys_set]
@@ -687,8 +636,8 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
             for k in failed_keys:
                 _gho.write(f"{k}\n")
             _gho.write("EOF\n")
-    if blocked_by_ip_throttle:
-        print(f"\nPipeline status: BLOCKED — uploaded what we got, waiting for tomorrow's cron.")
+    if aborted_after_failures:
+        print(f"\nPipeline status: ABORTED — uploaded what we got, waiting for tomorrow's cron.")
 
     # Step 6: Generate report and create issue
     report = generate_report(changes, diffs, new_summaries)
@@ -707,13 +656,14 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
         for key in sorted(recovered_from_hf):
             report += f"- `{key}`\n"
 
-    if blocked_by_ip_throttle:
-        report += "\n\n## Aborted: IP throttle suspected\n\n"
+    if aborted_after_failures:
+        report += "\n\n## Aborted: too many consecutive download failures\n\n"
         report += (
-            f"Hit {DOWNLOAD_BLOCK_THRESHOLD} consecutive download failures, which usually "
-            f"means OPM is throttling this runner's IP. We uploaded whatever made it "
-            f"through and exited early. Tomorrow's scheduled run will pick up wherever "
-            f"this one left off via `sync_manifest_with_hf`.\n"
+            f"Hit {DOWNLOAD_BLOCK_THRESHOLD} consecutive download failures, which "
+            f"usually means OPM is having a wider problem (down, returning errors, "
+            f"network). We uploaded whatever made it through and exited early. "
+            f"Tomorrow's scheduled run will pick up wherever this one left off via "
+            f"`sync_manifest_with_hf`.\n"
         )
 
     if failed_files:
@@ -769,11 +719,10 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
     with open("email_body.txt", "w") as f:
         f.write(email_html)
 
-    # Fail the run if files failed for some reason OTHER than IP throttling.
-    # If we aborted due to IP throttling, exit cleanly so the workflow's
-    # chain-on-blocked step can run (it gates on success() + pipeline_status).
-    # The chained run will retry the leftover work on a fresh runner IP.
-    if failed_files and not blocked_by_ip_throttle:
+    # Fail the run if files failed for some reason OTHER than the
+    # consecutive-failure abort. If we aborted, exit cleanly so the
+    # workflow's chain step can run (it gates on success() + status).
+    if failed_files and not aborted_after_failures:
         print(f"\n{len(failed_files)} files failed to process.")
         sys.exit(1)
 
