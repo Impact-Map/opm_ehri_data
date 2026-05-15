@@ -66,6 +66,15 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Cap each run so it exits cleanly under the 6h Actions limit.
+          # Real timing: ~7 min per ~1.8GB employment file (download +
+          # parquet convert + diff against prior v2). 40 files * 7 min
+          # ~= 280 min, leaving ~80 min margin. With chain-next-run
+          # wired up, a full ~110 file backlog drains in ~3 runs.
+          OPM_MAX_FILES_PER_RUN: '40'
+          # Smaller batches so a killed/timed-out run still commits
+          # partial progress to HF. 40 files / 20 batch = 2 commits per run.
+          UPLOAD_BATCH_SIZE: '20'
         run: |
           set -o pipefail
           TEST_FLAG=""
