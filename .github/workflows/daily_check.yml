@@ -123,13 +123,12 @@ jobs:
           EMAIL_SUBJECT: ${{ steps.pipeline.outputs.email_subject }}
         run: python3 send_email.py
 
-      # Chain another run only when this one had zero failures AND more files
-      # are still pending. On any failure we stop and let the next scheduled
-      # cron retry (avoids hammering OPM while throttled). The opm-daily
-      # concurrency group with cancel-in-progress=false makes the chained run
-      # queue politely until this one finishes.
+      # Chain another run if more files are still pending. Fires on full
+      # success AND partial success — a phantom URL or a transient network
+      # error shouldn't stop the queue from draining. Only stops if NOTHING
+      # uploaded this run (likely OPM is actually down).
       - name: Chain next run if more files remain
-        if: success() && steps.pipeline.outputs.failed_count == '0' && steps.pipeline.outputs.files_remaining != '0' && steps.pipeline.outputs.files_remaining != ''
+        if: success() && steps.pipeline.outputs.success_count != '0' && steps.pipeline.outputs.files_remaining != '0' && steps.pipeline.outputs.files_remaining != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |

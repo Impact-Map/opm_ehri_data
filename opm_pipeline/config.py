@@ -43,6 +43,7 @@ PHANTOM_V3_EMPLOYMENT_KEYS = frozenset({
     "employment/employment_202407_v3.parquet",
     "employment/employment_202406_v3.parquet",
     "employment/employment_202405_v3.parquet",
+    "employment/employment_202306_v3.parquet",
 })
 
 # Month name -> number mapping for filename conversion

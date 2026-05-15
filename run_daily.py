@@ -298,18 +298,29 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
 
         try:
             if use_cache:
-                print(f"Using cached pending list ({len(pending_cache)} files); skipping OPM site scan")
+                # Drop pending entries that are already in the manifest (i.e.
+                # already on HF). This catches the case where a prior run
+                # uploaded files but the workflow's "Commit manifest changes"
+                # step skipped because of partial-failure gating — pending.json
+                # in the repo is stale, but sync_manifest_with_hf above made
+                # stored_manifest accurate. Without this, we'd re-download
+                # everything we already have on HF.
+                active_pending = [p for p in pending_cache if p["key"] not in stored_manifest]
+                skipped_already_on_hf = len(pending_cache) - len(active_pending)
+                if skipped_already_on_hf:
+                    print(f"Pending cache had {skipped_already_on_hf} entries already on HF; dropping those")
+                print(f"Using cached pending list ({len(active_pending)} files); skipping OPM site scan")
                 site_manifest = {
                     p["key"]: {
                         "filename": p["filename"],
                         "version": p["version"],
                         "data_type": p["data_type"],
                     }
-                    for p in pending_cache
+                    for p in active_pending
                 }
                 changes = {
-                    "new": [p["key"] for p in pending_cache if p.get("kind", "new") == "new"],
-                    "updated": [p["key"] for p in pending_cache if p.get("kind") == "updated"],
+                    "new": [p["key"] for p in active_pending if p.get("kind", "new") == "new"],
+                    "updated": [p["key"] for p in active_pending if p.get("kind") == "updated"],
                     "unchanged": [],
                 }
             else:
@@ -547,11 +558,19 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
                     if os.environ.get("OPM_FAIL_FAST"):
                         raise
 
-                    # Heuristic: network/timeout errors might mean OPM is
-                    # transiently unavailable. Other errors (e.g. parse,
-                    # schema) shouldn't count toward the abort threshold.
+                    # Heuristic: which failures count toward the abort threshold.
+                    # 403s are file-specific (almost always a newly-discovered
+                    # phantom URL — see PHANTOM_V3_EMPLOYMENT_KEYS) — don't
+                    # treat them as systemic. Transient network errors
+                    # (timeout, connection reset, incomplete read) do count,
+                    # since N in a row likely means OPM is down. Parse/schema
+                    # errors don't count.
                     err_lc = str(e).lower()
-                    if any(s in err_lc for s in ("download", "timeout", "connection", "httpx", "ssl")):
+                    is_403 = "403" in err_lc and ("forbidden" in err_lc or "not found" in err_lc)
+                    is_transient_net = any(s in err_lc for s in ("timeout", "connection", "incomplete", "ssl"))
+                    if is_403:
+                        consecutive_dl_failures = 0
+                    elif is_transient_net:
                         consecutive_dl_failures += 1
                     else:
                         consecutive_dl_failures = 0
@@ -719,12 +738,16 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
     with open("email_body.txt", "w") as f:
         f.write(email_html)
 
-    # Fail the run if files failed for some reason OTHER than the
-    # consecutive-failure abort. If we aborted, exit cleanly so the
-    # workflow's chain step can run (it gates on success() + status).
-    if failed_files and not aborted_after_failures:
-        print(f"\n{len(failed_files)} files failed to process.")
+    # Fail the run only if NOTHING uploaded successfully. Partial success
+    # (some uploaded + some failed — typically a newly-discovered phantom
+    # URL or a transient network blip) exits 0 so the workflow's commit-
+    # manifest + chain-next-run steps fire. Failures are still surfaced via
+    # failed_count in the run summary + Buttondown email subject.
+    if failed_files and not aborted_after_failures and not uploaded_keys:
+        print(f"\n{len(failed_files)} files failed to process and nothing uploaded.")
         sys.exit(1)
+    if failed_files:
+        print(f"\n{len(failed_files)} files failed but {len(uploaded_keys)} uploaded — partial success.")
 
 
 def _sanitize(text: str) -> str:
