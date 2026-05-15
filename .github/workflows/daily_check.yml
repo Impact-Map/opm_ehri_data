@@ -36,11 +36,7 @@ concurrency:
 
 jobs:
   check-and-update:
-    # macos-latest as of 2026-05-10 — Ubuntu runners (Azure IP range) are
-    # being 403'd by OPM's chunked download endpoint; macOS runners are on
-    # Apple-hosted infra with a different IP pool. Revisit if OPM whitelists
-    # the Azure range (or if we move to a self-hosted runner / VPS).
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     # 6h is the GitHub-hosted runner cap. Normal daily runs finish in ~2 minutes,
     # but a full OPM v2->v3 refresh (~700 files) needs the headroom.
     timeout-minutes: 360
@@ -70,10 +66,6 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Cap each run; chain another run via the step below if all succeeded
-          # and more files remain. 10 files * 10 min spacing ~= 100 min, fits
-          # comfortably under the 6h Actions cap with download/parse/upload time.
-          OPM_MAX_FILES_PER_RUN: '10'
         run: |
           set -o pipefail
           TEST_FLAG=""
@@ -158,8 +150,8 @@ jobs:
               exit 0
             fi
             STATUS_LABEL="$PIPELINE_STATUS"
-            if [ "$STATUS_LABEL" = "blocked" ]; then
-              STATUS_LABEL="blocked (OPM IP throttle — exited early, tomorrow's run continues)"
+            if [ "$STATUS_LABEL" = "aborted" ]; then
+              STATUS_LABEL="aborted (too many consecutive failures — exited early, tomorrow's run continues)"
             fi
             echo "**Status:** ${STATUS_LABEL:-(no run)}"
             echo "**Uploaded to HuggingFace:** ${SUCCESS_COUNT:-0}"

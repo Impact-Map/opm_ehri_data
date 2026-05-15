@@ -1,7 +1,6 @@
 """Playwright automation for the OPM data downloads site."""
 
 import asyncio
-import os
 import re
 from pathlib import Path
 
@@ -9,38 +8,9 @@ from .config import OPM_URL
 
 
 async def setup_page(playwright):
-    """Launch browser and navigate to OPM data downloads page.
-
-    Set OPM_HEADED=1 to launch a visible Chrome window instead of the headless
-    binary. OPM is fronted by Akamai Bot Manager (cookies _abck, ak_bmsc, bm_sv)
-    which 403s automated downloads from cloud IPs even with stealth headers.
-    A headed Chrome on a residential IP passes Akamai's JS challenge — useful
-    for one-off catch-up runs from a laptop while we wait for OPM to whitelist
-    the CI runners.
-    """
-    headless = os.environ.get("OPM_HEADED") != "1"
-    browser = await playwright.chromium.launch(headless=headless)
-    # Look like a real Linux Chrome instead of chrome-headless-shell. OPM
-    # started 403'ing our download endpoint requests around 2026-05-07, and
-    # since the page interactions kept working it's probably bot-detection
-    # on the download path rather than IP throttling. Pin a recent stable
-    # Chrome UA + a normal viewport + en-US locale to blend in.
-    context = await browser.new_context(
-        accept_downloads=True,
-        user_agent=(
-            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-            "(KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
-        ),
-        viewport={"width": 1920, "height": 1080},
-        locale="en-US",
-    )
-    # Hide the obvious automation tells. Strictly cosmetic — sites that fully
-    # fingerprint Chrome will still spot us — but neutralizes the cheap checks
-    # (window.navigator.webdriver === true, missing window.chrome, etc.).
-    await context.add_init_script(
-        "Object.defineProperty(navigator, 'webdriver', {get: () => undefined});"
-        "window.chrome = window.chrome || {runtime: {}};"
-    )
+    """Launch browser and navigate to OPM data downloads page."""
+    browser = await playwright.chromium.launch(headless=True)
+    context = await browser.new_context(accept_downloads=True)
     page = await context.new_page()
 
     print("Navigating to OPM data downloads page...")
@@ -150,16 +120,14 @@ async def get_card_version(page, card_index: int) -> int:
 async def download_file_from_card(page, card_index: int, download_dir: Path) -> Path:
     """Download a single file by clicking its download button.
 
-    Primary path: let Playwright save the file directly so OPM sees a real
-    browser request (cookies, Referer, Origin, Sec-Fetch-* — everything).
-    Fallback path: capture the URL and re-fetch via httpx with browser-style
-    headers. The fallback exists because Playwright's download manager has
-    historically choked on the ~780 MB Employment files with
-    "Download.save_as: canceled" even across browser restarts; httpx
-    streaming sidesteps that. (Old code skipped straight to httpx, which
-    started getting 403'd around 2026-05-07 — likely OPM tightening bot
-    detection. The full browser headers below cover that case.)
+    We let Chromium initiate the download just long enough to capture the
+    real URL, then cancel its in-progress save and fetch the file with httpx
+    using the browser session's cookies. Chromium's download manager kept
+    hitting "Download.save_as: canceled" on the large (~780 MB) Employment
+    files, even with browser restarts; httpx streaming sidesteps that.
     """
+    import httpx
+
     buttons = page.locator('button[aria-label^="Download options for"]')
     button = buttons.nth(card_index)
 
@@ -174,37 +142,26 @@ async def download_file_from_card(page, card_index: int, download_dir: Path) -> 
         await txt_option.click(force=True)
 
     download = await download_info.value
-    suggested_filename = download.suggested_filename
-    dest_path = download_dir / suggested_filename
-
-    try:
-        await download.save_as(dest_path)
-        return dest_path
-    except Exception as exc:
-        print(f"  Playwright save_as failed ({exc}); falling back to httpx with browser headers")
-
-    # Fallback: capture the URL Playwright was trying to use, cancel the
-    # browser-side download, and re-fetch via httpx. Carry over the browser's
-    # session cookies and a full set of browser-like headers so OPM's bot
-    # detection at the download endpoint doesn't 403 us.
     download_url = download.url
+    suggested_filename = download.suggested_filename
+
+    # We have the URL; cancel the Playwright download so it doesn't keep
+    # streaming into a temp file we won't use.
     try:
         await download.cancel()
     except Exception:
         pass
 
-    import httpx
+    await page.keyboard.press('Escape')
+    await asyncio.sleep(0.3)
+
+    # Stream the file via httpx, using the same cookies the browser has so
+    # that whatever signed/session-scoped URL OPM hands us still works.
     cookies = {c["name"]: c["value"] for c in await page.context.cookies()}
     headers = {
         "User-Agent": (await page.evaluate("navigator.userAgent")),
-        "Accept": "*/*",
-        "Accept-Language": "en-US,en;q=0.9",
-        "Referer": page.url,
-        "Origin": "https://data.opm.gov",
-        "Sec-Fetch-Dest": "empty",
-        "Sec-Fetch-Mode": "cors",
-        "Sec-Fetch-Site": "same-origin",
     }
+    dest_path = download_dir / suggested_filename
     async with httpx.AsyncClient(cookies=cookies, headers=headers,
                                   follow_redirects=True, timeout=600.0) as client:
         async with client.stream("GET", download_url) as response:
