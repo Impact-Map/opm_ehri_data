@@ -287,10 +287,15 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
     # empty (backlog cleared) or OPM_FORCE_RESCAN=1 is set.
     pending_cache = [] if test else load_pending_cache()
     force_rescan = os.environ.get("OPM_FORCE_RESCAN") == "1"
-    # If the only entries left in pending are known phantoms, treat the cache
-    # as empty so we fall through to a fresh OPM scan. Otherwise we'd skip the
-    # same 10 phantoms every day and never detect new OPM releases.
-    has_real_pending = any(p["key"] not in PHANTOM_V3_EMPLOYMENT_KEYS for p in pending_cache)
+    # Pending entries that are real work: not a known phantom AND not already
+    # on HF. Anything else is stale (either skipped permanently or already
+    # uploaded). If nothing real is left, fall through to a fresh OPM scan
+    # so newly-published months get noticed — otherwise we'd skip the scan
+    # forever and never detect new OPM releases.
+    has_real_pending = any(
+        p["key"] not in PHANTOM_V3_EMPLOYMENT_KEYS and p["key"] not in stored_manifest
+        for p in pending_cache
+    )
     use_cache = has_real_pending and not force_rescan and not test
 
     async with async_playwright() as playwright:
