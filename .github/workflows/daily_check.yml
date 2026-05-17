@@ -2,17 +2,11 @@ name: Daily OPM Data Check
 
 on:
   schedule:
-    # Drift +1h per day-of-week so most run-to-run gaps are 25h instead of 24h.
-    # OPM appears to throttle on a rolling 24h window per IP, and locking the
-    # cron to a fixed wall-clock time meant we hit the wall every day. Anchored
-    # at Fri 14:00 UTC (the original slot); the Thu->Fri wrap is 18h short.
-    - cron: '0 14 * * 5'  # Fri
-    - cron: '0 15 * * 6'  # Sat
-    - cron: '0 16 * * 0'  # Sun
-    - cron: '0 17 * * 1'  # Mon
-    - cron: '0 18 * * 2'  # Tue
-    - cron: '0 19 * * 3'  # Wed
-    - cron: '0 20 * * 4'  # Thu
+    # Every 4 hours — the run is cheap when there's nothing to do (~30s
+    # for auth + manifest sync + 11-URL phantom probe) and this caps the
+    # lag for catching new OPM uploads at 4 hours, including phantoms
+    # that get resolved mid-day.
+    - cron: '0 */4 * * *'
   workflow_dispatch:
     inputs:
       test_mode:
