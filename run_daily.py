@@ -287,16 +287,52 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
     # empty (backlog cleared) or OPM_FORCE_RESCAN=1 is set.
     pending_cache = [] if test else load_pending_cache()
     force_rescan = os.environ.get("OPM_FORCE_RESCAN") == "1"
-    # Pending entries that are real work: not a known phantom AND not already
-    # on HF. Anything else is stale (either skipped permanently or already
-    # uploaded). If nothing real is left, fall through to a fresh OPM scan
-    # so newly-published months get noticed — otherwise we'd skip the scan
-    # forever and never detect new OPM releases.
+
+    # Probe each known phantom URL: if OPM has fixed it (now returns 200),
+    # treat it as no longer phantom for this run so the download path can
+    # pick it up. Cheap — 11 parallel range-GETs, ~3s total.
+    resolved_phantoms: set[str] = set()
+    if not test:
+        from opm_pipeline.direct_download import build_url, stem_from_hf_path
+        import concurrent.futures, httpx as _httpx
+        phantoms_to_probe = [k for k in PHANTOM_V3_EMPLOYMENT_KEYS if k not in stored_manifest]
+
+        def _probe(key):
+            url = build_url(stem_from_hf_path(key))
+            try:
+                r = _httpx.get(url, timeout=8.0, follow_redirects=False, headers={"Range": "bytes=0-0"})
+                return key, r.status_code
+            except Exception:
+                return key, None
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=11) as _ex:
+            for key, code in _ex.map(_probe, phantoms_to_probe):
+                if code in (200, 206):
+                    resolved_phantoms.add(key)
+
+        if resolved_phantoms:
+            print(f"\n*** {len(resolved_phantoms)} previously-phantom URL(s) now return 200 — will attempt download: ***")
+            for k in sorted(resolved_phantoms):
+                print(f"    {k}")
+            print()
+
+    # Effective phantom set for this run: anything in the known-phantom set
+    # that we just confirmed is still 403'ing. Resolved phantoms drop out
+    # so the download loop attempts them.
+    effective_phantoms = PHANTOM_V3_EMPLOYMENT_KEYS - resolved_phantoms
+
+    # Pending entries that are real work: not a (still-)phantom AND not
+    # already on HF. If nothing real is left, fall through to a fresh OPM
+    # scan so newly-published months get noticed — otherwise we'd skip the
+    # scan forever and never detect new OPM releases.
     has_real_pending = any(
-        p["key"] not in PHANTOM_V3_EMPLOYMENT_KEYS and p["key"] not in stored_manifest
+        p["key"] not in effective_phantoms and p["key"] not in stored_manifest
         for p in pending_cache
     )
-    use_cache = has_real_pending and not force_rescan and not test
+    # A resolved phantom is always real work even if it's only in the
+    # phantom set and not in pending_cache (steady state).
+    has_resolved_phantom_work = any(k not in stored_manifest for k in resolved_phantoms)
+    use_cache = (has_real_pending or has_resolved_phantom_work) and not force_rescan and not test
 
     async with async_playwright() as playwright:
         browser, context, page = await setup_page(playwright)
@@ -365,13 +401,33 @@ async def run_daily(token: str, data_types: list[str], start_date: str, end_date
             # on the listing but the chunked download endpoint 403s. Leaving
             # them in the queue burns the abort-on-failures budget and gates
             # all the real files behind them. See config.PHANTOM_V3_EMPLOYMENT_KEYS.
-            phantom_hits = [k for k in changes["new"] + changes["updated"] if k in PHANTOM_V3_EMPLOYMENT_KEYS]
+            # `effective_phantoms` excludes any phantoms that came back to life
+            # this run (probed 200), so they flow through normally.
+            phantom_hits = [k for k in changes["new"] + changes["updated"] if k in effective_phantoms]
             if phantom_hits:
                 print(f"Skipping {len(phantom_hits)} known-phantom v3 employment URLs (OPM listing advertises, blob returns 403):")
                 for k in phantom_hits:
                     print(f"    - {k}")
-                changes["new"] = [k for k in changes["new"] if k not in PHANTOM_V3_EMPLOYMENT_KEYS]
-                changes["updated"] = [k for k in changes["updated"] if k not in PHANTOM_V3_EMPLOYMENT_KEYS]
+                changes["new"] = [k for k in changes["new"] if k not in effective_phantoms]
+                changes["updated"] = [k for k in changes["updated"] if k not in effective_phantoms]
+
+            # If a phantom resolved AND isn't currently in changes (steady
+            # state pending.json wouldn't list it), inject it so the loop
+            # picks it up. site_manifest needs an entry too for the loop.
+            for k in resolved_phantoms:
+                if k in stored_manifest:
+                    continue
+                if k in changes["new"] or k in changes["updated"]:
+                    continue
+                from opm_pipeline.config import hf_path_to_card_stem
+                changes["new"].append(k)
+                # synthesize a minimal site_manifest entry — same shape the
+                # scan or pending_cache produces
+                site_manifest[k] = {
+                    "filename": hf_path_to_card_stem(k) or k,
+                    "version": 3,
+                    "data_type": "employment",
+                }
 
             print(f"New: {len(changes['new'])}, Updated: {len(changes['updated'])}, Unchanged: {len(changes['unchanged'])}")
             if changes["new"]:
