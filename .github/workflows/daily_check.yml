@@ -75,7 +75,7 @@ jobs:
           if [ "${{ github.event.inputs.test_mode }}" = "true" ]; then
             TEST_FLAG="--test"
           fi
-          python run_daily.py $TEST_FLAG 2>&1 | tee pipeline_output.txt
+          python -u run_daily.py $TEST_FLAG 2>&1 | tee pipeline_output.txt
 
       - name: Commit manifest changes
         if: success()
