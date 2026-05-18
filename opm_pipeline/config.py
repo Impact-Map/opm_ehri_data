@@ -27,24 +27,20 @@ SIZE_ESTIMATES = {
     "Employment": 780,
 }
 
-# OPM's listing page advertises Version: 3 for these months, but the underlying
-# chunked download endpoint returns 403 "Not found" — the v3 blob never landed
-# in OPM's storage. Other 100+ v3 months work fine. Probed 2026-05-15; OPM has
-# been emailed. Remove entries here once OPM publishes the missing blobs (or
-# pulls the v3 advertisement from their listing).
-PHANTOM_V3_EMPLOYMENT_KEYS = frozenset({
-    "employment/employment_202503_v3.parquet",
-    "employment/employment_202501_v3.parquet",
-    "employment/employment_202412_v3.parquet",
-    "employment/employment_202411_v3.parquet",
-    "employment/employment_202410_v3.parquet",
-    "employment/employment_202409_v3.parquet",
-    "employment/employment_202408_v3.parquet",
-    "employment/employment_202407_v3.parquet",
-    "employment/employment_202406_v3.parquet",
-    "employment/employment_202405_v3.parquet",
-    "employment/employment_202306_v3.parquet",
-})
+# HF paths for URLs that OPM advertises on its listing page but whose
+# underlying chunked download blob returns 403 "Not found" — phantoms.
+# Entries here get filtered out of the download queue at iteration time,
+# and the daily run probes each one in parallel to detect resolution
+# (OPM has occasionally published the missing blob later, in which case
+# the entry should be removed from this set).
+#
+# The original 11-month set (May 2024–Mar 2025, plus Jun 2023) all
+# resolved on 2026-05-18 after Abigail emailed OPM — the pipeline auto-
+# detected and ingested them. The set is empty now; add new entries
+# manually if more phantoms appear (the run_daily.py 403 handler keeps
+# the pipeline running even without an entry here, but failed files
+# show up in the daily issue).
+PHANTOM_V3_EMPLOYMENT_KEYS = frozenset()
 
 # Month name -> number mapping for filename conversion
 _MONTH_NUM = {
