@@ -2,15 +2,15 @@ name: Daily OPM Data Check
 
 on:
   schedule:
-    # Baseline: every 4 hours — the run is cheap when there's nothing to do
-    # (~30s for auth + manifest sync + 11-URL phantom probe) and this caps
-    # the lag for catching new OPM uploads at 4 hours, including phantoms
-    # that get resolved mid-day.
-    - cron: '0 */4 * * *'
+    # Baseline: once a day at 14:00 UTC (~10am ET). Outside the early-month
+    # window the data almost never changes, so a daily no-op (~30s for auth
+    # + manifest sync + 11-URL phantom probe) is plenty to catch the rare
+    # late drop or a phantom that resolves mid-month.
+    - cron: '0 14 * * *'
     # Early-month sprint: OPM's monthly drop lands in the first week. Poll
     # hourly on days 1-7 so the notification email beats third-party reposts
-    # (e.g. LinkedIn). Overlaps with the 4-hour cron at hours 0/4/8/...; the
-    # opm-daily concurrency group queues the duplicate as a cheap no-op.
+    # (e.g. LinkedIn). Overlaps with the daily cron at 14:00 on those days;
+    # the opm-daily concurrency group queues the duplicate as a cheap no-op.
     - cron: '0 * 1-7 * *'
   workflow_dispatch:
     inputs:
