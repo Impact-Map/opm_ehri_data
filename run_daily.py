@@ -93,13 +93,23 @@ def preflight_checks(token: str, need_playwright: bool = True):
         user_info = whoami(token=token)
         print(f"Authenticated as: {user_info.get('name', 'unknown')}")
     except Exception as e:
-        raise PipelineError(
-            f"HuggingFace authentication failed: {e}",
-            "The HF_TOKEN exists but HuggingFace rejected it. "
-            "It may be expired, revoked, or malformed.",
-            "Go to https://huggingface.co/settings/tokens, create a new token with "
-            "write access, and update the HF_TOKEN secret in GitHub repo settings."
-        )
+        # The /whoami-v2 endpoint is intentionally rate-limited (strict, per HF).
+        # When we run the cron frequently (e.g. hourly on days 1-7), back-to-back
+        # runs can trip a 429 here. That is NOT an auth failure — the token is
+        # fine — so don't fail the whole run and open a bogus diagnostic issue.
+        # Skip the preflight check and proceed; a genuinely bad token will still
+        # fail loudly at upload time.
+        msg = str(e).lower()
+        if "rate limit" in msg or "429" in msg or "too many requests" in msg:
+            print(f"WARNING: HF whoami rate-limited; skipping preflight auth check. ({e})")
+        else:
+            raise PipelineError(
+                f"HuggingFace authentication failed: {e}",
+                "The HF_TOKEN exists but HuggingFace rejected it. "
+                "It may be expired, revoked, or malformed.",
+                "Go to https://huggingface.co/settings/tokens, create a new token with "
+                "write access, and update the HF_TOKEN secret in GitHub repo settings."
+            )
 
     # 3. Playwright is installed (not needed for --rebuild-manifest)
     if need_playwright:
