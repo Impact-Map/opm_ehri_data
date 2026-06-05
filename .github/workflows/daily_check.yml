@@ -10,7 +10,7 @@ on:
     # Early-month sprint: OPM's monthly drop lands in the first week. Poll
     # hourly on days 1-7 so the notification email beats third-party reposts
     # (e.g. LinkedIn). Overlaps with the daily cron at 14:00 on those days;
-    # the opm-daily concurrency group queues the duplicate as a cheap no-op.
+    # the guard step cancels whichever run starts second.
     - cron: '0 * 1-7 * *'
   workflow_dispatch:
     inputs:
@@ -25,13 +25,11 @@ permissions:
   issues: write
   actions: write  # for the "Chain next run if more files remain" step (gh workflow run)
 
-concurrency:
-  group: opm-daily
-  # Queue overlapping runs instead of killing one to start another. Previously
-  # a delayed scheduled cron killed a long-running manual catch-up; with this
-  # set to false the scheduled run waits politely until any in-flight run
-  # finishes (worst case: scheduled run starts a bit late).
-  cancel-in-progress: false
+# No concurrency group: overlapping runs are handled by the "Bail if another
+# run is already active" guard step below, which cancels the *newcomer* rather
+# than the in-flight run. A concurrency group can't do this — it would park the
+# newcomer as `pending` (so it never reaches the guard) and then run it late.
+# Letting runs start means each can self-evaluate and the older one always wins.
 
 jobs:
   check-and-update:
@@ -41,6 +39,25 @@ jobs:
     timeout-minutes: 360
 
     steps:
+      - name: Bail if another run is already active
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # If an older run of this workflow is still in_progress or queued,
+          # cancel THIS run instead of doing duplicate work. Tie-break on run
+          # id (older id wins) so two near-simultaneous starts don't both bail.
+          active=$(gh run list --repo "${{ github.repository }}" \
+            --workflow "${{ github.workflow }}" \
+            --json databaseId,status \
+            --jq "[.[] | select(.status==\"in_progress\" or .status==\"queued\") | select(.databaseId < ${{ github.run_id }})] | length")
+          if [ "${active:-0}" -gt 0 ]; then
+            echo "An older run is still active — cancelling this run."
+            gh run cancel ${{ github.run_id }} --repo "${{ github.repository }}"
+            sleep 60   # wait for the cancel signal to terminate the job
+            exit 1
+          fi
+          echo "No older active run — proceeding."
+
       - name: Checkout
         uses: actions/checkout@v4
 
