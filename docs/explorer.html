@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Federal Hiring Explorer · OPM/EHRI Data</title>
+<link rel="icon" href="data:,">
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+:root {
+  --bg: #F9F7F4; --surface: #F0EDE8; --text: #1A1A1A; --muted: #6B6B6B;
+  --border: #DDD9D2; --line: #E8E5E0;
+  --ca: #2E7D32; --cb: #1B3A7A;   /* Period A green, Period B navy */
+  --font: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: var(--font); color: var(--text); background: var(--bg); font-size: 1rem; }
+
+/* PAGE */
+.wrap { max-width: 1200px; margin: 0 auto; padding: 0 20px 56px; }
+header { padding: 24px 0 6px; }
+header h1 { font-size: 1.6rem; font-weight: 700; letter-spacing: -.02em; }
+header .sub { color: var(--muted); font-size: .9rem; margin-top: .2rem; }
+
+/* FILTER BAR */
+.filter-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  min-height: 46px; margin: 14px 0 4px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  padding: 8px 12px; }
+.add-btn { background: var(--ca); color: #fff; border: none; padding: 6px 13px;
+  border-radius: 999px; font-size: .8rem; font-weight: 600; cursor: pointer;
+  white-space: nowrap; transition: opacity .12s; }
+.add-btn:hover { opacity: .88; }
+.chip { display: inline-flex; align-items: center; gap: 6px;
+  background: #fff; border: 1px solid var(--ca);
+  border-radius: 999px; padding: 4px 8px 4px 12px;
+  font-size: .78rem; color: var(--ca); }
+.chip-x { cursor: pointer; font-weight: 700; width: 18px; height: 18px;
+  display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+.chip-x:hover { background: var(--ca); color: #fff; }
+.xfer-label { display: flex; align-items: center; gap: 5px; font-size: .84rem;
+  cursor: pointer; margin-left: auto; white-space: nowrap; }
+.xfer-label input { accent-color: var(--ca); width: 14px; height: 14px; }
+.filter-bar-empty { font-size: .82rem; color: #999; }
+
+/* PERIODS ROW */
+.periods-row { display: flex; align-items: stretch; gap: 0; margin: 16px 0; }
+.period-panel { flex: 1; background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+.period-panel:first-child { border-right: none; border-radius: 10px 0 0 10px; }
+.period-panel:last-child { border-left: none; border-radius: 0 10px 10px 0; }
+.period-head { display: flex; align-items: center; gap: 8px; font-size: .8rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: 10px; }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.dot-a { background: var(--ca); }
+.dot-b { background: var(--cb); }
+.period-presets { display: flex; flex-wrap: wrap; gap: 6px; }
+.pb { font-size: .75rem; font-weight: 500; padding: .25rem .65rem;
+  border: 1px solid var(--border); border-radius: .3rem; cursor: pointer;
+  background: #fff; color: var(--muted); transition: all .12s; white-space: nowrap; }
+.pb:hover { border-color: var(--text); color: var(--text); }
+.period-panel.panel-a .pb.active { background: var(--ca); color: #fff; border-color: var(--ca); }
+.period-panel.panel-b .pb.active { background: var(--cb); color: #fff; border-color: var(--cb); }
+.custom-inputs { display: flex; align-items: center; gap: 6px; margin-top: 8px; font-size: .82rem; color: var(--muted); }
+.custom-inputs input[type="month"] { border: 1px solid var(--border); border-radius: .3rem;
+  padding: .25rem .5rem; font-size: .82rem; font-family: var(--font); outline: none; }
+.period-desc { margin-top: 8px; font-size: .78rem; color: var(--muted); font-style: italic; }
+.vs-sep { display: flex; align-items: center; justify-content: center;
+  width: 44px; flex-shrink: 0; font-size: .9rem; font-weight: 700; color: var(--muted);
+  background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+/* LOADING */
+.loading { text-align: center; padding: 4rem 1.5rem; }
+.loading p { font-size: .85rem; color: var(--muted); margin-bottom: .5rem; }
+.loading-bar-wrap { max-width: 280px; margin: 0 auto; background: var(--surface); border-radius: 1rem; height: 5px; overflow: hidden; }
+.loading-bar { height: 100%; background: var(--ca); border-radius: 1rem; width: 0%; transition: width .2s; }
+
+/* LEGEND */
+.legend-row { display: flex; align-items: center; gap: .5rem; font-size: .82rem; color: var(--muted); margin-bottom: 1rem; }
+.leg-swatch { display: inline-block; width: 22px; height: 4px; border-radius: 2px; margin-right: 2px; }
+.leg-swatch-a { background: var(--ca); }
+.leg-swatch-b { background: var(--cb); }
+
+/* STATS */
+.stats-strip { display: flex; gap: .875rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.stat-card { flex: 1; min-width: 180px; background: #fff; border: 1px solid var(--border); border-radius: .5rem; padding: .875rem 1rem; }
+.sc-label { font-size: .67rem; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: .6rem; }
+.sc-row { display: flex; gap: .5rem; align-items: baseline; flex-wrap: wrap; }
+.sc-a { font-size: 1.6rem; font-weight: 700; color: var(--ca); line-height: 1; }
+.sc-b { font-size: 1.6rem; font-weight: 700; color: var(--cb); line-height: 1; }
+.sc-arrow { color: var(--muted); font-size: 1rem; }
+.sc-delta { font-size: .8rem; font-weight: 600; margin-top: .3rem; }
+.sc-delta.up { color: #1B7F35; } .sc-delta.dn { color: #B03020; } .sc-delta.flat { color: var(--muted); }
+.sc-sub { font-size: .7rem; color: var(--muted); margin-top: .2rem; }
+
+/* CHARTS */
+.chart-full { background: #fff; border: 1px solid var(--border); border-radius: .5rem; padding: 1.125rem 1.25rem; margin-bottom: 1rem; }
+.charts-half { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+.chart-box { background: #fff; border: 1px solid var(--border); border-radius: .5rem; padding: 1.125rem 1.25rem; }
+.chart-title { font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: .15rem; }
+.chart-sub { font-size: .75rem; color: var(--muted); margin-bottom: .875rem; }
+
+/* MODAL */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: flex;
+  align-items: center; justify-content: center; z-index: 1050; }
+.modal-box { background: #fff; border-radius: 12px; box-shadow: 0 10px 32px rgba(0,0,0,.2);
+  padding: 18px; min-width: 280px; max-width: 420px; max-height: 82vh; display: flex; flex-direction: column; }
+.modal-title { font-size: .98rem; font-weight: 700; padding-bottom: 10px; margin-bottom: 10px;
+  border-bottom: 2px solid var(--surface); }
+.modal-search { width: 100%; padding: 8px 10px; border: 1px solid var(--border);
+  border-radius: 8px; font-size: .875rem; font-family: var(--font); margin-bottom: 8px; outline: none; }
+.modal-search:focus { border-color: var(--ca); }
+.modal-options { overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 1px; }
+.modal-opt { padding: 7px 8px; border-radius: 6px; cursor: pointer; font-size: .875rem; }
+.modal-opt:hover { background: var(--surface); }
+.modal-opt.selected { background: #E8F5E9; color: var(--ca); font-weight: 600; }
+.modal-opt-count { float: right; font-size: .75rem; color: var(--muted); }
+.modal-btns { display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px; }
+.btn-cancel { border: 1px solid var(--border); background: #fff; color: var(--muted);
+  padding: 6px 14px; border-radius: 7px; cursor: pointer; font-size: .84rem; }
+.btn-apply { border: none; background: var(--ca); color: #fff;
+  padding: 6px 16px; border-radius: 7px; cursor: pointer; font-size: .84rem; font-weight: 600; }
+
+/* DATA NOTE */
+.data-note { padding: 1.25rem 0; font-size: .78rem; color: var(--muted); border-top: 1px solid var(--border); margin-top: .5rem; }
+.data-note a { color: var(--ca); }
+
+@media (max-width: 700px) {
+  .charts-half { grid-template-columns: 1fr; }
+  .periods-row { flex-direction: column; }
+  .period-panel:first-child, .period-panel:last-child { border-radius: 10px; border: 1px solid var(--border); }
+  .vs-sep { width: 100%; height: 32px; border: none; border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Federal Hiring Explorer</h1>
+    <p class="sub">OPM / EHRI accessions · May 2005–Apr 2026 · Compare two time periods side by side</p>
+  </header>
+
+  <div class="filter-bar" id="filter-bar">
+    <button class="add-btn" id="add-filter-btn">+ Add filter</button>
+    <span class="filter-bar-empty" id="filter-bar-empty">No filters applied</span>
+    <label class="xfer-label">
+      <input type="checkbox" id="excl-xfer" checked> Exclude transfers
+    </label>
+  </div>
+
+  <div class="periods-row">
+    <div class="period-panel panel-a" id="panel-a">
+      <div class="period-head"><span class="dot dot-a"></span> Period A</div>
+      <div class="period-presets" data-period="a">
+        <button class="pb" data-p="all">All data</button>
+        <button class="pb active" data-p="before">Before inauguration</button>
+        <button class="pb" data-p="after">After inauguration</button>
+        <button class="pb" data-p="custom">Custom</button>
+      </div>
+      <div class="custom-inputs" id="ci-a" style="display:none">
+        <input type="month" id="sa" min="2005-05" max="2026-04" value="2024-01">
+        <span>to</span>
+        <input type="month" id="ea" min="2005-05" max="2026-04" value="2025-01">
+      </div>
+      <div class="period-desc" id="dd-a">Jan 2024 – Jan 2025</div>
+    </div>
+    <div class="vs-sep">vs</div>
+    <div class="period-panel panel-b" id="panel-b">
+      <div class="period-head"><span class="dot dot-b"></span> Period B</div>
+      <div class="period-presets" data-period="b">
+        <button class="pb" data-p="all">All data</button>
+        <button class="pb" data-p="before">Before inauguration</button>
+        <button class="pb active" data-p="after">After inauguration</button>
+        <button class="pb" data-p="custom">Custom</button>
+      </div>
+      <div class="custom-inputs" id="ci-b" style="display:none">
+        <input type="month" id="sb" min="2005-05" max="2026-04" value="2025-02">
+        <span>to</span>
+        <input type="month" id="eb" min="2005-05" max="2026-04" value="2026-04">
+      </div>
+      <div class="period-desc" id="dd-b">Feb 2025 – Apr 2026</div>
+    </div>
+  </div>
+
+  <div id="loading" class="loading">
+    <p id="loading-msg">Initializing…</p>
+    <div class="loading-bar-wrap"><div class="loading-bar" id="loading-bar"></div></div>
+  </div>
+
+  <div id="content" style="display:none">
+    <div class="legend-row">
+      <span class="leg-swatch leg-swatch-a"></span><span>Period A</span>
+      <span class="leg-swatch leg-swatch-b" style="margin-left:1.25rem"></span><span>Period B</span>
+    </div>
+    <div class="stats-strip">
+      <div class="stat-card" id="sc-total">
+        <div class="sc-label">Total hires</div>
+        <div class="sc-row"><span class="sc-a" id="st-a">—</span><span class="sc-arrow">→</span><span class="sc-b" id="st-b">—</span></div>
+        <div class="sc-delta" id="st-d"></div>
+        <div class="sc-sub">hires in each period</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-label">Avg age at hire</div>
+        <div class="sc-row"><span class="sc-a" id="sa-a">—</span><span class="sc-arrow">→</span><span class="sc-b" id="sa-b">—</span></div>
+        <div class="sc-delta" id="sa-d"></div>
+        <div class="sc-sub">weighted by bracket midpoint</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-label">Avg prior service</div>
+        <div class="sc-row"><span class="sc-a" id="sl-a">—</span><span class="sc-arrow">→</span><span class="sc-b" id="sl-b">—</span></div>
+        <div class="sc-delta" id="sl-d"></div>
+        <div class="sc-sub">years of prior fed. service</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-label">No prior service</div>
+        <div class="sc-row"><span class="sc-a" id="sn-a">—</span><span class="sc-arrow">→</span><span class="sc-b" id="sn-b">—</span></div>
+        <div class="sc-delta" id="sn-d"></div>
+        <div class="sc-sub">first-time federal employees</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-label">Veteran hires</div>
+        <div class="sc-row"><span class="sc-a" id="sv-a">—</span><span class="sc-arrow">→</span><span class="sc-b" id="sv-b">—</span></div>
+        <div class="sc-delta" id="sv-d"></div>
+        <div class="sc-sub">% with veteran preference</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-label">Supervisory</div>
+        <div class="sc-row"><span class="sc-a" id="ss-a">—</span><span class="sc-arrow">→</span><span class="sc-b" id="ss-b">—</span></div>
+        <div class="sc-delta" id="ss-d"></div>
+        <div class="sc-sub">% supervisory or managerial</div>
+      </div>
+    </div>
+
+    <div class="chart-full">
+      <div class="chart-title">Monthly hires</div>
+      <div class="chart-sub">by effective date of personnel action · both periods plotted on the same time axis · all filters applied</div>
+      <svg id="monthly-svg" style="width:100%;height:220px;display:block;overflow:visible;"></svg>
+    </div>
+
+    <div class="charts-half">
+      <div class="chart-box">
+        <div class="chart-title">Age at hire</div>
+        <div class="chart-sub">% of hires per age bracket · A vs B</div>
+        <svg id="age-svg" style="width:100%;display:block;overflow:visible;"></svg>
+      </div>
+      <div class="chart-box">
+        <div class="chart-title">Education level</div>
+        <div class="chart-sub">% of hires per education group · A vs B</div>
+        <svg id="edu-svg" style="width:100%;display:block;overflow:visible;"></svg>
+      </div>
+    </div>
+
+    <div class="chart-full">
+      <div class="chart-title">Prior federal service</div>
+      <div class="chart-sub">% of hires by years of prior service · outliers ≥100 yrs excluded · A vs B</div>
+      <svg id="los-svg" style="width:100%;display:block;overflow:visible;"></svg>
+    </div>
+
+    <div class="charts-half">
+      <div class="chart-box">
+        <div class="chart-title">Pay plan</div>
+        <div class="chart-sub">% of hires by pay plan (GS, SES, WG, …) · A vs B</div>
+        <svg id="payplan-svg" style="width:100%;display:block;overflow:visible;"></svg>
+      </div>
+      <div class="chart-box">
+        <div class="chart-title">Grade</div>
+        <div class="chart-sub">% of hires by grade · A vs B · tip: filter by pay plan for GS-only</div>
+        <svg id="grade-svg" style="width:100%;display:block;overflow:visible;"></svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="data-note">
+    <p>Source: <a href="https://data.opm.gov/explore-data/data/data-downloads" target="_blank">OPM/EHRI Federal Workforce Data</a>, Accessions May 2005–April 2026, via <a href="https://huggingface.co/datasets/impactproject/opm-ehri-data" target="_blank">HuggingFace</a>. Counts OPM-suppressed to protect privacy. All periods filter on <em>effective date</em> of personnel action — backdated records appear in the period of their effective date, not their processing date. "Before inauguration" = Jan 2024–Jan 2025 (inauguration Jan 20, 2025; Jan 2025 included in full); "after" = Feb 2025–Apr 2026.</p>
+  </div>
+</div>
+
+<!-- Filter modal (hidden) -->
+<div class="modal-overlay" id="fmodal" style="display:none">
+  <div class="modal-box" id="fmodal-box"></div>
+</div>
+
+<script type="module">
+import * as duckdb from 'https://esm.sh/@duckdb/duckdb-wasm';
+
+// ── DuckDB init ───────────────────────────────────────────────────────────────
+function setLoading(msg, pct) {
+  document.getElementById('loading-msg').textContent = msg;
+  if (pct !== undefined) document.getElementById('loading-bar').style.width = pct + '%';
+}
+
+setLoading('Loading DuckDB…', 10);
+const bundle = await duckdb.selectBundle(duckdb.getJsDelivrBundles());
+const workerUrl = URL.createObjectURL(
+  new Blob([`importScripts("${bundle.mainWorker}");`], { type: 'text/javascript' })
+);
+const worker = new Worker(workerUrl);
+const db = new duckdb.AsyncDuckDB(new duckdb.ConsoleLogger(), worker);
+await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
+URL.revokeObjectURL(workerUrl);
+
+setLoading('Downloading data (~30 MB)…', 20);
+const parquetUrl = new URL('data/accessions_explorer.parquet', window.location.href).href;
+const resp = await fetch(parquetUrl);
+const cl = Number(resp.headers.get('content-length')) || 0;
+const reader = resp.body.getReader();
+const chunks = [];
+let loaded = 0;
+while (true) {
+  const { done, value } = await reader.read();
+  if (done) break;
+  chunks.push(value);
+  loaded += value.length;
+  if (cl) setLoading('Downloading data…', 20 + Math.round(loaded / cl * 60));
+}
+const buf = new Uint8Array(loaded);
+let off = 0;
+for (const c of chunks) { buf.set(c, off); off += c.length; }
+setLoading('Initializing database…', 84);
+await db.registerFileBuffer('accessions.parquet', buf);
+const conn = await db.connect();
+
+// ── State ─────────────────────────────────────────────────────────────────────
+const state = {
+  agency: null,
+  subelement: null,
+  series: null,
+  accessionCats: [],
+  payPlans: [],
+  grades: [],
+  appointmentTypes: [],
+  supervisoryStatuses: [],
+  veteranIndicators: [],
+  excludeTransfers: true,
+  a: { preset: 'before', start: '202401', end: '202501' },
+  b: { preset: 'after',  start: '202502', end: '202604' },
+};
+
+// Loaded from DB at init for the filter modal
+let agencyOptions = [];
+let seriesOptions = [];
+let subelementOptions = [];
+let accessionCatOptions = [];
+let payPlanOptions = [];
+let gradeOptions = [];
+let appointmentTypeOptions = [];
+let supervisoryOptions = [];
+let veteranOptions = [];
+
+// ── SQL helpers ───────────────────────────────────────────────────────────────
+function esc(s) { return String(s).replaceAll("'", "''"); }
+
+function buildClauses(period) {
+  const p = state[period];
+  const c = [];
+  if (state.agency) c.push(`agency = '${esc(state.agency)}'`);
+  if (state.subelement) c.push(`agency_subelement = '${esc(state.subelement)}'`);
+  if (state.series) c.push(`occupational_series_code = '${esc(state.series.code)}'`);
+  if (state.accessionCats.length) {
+    const inList = state.accessionCats.map(v => `'${esc(v)}'`).join(', ');
+    c.push(`accession_category IN (${inList})`);
+  } else if (state.excludeTransfers) {
+    c.push(`accession_category NOT LIKE 'TRANSFER%'`);
+  }
+  if (state.payPlans.length) c.push(`pay_plan IN (${state.payPlans.map(v => `'${esc(v)}'`).join(', ')})`);
+  if (state.grades.length) c.push(`grade IN (${state.grades.map(v => `'${esc(v)}'`).join(', ')})`);
+  if (state.appointmentTypes.length) c.push(`appointment_type IN (${state.appointmentTypes.map(v => `'${esc(v)}'`).join(', ')})`);
+  if (state.supervisoryStatuses.length) c.push(`supervisory_status IN (${state.supervisoryStatuses.map(v => `'${esc(v)}'`).join(', ')})`);
+  if (state.veteranIndicators.length) c.push(`veteran_indicator IN (${state.veteranIndicators.map(v => `'${esc(v)}'`).join(', ')})`);
+  if (p.preset === 'before') {
+    c.push(`personnel_action_effective_date_yyyymm >= '202401'`);
+    c.push(`personnel_action_effective_date_yyyymm <= '202501'`);
+  } else if (p.preset === 'after') {
+    c.push(`personnel_action_effective_date_yyyymm >= '202502'`);
+    c.push(`personnel_action_effective_date_yyyymm <= '202604'`);
+  } else if (p.preset === 'custom' && p.start && p.end) {
+    c.push(`personnel_action_effective_date_yyyymm >= '${p.start}'`);
+    c.push(`personnel_action_effective_date_yyyymm <= '${p.end}'`);
+  }
+  return c;
+}
+
+function where(period, ...extra) {
+  const all = [...buildClauses(period), ...extra];
+  return all.length ? 'WHERE ' + all.join(' AND ') : '';
+}
+
+async function query(sql) {
+  const r = await conn.query(sql);
+  return r.toArray().map(row => row.toJSON());
+}
+
+// ── Dropdown data ─────────────────────────────────────────────────────────────
+async function loadDropdownData() {
+  const agencies = await query(
+    `SELECT DISTINCT agency FROM read_parquet('accessions.parquet') WHERE agency IS NOT NULL ORDER BY agency`
+  );
+  agencyOptions = agencies.map(r => ({ value: r.agency, label: r.agency }));
+
+  const series = await query(
+    `SELECT DISTINCT occupational_series_code, occupational_series
+     FROM read_parquet('accessions.parquet')
+     WHERE occupational_series_code IS NOT NULL ORDER BY occupational_series_code`
+  );
+  seriesOptions = series.map(r => ({
+    value: r.occupational_series_code,
+    label: `${r.occupational_series_code} – ${r.occupational_series || ''}`.trim(),
+  }));
+
+  const cats = await query(
+    `SELECT accession_category, SUM(TRY_CAST("count" AS BIGINT)) AS n
+     FROM read_parquet('accessions.parquet')
+     WHERE accession_category IS NOT NULL
+     GROUP BY accession_category ORDER BY n DESC`
+  );
+  accessionCatOptions = cats.map(r => ({ value: r.accession_category, label: r.accession_category, count: Number(r.n) }));
+
+  async function loadCatOptions(col) {
+    const rows = await query(
+      `SELECT ${col}, SUM(TRY_CAST("count" AS BIGINT)) AS n
+       FROM read_parquet('accessions.parquet')
+       WHERE ${col} IS NOT NULL GROUP BY ${col} ORDER BY n DESC`
+    );
+    return rows.map(r => ({ value: r[col], label: r[col], count: Number(r.n) }));
+  }
+  payPlanOptions       = await loadCatOptions('pay_plan');
+  gradeOptions         = await loadCatOptions('grade');
+  appointmentTypeOptions = await loadCatOptions('appointment_type');
+  supervisoryOptions   = await loadCatOptions('supervisory_status');
+  veteranOptions       = await loadCatOptions('veteran_indicator');
+}
+
+async function loadSubelementOptions(agency) {
+  const rows = await query(
+    `SELECT DISTINCT agency_subelement FROM read_parquet('accessions.parquet')
+     WHERE agency = '${esc(agency)}' AND agency_subelement IS NOT NULL ORDER BY agency_subelement`
+  );
+  subelementOptions = rows.map(r => ({ value: r.agency_subelement, label: r.agency_subelement }));
+}
+
+// ── Chip bar ──────────────────────────────────────────────────────────────────
+function renderChips() {
+  const bar = document.getElementById('filter-bar');
+  // Remove existing chips
+  bar.querySelectorAll('.chip').forEach(c => c.remove());
+  const empty = document.getElementById('filter-bar-empty');
+
+  const chips = [];
+  if (state.agency) chips.push({ label: `Agency: ${state.agency}`, clear: () => { state.agency = null; state.subelement = null; renderChips(); updateAll(); } });
+  if (state.subelement) chips.push({ label: `Sub-agency: ${state.subelement}`, clear: () => { state.subelement = null; renderChips(); updateAll(); } });
+  if (state.series) chips.push({ label: `Series: ${state.series.label}`, clear: () => { state.series = null; renderChips(); updateAll(); } });
+  if (state.accessionCats.length) {
+    const catLabel = state.accessionCats.length === 1 ? state.accessionCats[0] : `${state.accessionCats.length} accession types`;
+    chips.push({ label: `Accession: ${catLabel}`, clear: () => { state.accessionCats = []; renderChips(); updateAll(); } });
+  }
+
+  const multiChip = (arr, prefix, clear) => {
+    if (!arr.length) return;
+    const label = arr.length === 1 ? arr[0] : `${arr.length} selected`;
+    chips.push({ label: `${prefix}: ${label}`, clear });
+  };
+  multiChip(state.payPlans, 'Pay plan', () => { state.payPlans = []; renderChips(); updateAll(); });
+  multiChip(state.grades, 'Grade', () => { state.grades = []; renderChips(); updateAll(); });
+  multiChip(state.appointmentTypes, 'Appt type', () => { state.appointmentTypes = []; renderChips(); updateAll(); });
+  multiChip(state.supervisoryStatuses, 'Supervisory', () => { state.supervisoryStatuses = []; renderChips(); updateAll(); });
+  multiChip(state.veteranIndicators, 'Veteran', () => { state.veteranIndicators = []; renderChips(); updateAll(); });
+
+  empty.style.display = chips.length ? 'none' : '';
+
+  const addBtn = document.getElementById('add-filter-btn');
+  for (const chip of chips) {
+    const el = document.createElement('span');
+    el.className = 'chip';
+    el.innerHTML = `<span>${chip.label}</span><span class="chip-x" title="Remove">×</span>`;
+    el.querySelector('.chip-x').addEventListener('click', chip.clear);
+    bar.insertBefore(el, addBtn.nextSibling);
+  }
+}
+
+// ── Filter modal ──────────────────────────────────────────────────────────────
+function closeModal() {
+  document.getElementById('fmodal').style.display = 'none';
+  document.getElementById('fmodal-box').innerHTML = '';
+}
+
+function openModal(html) {
+  document.getElementById('fmodal-box').innerHTML = html;
+  document.getElementById('fmodal').style.display = 'flex';
+}
+
+document.getElementById('fmodal').addEventListener('click', e => {
+  if (e.target === document.getElementById('fmodal')) closeModal();
+});
+
+function openFilterMenu() {
+  const dims = [
+    { key: 'agency', label: 'Agency' },
+    { key: 'subelement', label: 'Sub-agency', disabled: !state.agency },
+    { key: 'series', label: 'Occupation series' },
+    { key: 'pay_plan', label: 'Pay plan (GS, SES, WG, …)' },
+    { key: 'grade', label: 'Grade (GS-01 – GS-15, …)' },
+    { key: 'appointment_type', label: 'Appointment type (permanent, temporary, …)' },
+    { key: 'supervisory', label: 'Supervisory status' },
+    { key: 'veteran', label: 'Veteran indicator' },
+    { key: 'accession_type', label: 'Accession category (new hire, transfer, …)' },
+  ];
+  const opts = dims.map(d =>
+    `<div class="modal-opt${d.disabled ? '" style="opacity:.4;cursor:default' : ''}" data-dim="${d.key}">${d.label}${d.disabled ? ' <span style="font-size:.72rem;color:#999">(select agency first)</span>' : ''}</div>`
+  ).join('');
+  openModal(`<div class="modal-title">Add filter</div><div class="modal-options">${opts}</div>`);
+  document.querySelectorAll('#fmodal-box .modal-opt:not([style*="opacity"])').forEach(el => {
+    el.addEventListener('click', () => {
+      const dim = el.dataset.dim;
+      closeModal();
+      openDimFilter(dim);
+    });
+  });
+}
+
+async function openDimFilter(dim) {
+  // ── Multi-select dimensions ──
+  const MULTISELECT = {
+    pay_plan:        { opts: payPlanOptions,         stateKey: 'payPlans',            title: 'Filter by pay plan' },
+    grade:           { opts: gradeOptions,           stateKey: 'grades',              title: 'Filter by grade' },
+    appointment_type:{ opts: appointmentTypeOptions, stateKey: 'appointmentTypes',    title: 'Filter by appointment type' },
+    supervisory:     { opts: supervisoryOptions,     stateKey: 'supervisoryStatuses', title: 'Filter by supervisory status' },
+    veteran:         { opts: veteranOptions,         stateKey: 'veteranIndicators',   title: 'Filter by veteran indicator' },
+    accession_type:  { opts: accessionCatOptions,   stateKey: 'accessionCats',       title: 'Filter by accession category' },
+  };
+
+  if (MULTISELECT[dim]) {
+    const { opts, stateKey, title } = MULTISELECT[dim];
+    // `pending` persists checked state across search re-renders
+    const pending = new Set(state[stateKey]);
+
+    function renderMultiOpts(filter) {
+      const filtered = filter
+        ? opts.filter(o => o.label.toLowerCase().includes(filter.toLowerCase()))
+        : opts;
+      return filtered.map(o => {
+        const val = o.value.replace(/"/g, '&quot;');
+        const chk = pending.has(o.value) ? 'checked' : '';
+        return `<label class="modal-opt" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+          <input type="checkbox" data-val="${val}" ${chk}
+            style="accent-color:var(--ca);width:14px;height:14px;flex-shrink:0;">
+          <span style="flex:1">${o.label}</span>
+          <span class="modal-opt-count">${o.count ? o.count.toLocaleString() : ''}</span>
+        </label>`;
+      }).join('');
+    }
+
+    openModal(`
+      <div class="modal-title">${title}</div>
+      <input type="text" class="modal-search" id="dim-search" placeholder="Search…">
+      <div class="modal-options" id="dim-options">${renderMultiOpts('')}</div>
+      <div class="modal-btns">
+        <button class="btn-cancel" id="dim-cancel">Cancel</button>
+        <button class="btn-apply" id="dim-apply">Apply</button>
+      </div>
+    `);
+
+    // Update pending on checkbox toggle (event delegation — survives re-renders for new nodes)
+    document.getElementById('dim-options').addEventListener('change', e => {
+      const cb = e.target.closest('input[type=checkbox]');
+      if (!cb) return;
+      const val = cb.dataset.val;
+      if (cb.checked) pending.add(val); else pending.delete(val);
+    });
+
+    document.getElementById('dim-search').addEventListener('input', e => {
+      document.getElementById('dim-options').innerHTML = renderMultiOpts(e.target.value);
+      // Re-attach delegation (new DOM node)
+      document.getElementById('dim-options').addEventListener('change', ev => {
+        const cb = ev.target.closest('input[type=checkbox]');
+        if (!cb) return;
+        const val = cb.dataset.val;
+        if (cb.checked) pending.add(val); else pending.delete(val);
+      });
+    });
+
+    document.getElementById('dim-cancel').addEventListener('click', closeModal);
+    document.getElementById('dim-apply').addEventListener('click', () => {
+      state[stateKey] = Array.from(pending);
+      closeModal();
+      renderChips();
+      updateAll();
+    });
+    return;
+  }
+
+  // ── Single-select: agency / sub-agency / series ──
+  let options, title, currentValue;
+  if (dim === 'agency') {
+    options = agencyOptions; title = 'Filter by agency'; currentValue = state.agency;
+  } else if (dim === 'subelement') {
+    if (state.agency) await loadSubelementOptions(state.agency);
+    options = subelementOptions; title = 'Filter by sub-agency'; currentValue = state.subelement;
+  } else {
+    options = seriesOptions; title = 'Filter by occupation series';
+    currentValue = state.series ? state.series.code : null;
+  }
+
+  function renderSingleOpts(filter) {
+    const filtered = filter
+      ? options.filter(o => o.label.toLowerCase().includes(filter.toLowerCase()))
+      : options;
+    return filtered.slice(0, 200).map(o =>
+      `<div class="modal-opt${o.value === currentValue ? ' selected' : ''}" data-val="${o.value}" data-label="${o.label.replace(/"/g, '&quot;')}">${o.label}</div>`
+    ).join('');
+  }
+
+  openModal(`
+    <div class="modal-title">${title}</div>
+    <input type="text" class="modal-search" id="dim-search" placeholder="Search…">
+    <div class="modal-options" id="dim-options">${renderSingleOpts('')}</div>
+    <div class="modal-btns"><button class="btn-cancel" id="dim-cancel">Cancel</button></div>
+  `);
+
+  function bindSingleClicks() {
+    document.querySelectorAll('#dim-options .modal-opt').forEach(el => {
+      el.addEventListener('click', () => {
+        if (dim === 'agency') { state.agency = el.dataset.val; state.subelement = null; }
+        else if (dim === 'subelement') { state.subelement = el.dataset.val; }
+        else { state.series = { code: el.dataset.val, label: el.dataset.label }; }
+        closeModal(); renderChips(); updateAll();
+      });
+    });
+  }
+
+  document.getElementById('dim-cancel').addEventListener('click', closeModal);
+  document.getElementById('dim-search').addEventListener('input', e => {
+    document.getElementById('dim-options').innerHTML = renderSingleOpts(e.target.value);
+    bindSingleClicks();
+  });
+  bindSingleClicks();
+}
+
+document.getElementById('add-filter-btn').addEventListener('click', openFilterMenu);
+
+// ── Period controls ───────────────────────────────────────────────────────────
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function ymToDesc(ym) {
+  return `${MONTHS[+ym.slice(4,6) - 1]} ${ym.slice(0,4)}`;
+}
+
+function periodDesc(period) {
+  const p = state[period];
+  if (p.preset === 'all') return 'All data (May 2005–Apr 2026)';
+  if (p.preset === 'before') return 'Jan 2024 – Jan 2025';
+  if (p.preset === 'after') return 'Feb 2025 – Apr 2026';
+  if (p.preset === 'custom' && p.start && p.end) return `${ymToDesc(p.start)} – ${ymToDesc(p.end)}`;
+  return '';
+}
+
+function updatePeriodDesc(period) {
+  document.getElementById(`dd-${period}`).textContent = periodDesc(period);
+}
+
+document.querySelectorAll('.period-presets').forEach(row => {
+  const period = row.dataset.period;
+  row.querySelectorAll('.pb').forEach(btn => {
+    btn.addEventListener('click', () => {
+      row.querySelectorAll('.pb').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state[period].preset = btn.dataset.p;
+      const ci = document.getElementById(`ci-${period}`);
+      ci.style.display = btn.dataset.p === 'custom' ? 'flex' : 'none';
+      updatePeriodDesc(period);
+      if (btn.dataset.p !== 'custom') updateAll();
+    });
+  });
+});
+
+['a', 'b'].forEach(period => {
+  document.getElementById(`s${period}`).addEventListener('change', e => {
+    state[period].start = e.target.value.replace('-', '');
+    updatePeriodDesc(period);
+    if (state[period].end) updateAll();
+  });
+  document.getElementById(`e${period}`).addEventListener('change', e => {
+    state[period].end = e.target.value.replace('-', '');
+    updatePeriodDesc(period);
+    if (state[period].start) updateAll();
+  });
+});
+
+document.getElementById('excl-xfer').addEventListener('change', e => {
+  state.excludeTransfers = e.target.checked;
+  updateAll();
+});
+
+// ── Chart constants ───────────────────────────────────────────────────────────
+const AGE_ORDER = ['LESS THAN 20','20-24','25-29','30-34','35-39','40-44','45-49','50-54','55-59','60-64','65 OR MORE'];
+const AGE_MID = { 'LESS THAN 20':18,'20-24':22,'25-29':27,'30-34':32,'35-39':37,'40-44':42,'45-49':47,'50-54':52,'55-59':57,'60-64':62,'65 OR MORE':68 };
+const EDU_ORDER = ['< HS','HS / GED','Some college','Trade / voc.','Associate\'s','Bachelor\'s','Master\'s','Professional / PhD'];
+const LOS_ORDER = ['None','<1 yr','1–3 yrs','3–10 yrs','10–20 yrs','20+ yrs'];
+
+const COL_A = '#2E7D32', COL_B = '#1B3A7A';
+
+const EDU_CASE = `CASE education_level
+  WHEN 'NO FORMAL EDUCATION OR SOME ELEMENTARY SCHOOL - DID NOT COMPLETE' THEN '< HS'
+  WHEN 'ELEMENTARY SCHOOL COMPLETED - NO HIGH SCHOOL' THEN '< HS'
+  WHEN 'SOME HIGH SCHOOL - DID NOT COMPLETE' THEN '< HS'
+  WHEN 'HIGH SCHOOL GRADUATE OR CERTIFICATE OF EQUIVALENCY' THEN 'HS / GED'
+  WHEN 'SOME COLLEGE - LESS THAN ONE YEAR' THEN 'Some college'
+  WHEN 'ONE YEAR COLLEGE' THEN 'Some college'
+  WHEN 'TWO YEARS COLLEGE' THEN 'Some college'
+  WHEN 'THREE YEARS COLLEGE' THEN 'Some college'
+  WHEN 'FOUR YEARS COLLEGE' THEN 'Some college'
+  WHEN 'TERMINAL OCCUPATIONAL PROGRAM - CERTIFICATE OF COMPLETION, DIPLOMA OR EQUIVALENT' THEN 'Trade / voc.'
+  WHEN 'TERMINAL OCCUPATIONAL PROGRAM - DID NOT COMPLETE' THEN 'Trade / voc.'
+  WHEN 'ASSOCIATE DEGREE' THEN 'Associate''s'
+  WHEN 'BACHELOR''S DEGREE' THEN 'Bachelor''s'
+  WHEN 'POST-BACHELOR''S' THEN 'Bachelor''s'
+  WHEN 'MASTER''S DEGREE' THEN 'Master''s'
+  WHEN 'POST-MASTER''S' THEN 'Master''s'
+  WHEN 'FIRST PROFESSIONAL' THEN 'Professional / PhD'
+  WHEN 'POST-FIRST PROFESSIONAL' THEN 'Professional / PhD'
+  WHEN 'SIXTH-YEAR DEGREE' THEN 'Professional / PhD'
+  WHEN 'POST-SIXTH YEAR' THEN 'Professional / PhD'
+  WHEN 'DOCTORATE DEGREE' THEN 'Professional / PhD'
+  WHEN 'POST-DOCTORATE' THEN 'Professional / PhD'
+  ELSE NULL END`;
+
+// ── Draw: monthly dual-line ───────────────────────────────────────────────────
+function drawMonthly(rowsA, rowsB) {
+  const svg = d3.select('#monthly-svg');
+  svg.selectAll('*').remove();
+  const W = svg.node().getBoundingClientRect().width || 800;
+  const H = 220, mL = 58, mR = 16, mT = 10, mB = 46;
+  const iW = W - mL - mR, iH = H - mT - mB;
+
+  const toData = rows => rows.map(r => ({ ym: String(r.ym), hires: Number(r.hires) }))
+                             .sort((a, b) => a.ym < b.ym ? -1 : 1);
+  const da = toData(rowsA), db = toData(rowsB);
+  const allYm = [...new Set([...da, ...db].map(d => d.ym))].sort();
+  if (!allYm.length) return;
+
+  const x = d3.scalePoint().domain(allYm).range([0, iW]).padding(0.3);
+  const maxH = d3.max([...da, ...db], d => d.hires) || 1;
+  const y = d3.scaleLinear().domain([0, maxH * 1.08]).range([iH, 0]);
+
+  const step = Math.max(1, Math.floor(allYm.length / 10));
+  const xTicks = allYm.filter((_, i) => i % step === 0);
+  const MNAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const fmtYm = ym => `${MNAMES[+ym.slice(4,6)-1]} ${ym.slice(0,4)}`;
+
+  const g = svg.append('g').attr('transform', `translate(${mL},${mT})`);
+  g.append('g').call(d3.axisLeft(y).ticks(5).tickSize(-iW).tickFormat(''))
+   .call(ax => { ax.select('.domain').remove(); ax.selectAll('line').attr('stroke','#EBEBEB'); });
+  g.append('g').attr('transform', `translate(0,${iH})`)
+   .call(d3.axisBottom(x).tickValues(xTicks).tickFormat(fmtYm))
+   .call(ax => {
+     ax.select('.domain').attr('stroke', '#ccc');
+     ax.selectAll('text').attr('transform','rotate(-38)').attr('text-anchor','end')
+       .style('font-size','0.68rem').attr('dy','0.4em');
+   });
+  g.append('g').call(d3.axisLeft(y).ticks(5).tickFormat(d3.format(',.0f')))
+   .call(ax => { ax.select('.domain').remove(); ax.selectAll('text').style('font-size','0.68rem'); });
+
+  const line = d3.line().x(d => x(d.ym)).y(d => y(d.hires)).curve(d3.curveMonotoneX);
+  if (da.length) g.append('path').datum(da).attr('fill','none').attr('stroke', COL_A).attr('stroke-width',2).attr('d', line);
+  if (db.length) g.append('path').datum(db).attr('fill','none').attr('stroke', COL_B).attr('stroke-width',2).attr('d', line);
+}
+
+// ── Draw: grouped horizontal bars ────────────────────────────────────────────
+function drawGroupedBar(svgId, dataA, dataB, order, opts = {}) {
+  const svg = d3.select(svgId);
+  svg.selectAll('*').remove();
+
+  const W = svg.node().getBoundingClientRect().width || 400;
+  const mL = opts.mL ?? 100, mR = 58, mT = 6, mB = 4;
+  const maxLen = opts.maxLen ?? 999;
+  const iW = W - mL - mR;
+  const trunc = s => s.length > maxLen ? s.slice(0, maxLen - 1) + '…' : s;
+  const barH = 9, barGap = 3, groupGap = 10;
+  const groupH = barH * 2 + barGap;
+  const innerH = order.length * (groupH + groupGap) - groupGap;
+  svg.attr('height', innerH + mT + mB);
+
+  const maxPct = d3.max([...dataA, ...dataB], d => d.pct) || 1;
+  const x = d3.scaleLinear().domain([0, maxPct]).range([0, iW]);
+
+  const g = svg.append('g').attr('transform', `translate(${mL},${mT})`);
+
+  order.forEach((label, i) => {
+    const gy = i * (groupH + groupGap);
+    const pctA = dataA.find(d => d.label === label)?.pct || 0;
+    const pctB = dataB.find(d => d.label === label)?.pct || 0;
+
+    // Category label
+    g.append('text').attr('x', -6).attr('y', gy + groupH / 2)
+     .attr('text-anchor', 'end').attr('dominant-baseline', 'middle')
+     .style('font-size', '.7rem').style('fill', '#333').text(trunc(label));
+
+    // Bar A
+    g.append('rect').attr('x', 0).attr('y', gy).attr('height', barH)
+     .attr('width', Math.max(2, x(pctA))).attr('fill', COL_A).attr('rx', 2);
+    if (pctA >= 0.5) g.append('text').attr('x', x(pctA) + 4).attr('y', gy + barH / 2)
+     .attr('dominant-baseline', 'middle').style('font-size', '.65rem').style('fill', '#555')
+     .text(`${pctA.toFixed(1)}%`);
+
+    // Bar B
+    g.append('rect').attr('x', 0).attr('y', gy + barH + barGap).attr('height', barH)
+     .attr('width', Math.max(2, x(pctB))).attr('fill', COL_B).attr('rx', 2);
+    if (pctB >= 0.5) g.append('text').attr('x', x(pctB) + 4).attr('y', gy + barH + barGap + barH / 2)
+     .attr('dominant-baseline', 'middle').style('font-size', '.65rem').style('fill', '#555')
+     .text(`${pctB.toFixed(1)}%`);
+  });
+}
+
+function toPct(rows, keyField, hireField) {
+  const total = d3.sum(rows, r => Number(r[hireField]));
+  if (!total) return [];
+  return rows.map(r => ({ label: String(r[keyField]), pct: Number(r[hireField]) / total * 100 }));
+}
+
+// ── Stats ─────────────────────────────────────────────────────────────────────
+function setStatCard(ids, va, vb, fmtA, fmtB, fmtDelta, invertDelta) {
+  const [idA, idB, idD] = ids;
+  document.getElementById(idA).textContent = va == null ? '—' : fmtA(va);
+  document.getElementById(idB).textContent = vb == null ? '—' : fmtB(vb);
+  const deltaEl = document.getElementById(idD);
+  if (va == null || vb == null) { deltaEl.textContent = ''; return; }
+  const delta = fmtDelta(va, vb);
+  deltaEl.textContent = delta.text;
+  deltaEl.className = 'sc-delta ' + (delta.dir === 0 ? 'flat' : (delta.dir > 0) !== invertDelta ? 'up' : 'dn');
+}
+
+function computeAvgAge(ageRows) {
+  let wsum = 0, tot = 0;
+  for (const r of ageRows) {
+    const mid = AGE_MID[String(r.age_bracket).toUpperCase()];
+    if (mid !== undefined) { wsum += mid * Number(r.hires); tot += Number(r.hires); }
+  }
+  return tot ? wsum / tot : null;
+}
+
+function updateStats(totalA, ageRowsA, losRowA, totalB, ageRowsB, losRowB, vetRowsA, vetRowsB, supRowsA, supRowsB) {
+  const fmtN = v => Math.round(v).toLocaleString();
+  const fmtF1 = v => v.toFixed(1);
+  const fmtPct = v => v.toFixed(1) + '%';
+
+  const pctDelta = (a, b) => {
+    const d = (b - a) / a * 100;
+    return { text: (d >= 0 ? '+' : '') + d.toFixed(1) + '%', dir: Math.sign(d) };
+  };
+  const absDelta = (a, b, unit = '') => {
+    const d = b - a;
+    return { text: (d >= 0 ? '+' : '') + d.toFixed(1) + unit, dir: Math.sign(d) };
+  };
+  const ppDelta = (a, b) => {
+    const d = b - a;
+    return { text: (d >= 0 ? '+' : '') + d.toFixed(1) + ' pp', dir: Math.sign(d) };
+  };
+
+  setStatCard(['st-a','st-b','st-d'], totalA, totalB, fmtN, fmtN, pctDelta, false);
+
+  const ageA = computeAvgAge(ageRowsA), ageB = computeAvgAge(ageRowsB);
+  setStatCard(['sa-a','sa-b','sa-d'], ageA, ageB, fmtF1, fmtF1, absDelta, false);
+
+  const losA = losRowA && Number(losRowA.los_total) > 0 ? Number(losRowA.avg_los) : null;
+  const losB = losRowB && Number(losRowB.los_total) > 0 ? Number(losRowB.avg_los) : null;
+  setStatCard(['sl-a','sl-b','sl-d'], losA, losB, fmtF1, fmtF1, (a, b) => absDelta(a, b, ' yr'), false);
+
+  const nopriA = losRowA && Number(losRowA.los_total) > 0 ? Number(losRowA.no_prior) / Number(losRowA.los_total) * 100 : null;
+  const nopriB = losRowB && Number(losRowB.los_total) > 0 ? Number(losRowB.no_prior) / Number(losRowB.los_total) * 100 : null;
+  setStatCard(['sn-a','sn-b','sn-d'], nopriA, nopriB, fmtPct, fmtPct, ppDelta, false);
+
+  // Veteran %: rows have {veteran_indicator, hires}; veteran = indicator contains 'VET' or is truthy/Y/true
+  function vetPct(rows) {
+    const total = d3.sum(rows, r => Number(r.hires));
+    if (!total) return null;
+    const vetHires = d3.sum(rows, r => {
+      const v = String(r.veteran_indicator || '').toUpperCase();
+      return (v === 'TRUE' || v === 'YES' || v === '1' || v === 'Y' || v.includes('VET')) ? Number(r.hires) : 0;
+    });
+    return vetHires / total * 100;
+  }
+  setStatCard(['sv-a','sv-b','sv-d'], vetPct(vetRowsA), vetPct(vetRowsB), fmtPct, fmtPct, ppDelta, false);
+
+  // Supervisory %: supervisory_status contains 'SUPERVISOR' or 'MANAGER'
+  function supPct(rows) {
+    const total = d3.sum(rows, r => Number(r.hires));
+    if (!total) return null;
+    const supHires = d3.sum(rows, r => {
+      const v = String(r.supervisory_status || '').toUpperCase();
+      return (v.includes('SUPERVISOR') || v.includes('MANAGER')) ? Number(r.hires) : 0;
+    });
+    return supHires / total * 100;
+  }
+  setStatCard(['ss-a','ss-b','ss-d'], supPct(supRowsA), supPct(supRowsB), fmtPct, fmtPct, ppDelta, false);
+}
+
+// ── Main update ───────────────────────────────────────────────────────────────
+const LOS_CAST = `TRY_CAST(length_of_service_years AS DOUBLE)`;
+
+function monthlyQuery(period) {
+  return query(`SELECT personnel_action_effective_date_yyyymm AS ym, SUM(TRY_CAST("count" AS BIGINT)) AS hires
+    FROM read_parquet('accessions.parquet') ${where(period)} GROUP BY ym ORDER BY ym`);
+}
+function ageQuery(period) {
+  return query(`SELECT UPPER(age_bracket) AS age_bracket, SUM(TRY_CAST("count" AS BIGINT)) AS hires
+    FROM read_parquet('accessions.parquet')
+    ${where(period, `age_bracket IS NOT NULL`, `UPPER(age_bracket) NOT IN ('UNSPECIFIED')`)}
+    GROUP BY age_bracket`);
+}
+function eduQuery(period) {
+  return query(`SELECT (${EDU_CASE}) AS edu_bucket, SUM(TRY_CAST("count" AS BIGINT)) AS hires
+    FROM read_parquet('accessions.parquet')
+    ${where(period, `education_level IS NOT NULL`, `education_level NOT IN ('NO DATA REPORTED', 'INVALID')`)}
+    GROUP BY edu_bucket HAVING edu_bucket IS NOT NULL`);
+}
+function losQuery(period) {
+  return query(`SELECT
+    CASE WHEN ${LOS_CAST} IS NULL OR ${LOS_CAST} >= 100 THEN NULL
+         WHEN ${LOS_CAST} <= 0 THEN 'None'
+         WHEN ${LOS_CAST} < 1 THEN '<1 yr'
+         WHEN ${LOS_CAST} < 3 THEN '1–3 yrs'
+         WHEN ${LOS_CAST} < 10 THEN '3–10 yrs'
+         WHEN ${LOS_CAST} < 20 THEN '10–20 yrs'
+         ELSE '20+ yrs' END AS los_bucket,
+    SUM(TRY_CAST("count" AS BIGINT)) AS hires
+    FROM read_parquet('accessions.parquet')
+    ${where(period, `${LOS_CAST} IS NOT NULL`, `${LOS_CAST} < 100`)}
+    GROUP BY los_bucket HAVING los_bucket IS NOT NULL`);
+}
+function losStatsQuery(period) {
+  return query(`SELECT
+    SUM(${LOS_CAST} * TRY_CAST("count" AS BIGINT)) / SUM(TRY_CAST("count" AS BIGINT)) AS avg_los,
+    SUM(CASE WHEN ${LOS_CAST} = 0 THEN TRY_CAST("count" AS BIGINT) ELSE 0 END) AS no_prior,
+    SUM(TRY_CAST("count" AS BIGINT)) AS los_total
+    FROM read_parquet('accessions.parquet')
+    ${where(period, `${LOS_CAST} IS NOT NULL`, `${LOS_CAST} >= 0`, `${LOS_CAST} < 100`)}`);
+}
+function payPlanQuery(period) {
+  return query(`SELECT pay_plan, SUM(TRY_CAST("count" AS BIGINT)) AS hires
+    FROM read_parquet('accessions.parquet')
+    ${where(period, `pay_plan IS NOT NULL`)} GROUP BY pay_plan ORDER BY hires DESC`);
+}
+function gradeQuery(period) {
+  return query(`SELECT grade, SUM(TRY_CAST("count" AS BIGINT)) AS hires
+    FROM read_parquet('accessions.parquet')
+    ${where(period, `grade IS NOT NULL`)} GROUP BY grade ORDER BY hires DESC`);
+}
+function veteranQuery(period) {
+  return query(`SELECT veteran_indicator, SUM(TRY_CAST("count" AS BIGINT)) AS hires
+    FROM read_parquet('accessions.parquet')
+    ${where(period, `veteran_indicator IS NOT NULL`)} GROUP BY veteran_indicator`);
+}
+function supervisoryQuery(period) {
+  return query(`SELECT supervisory_status, SUM(TRY_CAST("count" AS BIGINT)) AS hires
+    FROM read_parquet('accessions.parquet')
+    ${where(period, `supervisory_status IS NOT NULL`)} GROUP BY supervisory_status`);
+}
+
+async function updateAll() {
+  const [
+    mA, ageA, eduA, losA, lsA, ppA, grA, vtA, spA,
+    mB, ageB, eduB, losB, lsB, ppB, grB, vtB, spB,
+  ] = await Promise.all([
+    monthlyQuery('a'), ageQuery('a'), eduQuery('a'), losQuery('a'), losStatsQuery('a'),
+    payPlanQuery('a'), gradeQuery('a'), veteranQuery('a'), supervisoryQuery('a'),
+    monthlyQuery('b'), ageQuery('b'), eduQuery('b'), losQuery('b'), losStatsQuery('b'),
+    payPlanQuery('b'), gradeQuery('b'), veteranQuery('b'), supervisoryQuery('b'),
+  ]);
+
+  const totalA = d3.sum(mA, r => Number(r.hires));
+  const totalB = d3.sum(mB, r => Number(r.hires));
+
+  drawMonthly(mA, mB);
+
+  const agePctA = toPct(ageA, 'age_bracket', 'hires').map(d => ({ label: d.label.toUpperCase(), pct: d.pct }));
+  const agePctB = toPct(ageB, 'age_bracket', 'hires').map(d => ({ label: d.label.toUpperCase(), pct: d.pct }));
+  drawGroupedBar('#age-svg', agePctA, agePctB, AGE_ORDER);
+
+  const eduPctA = toPct(eduA, 'edu_bucket', 'hires');
+  const eduPctB = toPct(eduB, 'edu_bucket', 'hires');
+  drawGroupedBar('#edu-svg', eduPctA, eduPctB, EDU_ORDER);
+
+  const losPctA = toPct(losA, 'los_bucket', 'hires');
+  const losPctB = toPct(losB, 'los_bucket', 'hires');
+  drawGroupedBar('#los-svg', losPctA, losPctB, LOS_ORDER);
+
+  // Pay plan: top 10 by combined volume
+  const topPP = [...new Set([...ppA, ...ppB].map(r => r.pay_plan))]
+    .map(pp => ({ pp, n: d3.sum([...ppA, ...ppB].filter(r => r.pay_plan === pp), r => Number(r.hires)) }))
+    .sort((a, b) => b.n - a.n).slice(0, 10).map(d => d.pp);
+  drawGroupedBar('#payplan-svg', toPct(ppA, 'pay_plan', 'hires'), toPct(ppB, 'pay_plan', 'hires'), topPP, { mL: 170, maxLen: 24 });
+
+  // Grade: top 20 by combined volume, sorted numerically then alpha
+  const topGr = [...new Set([...grA, ...grB].map(r => r.grade))]
+    .map(g => ({ g, n: d3.sum([...grA, ...grB].filter(r => r.grade === g), r => Number(r.hires)) }))
+    .sort((a, b) => b.n - a.n).slice(0, 20).map(d => d.g)
+    .sort((a, b) => {
+      const na = parseInt(a), nb = parseInt(b);
+      return (!isNaN(na) && !isNaN(nb)) ? na - nb : a.localeCompare(b);
+    });
+  drawGroupedBar('#grade-svg', toPct(grA, 'grade', 'hires'), toPct(grB, 'grade', 'hires'), topGr);
+
+  updateStats(totalA, ageA, lsA[0] || null, totalB, ageB, lsB[0] || null, vtA, vtB, spA, spB);
+}
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+setLoading('Loading filter options…', 88);
+await loadDropdownData();
+setLoading('Running queries…', 94);
+renderChips();
+await updateAll();
+document.getElementById('loading').style.display = 'none';
+document.getElementById('content').style.display = 'block';
+</script>
+</body>
+</html>

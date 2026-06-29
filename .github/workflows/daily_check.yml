@@ -132,6 +132,28 @@ jobs:
       #       git push
       #     fi
 
+      - name: Rebuild explorer parquet if new accessions uploaded
+        if: success() && contains(steps.pipeline.outputs.uploaded_keys, 'accession')
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          echo "New accessions data detected — rebuilding explorer parquet…"
+          python build_explorer_data.py
+
+      - name: Commit explorer parquet
+        if: success() && contains(steps.pipeline.outputs.uploaded_keys, 'accession')
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/data/accessions_explorer.parquet
+          if ! git diff --staged --quiet; then
+            git commit -m "Rebuild explorer parquet [automated]"
+            git pull --rebase origin main
+            git push
+          else
+            echo "Explorer parquet unchanged — no commit needed."
+          fi
+
       - name: Send Buttondown email notification
         if: always() && steps.pipeline.outcome == 'success' && steps.pipeline.outputs.success_count != '0' && steps.pipeline.outputs.success_count != ''
         env:
