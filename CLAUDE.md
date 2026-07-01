@@ -1,33 +1,32 @@
 # EHRI Federal Workforce Data Pipeline
 
-This repo scrapes OPM/EHRI federal workforce data and publishes it to a single HuggingFace dataset: `impactproject/opm-ehri-data`.
+This repo mirrors OPM/EHRI federal workforce data to a single HuggingFace dataset (`impactproject/opm-ehri-data`) and notifies subscribers of new releases.
 
 ## What This Does
 
-Downloads three types of data from https://data.opm.gov/explore-data/data/data-downloads:
-- **Accessions**: New federal hires (~6 MB/month CSV, ~0.2 MB parquet)
-- **Separations**: Federal employee departures (~6 MB/month CSV, ~0.2 MB parquet)
-- **Employment**: Full federal workforce snapshot (~780 MB/month CSV, ~30 MB parquet)
+Pulls three datasets from OPM's official public API (`https://data.opm.gov/api/v1/files`, launched July 2026):
+- **Accessions**: New federal hires (~60 KiB–1 MiB/month parquet)
+- **Separations**: Federal employee departures (~100 KiB–4 MiB/month parquet)
+- **Employment**: Full federal workforce snapshot (~26–75 MiB/month parquet)
 
-All files go into one HF repo, named by their OPM source and version (e.g. `accessions/accessions_202511_v3.parquet`).
+The API serves parquet directly (zstd-compressed, all columns typed as string), so there's no scraping and no format conversion. All files go into one HF repo, named by their OPM source and version (e.g. `accessions/accessions_202511_v3.parquet`).
+
+HuggingFace's role is the *queryable, throttle-free mirror* plus the diff/email value-add — the API is the durable source, but it's file-download-only (no content querying) and rate-limited.
 
 ## Key Files
 
-- `run_daily.py` — Daily pipeline entry point (what the GitHub Action runs)
-- `opm_pipeline/` — Core package: config, scraper, converter, uploader, manifest, differ, reporter
-- `metadata/file_manifest.json` — Tracks what's on OPM site (version, row counts, columns); used for globally-new column detection
-- `.github/workflows/daily_check.yml` — Daily cron at 10 AM ET
-- `backfill_batch.py` — Backfill script (completed; available if needed again)
-- `.github/workflows/backfill.yml` — Backfill workflow (currently disabled)
+- `run_daily.py` — Daily pipeline entry point (what the GitHub Action runs): list API → diff vs manifest → download new parquet → batch-commit to HF → diff/email
+- `opm_pipeline/` — Core package: config, `api` (OPM API client), converter (parquet metadata), uploader, manifest, differ, reporter
+- `metadata/file_manifest.json` — Tracks what's been mirrored (version, publishDate, row counts, columns); used for globally-new column detection
+- `.github/workflows/daily_check.yml` — Daily cron at 14:00 UTC (~10 AM ET) + hourly on days 1–7 (OPM's monthly drop can land any hour)
 - `send_email.py` — Sends Buttondown email; reads `email_body.txt` written by the pipeline
 - `demo.ipynb` — Public demo notebook (Colab-compatible) for exploring the data
 
 ## Technical Details
 
-- OPM files are **pipe-delimited** (`|`), not comma-separated
-- All columns read as strings (`dtype=str`) to avoid mixed-type issues
-- Parquet uses zstd compression (~96% size reduction)
-- Uses Playwright because OPM site is a Blazor app with no direct download URLs
+- Files come from the API already as parquet (zstd, all columns string) — no CSV, no Playwright, no conversion
+- API endpoints: `GET /api/v1/files/{dataset}?current=true` (JSON list) and `GET /api/v1/files/{dataset}/{year}/{month}/{version}/download` (parquet). `dataset` ∈ accessions|separations|employment
+- The API also exposes full history back to 2005 and every prior version (`current=false`), so a re-backfill is just `get_site_manifest` without the current filter — no dedicated backfill script needed
 - HF org hardcoded to `impactproject` in `opm_pipeline/config.py`
 
 ## Email Notifications (Buttondown)
@@ -50,5 +49,4 @@ export HF_TOKEN=your_token_here
 python run_daily.py                    # Daily check
 python run_daily.py --rebuild-manifest # Seed manifest from HF (reads parquet schemas via footer, no full download)
 python run_daily.py --test             # Test mode: January 2026 only, full report/email, no manifest save
-python backfill_batch.py               # One batch of historical backfill
 ```

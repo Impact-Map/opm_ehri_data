@@ -10,37 +10,13 @@ HF_TOKEN = os.environ.get("HF_TOKEN")
 HF_USERNAME = "impactproject"
 HF_REPO = f"{HF_USERNAME}/opm-ehri-data"
 
-OPM_URL = "https://data.opm.gov/explore-data/data/data-downloads"
-
 DATA_TYPES = ["Accessions", "Separations", "Employment"]
 
 START_DATE = "2000-01-01"
 END_DATE = "2026-12-31"
 
-DOWNLOAD_DIR = Path("data/downloads")
 PARQUET_DIR = Path("data/parquet")
 MANIFEST_PATH = Path("metadata/file_manifest.json")
-
-SIZE_ESTIMATES = {
-    "Accessions": 6,
-    "Separations": 6,
-    "Employment": 780,
-}
-
-# HF paths for URLs that OPM advertises on its listing page but whose
-# underlying chunked download blob returns 403 "Not found" — phantoms.
-# Entries here get filtered out of the download queue at iteration time,
-# and the daily run probes each one in parallel to detect resolution
-# (OPM has occasionally published the missing blob later, in which case
-# the entry should be removed from this set).
-#
-# The original 11-month set (May 2024–Mar 2025, plus Jun 2023) all
-# resolved on 2026-05-18 after Abigail emailed OPM — the pipeline auto-
-# detected and ingested them. The set is empty now; add new entries
-# manually if more phantoms appear (the run_daily.py 403 handler keeps
-# the pipeline running even without an entry here, but failed files
-# show up in the daily issue).
-PHANTOM_V3_EMPLOYMENT_KEYS = frozenset()
 
 # Month name -> number mapping for filename conversion
 _MONTH_NUM = {

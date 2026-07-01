@@ -1,5 +1,4 @@
 pandas>=2.0,<3
-playwright>=1.40,<2
 huggingface_hub>=0.20,<2
 pyarrow>=14,<22
 python-dotenv>=1.0,<2

@@ -3,14 +3,14 @@ name: Daily OPM Data Check
 on:
   schedule:
     # Baseline: once a day at 14:00 UTC (~10am ET). Outside the early-month
-    # window the data almost never changes, so a daily no-op (~30s for auth
-    # + manifest sync + 11-URL phantom probe) is plenty to catch the rare
-    # late drop or a phantom that resolves mid-month.
+    # window the data almost never changes, so a daily no-op (~15s for auth +
+    # manifest sync + 3 API list calls) is plenty to catch a late drop.
     - cron: '0 14 * * *'
-    # Early-month sprint: OPM's monthly drop lands in the first week. Poll
-    # hourly on days 1-7 so the notification email beats third-party reposts
-    # (e.g. LinkedIn). Overlaps with the daily cron at 14:00 on those days;
-    # the guard step cancels whichever run starts second.
+    # Early-month sprint: OPM's monthly drop lands in the first week, but the
+    # exact hour varies (May 2026 landed ~12:41pm ET, after the 14:00 cron).
+    # Poll hourly on days 1-7 so the notification email beats third-party
+    # reposts (e.g. LinkedIn). Overlaps with the daily cron at 14:00 on those
+    # days; the guard step cancels whichever run starts second.
     - cron: '0 * 1-7 * *'
   workflow_dispatch:
     inputs:
@@ -23,7 +23,6 @@ on:
 permissions:
   contents: write
   issues: write
-  actions: write  # for the "Chain next run if more files remain" step (gh workflow run)
 
 # No concurrency group: overlapping runs are handled by the "Bail if another
 # run is already active" guard step below, which cancels the *newcomer* rather
@@ -34,9 +33,9 @@ permissions:
 jobs:
   check-and-update:
     runs-on: ubuntu-latest
-    # 6h is the GitHub-hosted runner cap. Normal daily runs finish in ~2 minutes,
-    # but a full OPM v2->v3 refresh (~700 files) needs the headroom.
-    timeout-minutes: 360
+    # Normal daily runs finish in well under a minute (3 API list calls + 0-3
+    # small parquet downloads). Headroom left for a rare full-history refresh.
+    timeout-minutes: 60
 
     steps:
       - name: Bail if another run is already active
@@ -67,9 +66,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-          playwright install chromium
+        run: pip install -r requirements.txt
 
       # Smoke test disabled — it burns one of our limited OPM calls per run
       # before the pipeline even starts. The pipeline itself is the smoke test;
@@ -82,15 +79,11 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Cap each run so it exits cleanly under the 6h Actions limit.
-          # Real timing: ~7 min per ~1.8GB employment file (download +
-          # parquet convert + diff against prior v2). 40 files * 7 min
-          # ~= 280 min, leaving ~80 min margin. With chain-next-run
-          # wired up, a full ~110 file backlog drains in ~3 runs.
-          OPM_MAX_FILES_PER_RUN: '40'
-          # Smaller batches so a killed/timed-out run still commits
-          # partial progress to HF. 40 files / 20 batch = 2 commits per run.
-          UPLOAD_BATCH_SIZE: '20'
+          # Batch size for HF commits. Downloads are now small parquet files
+          # straight from the OPM API (employment ~26-75 MiB, others <5 MiB),
+          # so a normal run is 0-3 files in seconds; this only matters on a
+          # large refresh. 50/commit stays well under HF's 128 commits/hour.
+          UPLOAD_BATCH_SIZE: '50'
         run: |
           set -o pipefail
           TEST_FLAG=""
@@ -138,18 +131,6 @@ jobs:
           BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
           EMAIL_SUBJECT: ${{ steps.pipeline.outputs.email_subject }}
         run: python3 send_email.py
-
-      # Chain another run if more files are still pending. Fires on full
-      # success AND partial success — a phantom URL or a transient network
-      # error shouldn't stop the queue from draining. Only stops if NOTHING
-      # uploaded this run (likely OPM is actually down).
-      - name: Chain next run if more files remain
-        if: success() && steps.pipeline.outputs.success_count != '0' && steps.pipeline.outputs.files_remaining != '0' && steps.pipeline.outputs.files_remaining != ''
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "Triggering follow-up run (${{ steps.pipeline.outputs.files_remaining }} files still pending)"
-          gh workflow run daily_check.yml --ref ${{ github.ref_name }}
 
       # Renders on the Actions run page directly (no log digging). Always runs.
       - name: Write run summary
