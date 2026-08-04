@@ -4,17 +4,16 @@ from __future__ import annotations
 
 import time
 from pathlib import Path
-from huggingface_hub import HfApi, create_repo, repo_exists, list_repo_files, hf_hub_download
+from huggingface_hub import HfApi, create_repo, list_repo_files, hf_hub_download
 
 from .config import HF_REPO
+from .hf_retry import hf_call
 
 
 def get_repo_files(token: str) -> set[str]:
     """Get the set of files in the single HF repo. Returns empty set if repo doesn't exist."""
     try:
-        if not repo_exists(HF_REPO, repo_type="dataset", token=token):
-            return set()
-        return set(list_repo_files(HF_REPO, repo_type="dataset", token=token))
+        return set(hf_call(list_repo_files, HF_REPO, repo_type="dataset", token=token))
     except Exception:
         return set()
 
@@ -57,12 +56,13 @@ def upload_to_huggingface(parquet_path: Path, filename: str, token: str, max_ret
 def download_existing_parquet(filename: str, token: str) -> Path | None:
     """Download an existing parquet file from HF for diffing. Returns path or None."""
     try:
-        if not repo_exists(HF_REPO, repo_type="dataset", token=token):
-            return None
-        files = list_repo_files(HF_REPO, repo_type="dataset", token=token)
+        files = hf_call(list_repo_files, HF_REPO, repo_type="dataset", token=token)
         if filename not in files:
             return None
-        path = hf_hub_download(repo_id=HF_REPO, filename=filename, repo_type="dataset", token=token)
+        path = hf_call(
+            hf_hub_download,
+            repo_id=HF_REPO, filename=filename, repo_type="dataset", token=token,
+        )
         return Path(path)
     except Exception:
         return None

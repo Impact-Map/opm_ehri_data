@@ -39,19 +39,23 @@ def sync_manifest_with_hf(stored: dict, token: str) -> tuple[dict, list]:
     report so nothing falls off the radar (they won't appear in the OPM diff
     because they're now in the manifest at the right version).
     """
-    from huggingface_hub import list_repo_files, repo_exists
+    from huggingface_hub import list_repo_files
+    from huggingface_hub.errors import RepositoryNotFoundError
     import re
 
     from .config import HF_REPO, hf_path_to_card_stem
+    from .hf_retry import hf_call
 
     HF_PATH_RE = re.compile(
         r'^(accessions|separations|employment)/\1_(\d{6})(?:_v(\d+))?\.parquet$'
     )
 
-    if not repo_exists(HF_REPO, repo_type="dataset", token=token):
+    # One HF call, not two: list_repo_files raises if the repo is missing, so a
+    # separate repo_exists() check just doubles our exposure to 429s.
+    try:
+        files = hf_call(list_repo_files, HF_REPO, repo_type="dataset", token=token)
+    except RepositoryNotFoundError:
         return stored, []
-
-    files = list_repo_files(HF_REPO, repo_type="dataset", token=token)
     added_keys = []
     for filename in files:
         m = HF_PATH_RE.match(filename)
@@ -132,21 +136,23 @@ def build_manifest_from_hf(token: str) -> dict:
 
     The manifest key is the HF path (e.g. 'accessions/accessions_202511_v3.parquet').
     """
-    from huggingface_hub import repo_exists, list_repo_files, HfFileSystem
+    from huggingface_hub import list_repo_files, HfFileSystem
+    from huggingface_hub.errors import RepositoryNotFoundError
     import pyarrow.parquet as pq
     import hashlib
     import re
 
     from .config import HF_REPO, hf_path_to_card_stem
+    from .hf_retry import hf_call
 
     HF_PATH_RE = re.compile(r'^(accessions|separations|employment)/\1_(\d{6})(?:_v(\d+))?\.parquet$')
 
     manifest = {}
 
-    if not repo_exists(HF_REPO, repo_type="dataset", token=token):
+    try:
+        files = list(hf_call(list_repo_files, HF_REPO, repo_type="dataset", token=token))
+    except RepositoryNotFoundError:
         return manifest
-
-    files = list(list_repo_files(HF_REPO, repo_type="dataset", token=token))
     fs = HfFileSystem(token=token)
 
     for filename in files:
