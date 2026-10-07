@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     # Normal daily runs finish in well under a minute (3 API list calls + 0-3
     # small parquet downloads). Headroom left for a rare full-history refresh.
-    timeout-minutes: 180
+    timeout-minutes: 200
 
     steps:
       - name: Bail if another run is already active
@@ -85,6 +85,9 @@ jobs:
           # so a normal run is 0-3 files in seconds; this only matters on a
           # large refresh. 50/commit stays well under HF's 128 commits/hour.
           UPLOAD_BATCH_SIZE: '50'
+          # Stop starting new files at 150 min and exit cleanly (next run resumes
+          # from HF); must stay under timeout-minutes so the manifest commit runs.
+          RUN_BUDGET_MINUTES: '150'
         run: |
           set -o pipefail
           TEST_FLAG=""
@@ -169,9 +172,9 @@ jobs:
             fi
             if [ -n "$FILES_REMAINING" ] && [ "$FILES_REMAINING" != "0" ]; then
               if [ "${FAILED_COUNT:-0}" = "0" ]; then
-                echo "**Files still pending:** $FILES_REMAINING (chained another run)"
+                echo "**Files still pending:** $FILES_REMAINING (next scheduled run will resume)"
               else
-                echo "**Files still pending:** $FILES_REMAINING (NOT chained — this run had failures; tomorrow's cron will retry)"
+                echo "**Files still pending:** $FILES_REMAINING (this run had failures; next scheduled run will retry)"
               fi
             fi
             echo ""

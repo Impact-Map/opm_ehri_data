@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 import os
 import sys
+import time
 import traceback
 from datetime import date
 from pathlib import Path
@@ -32,6 +33,11 @@ from opm_pipeline.reporter import create_github_issue
 # the limit — while still checkpointing progress every 50 files. Override
 # with $UPLOAD_BATCH_SIZE for one-off local runs that need smaller batches.
 UPLOAD_BATCH_SIZE = int(os.environ.get("UPLOAD_BATCH_SIZE", "50"))
+# Soft time budget: stop starting new files after this many minutes, flush, and
+# exit cleanly. The next run resumes from HF (manifest sync), so a huge OPM
+# re-publish finishes across runs instead of dying at the job timeout.
+# Keep well under the workflow's timeout-minutes.
+RUN_BUDGET_MINUTES = float(os.environ.get("RUN_BUDGET_MINUTES", "150"))
 
 
 class PipelineError(Exception):
@@ -322,7 +328,12 @@ def run_daily(token: str, data_types: list[str], start_date: str, end_date: str,
     # Buffer of files awaiting batched upload — see _flush_upload_batch.
     upload_buffer = []
 
+    run_start = time.monotonic()
     for key in changed_keys:
+        if time.monotonic() - run_start > RUN_BUDGET_MINUTES * 60:
+            print(f"\nTime budget of {RUN_BUDGET_MINUTES:g} min reached; "
+                  f"{len(changed_keys) - len(attempted_keys)} files left for the next run.")
+            break
         attempted_keys.append(key)
         site_entry = site_manifest[key]
         hf_path = key  # key is the versioned HF path (e.g. accessions/accessions_202605_v1.parquet)
@@ -452,6 +463,7 @@ def run_daily(token: str, data_types: list[str], start_date: str, end_date: str,
         )
         with open(github_output, "a") as _gho:
             _gho.write("pipeline_status=done\n")
+            _gho.write(f"files_remaining={len(changed_keys) - len(attempted_keys)}\n")
             _gho.write(f"success_count={success_count}\n")
             _gho.write(f"failed_count={len(failed_files)}\n")
             _gho.write(f"has_changes={actual_has_changes}\n")
