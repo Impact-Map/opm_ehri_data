@@ -23,6 +23,7 @@ on:
 permissions:
   contents: write
   issues: write
+  actions: write   # lets the overlap guard cancel the newer run (gh run cancel)
 
 # No concurrency group: overlapping runs are handled by the "Bail if another
 # run is already active" guard step below, which cancels the *newcomer* rather
@@ -35,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     # Normal daily runs finish in well under a minute (3 API list calls + 0-3
     # small parquet downloads). Headroom left for a rare full-history refresh.
-    timeout-minutes: 60
+    timeout-minutes: 180
 
     steps:
       - name: Bail if another run is already active
@@ -223,5 +224,5 @@ jobs:
           fi
 
           TITLE="Pipeline FAILED - $(date -u +%Y-%m-%d)"
-          echo "$BODY" | gh issue create --title "$TITLE" --body-file -
+          echo "$BODY" | gh issue create --repo "$GITHUB_REPOSITORY" --title "$TITLE" --body-file -
 
