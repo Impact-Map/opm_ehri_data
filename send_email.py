@@ -13,8 +13,10 @@ else:
     body = os.environ.get("EMAIL_BODY", "")
 
 if not api_key:
-    print("ERROR: BUTTONDOWN_API_KEY not set")
-    sys.exit(1)
+    # Email is optional (see HANDOFF.md): the GitHub Issue each run opens is the
+    # notification. With no BUTTONDOWN_API_KEY secret, skip without failing the run.
+    print("BUTTONDOWN_API_KEY not set; skipping the email (the GitHub Issue is the notification)")
+    sys.exit(0)
 
 payload = json.dumps({"subject": subject, "body": body, "status": "about_to_send"}).encode()
 
