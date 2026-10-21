@@ -72,7 +72,7 @@ The pipeline can also send a shorter HTML email to subscribers via [Buttondown](
 
 1. **Create your own Buttondown account** — sign up at buttondown.email, get your API key from Settings > API, and replace the `BUTTONDOWN_API_KEY` secret. Subscribers will need to re-subscribe to the new account. This is free for small subscriber lists.
 2. **Use a different email service** — you'd need to modify `send_email.py` (it's ~35 lines). The pipeline writes the email body to `email_body.txt` and the subject line is passed via environment variable.
-3. **Turn off emails entirely** — just delete the `BUTTONDOWN_API_KEY` secret. The pipeline will still work; the email step will fail silently and everything else (data upload, GitHub Issue) will succeed normally.
+3. **Turn off emails entirely** — just delete the `BUTTONDOWN_API_KEY` secret. The email step then skips with a note and the run stays green; the data upload and GitHub Issue are unaffected. To get the updates by email instead, **Watch** this repo on GitHub (Watch → All Activity, or Custom → Issues).
 
 ## How to Tell If Things Are Working
 
